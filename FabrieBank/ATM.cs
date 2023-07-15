@@ -1,4 +1,5 @@
-﻿//using System;
+﻿//Yeni
+//using System;
 //using FabrieBank.Common.Enums;
 //using FabrieBank.Entity;
 
