@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Transactions;
 using FabrieBank.Common;
 using FabrieBank.Entity;
 
@@ -13,9 +14,9 @@ namespace FabrieBank
             for (; ; )
             {
                 Console.WriteLine("==============================================");
-                Console.WriteLine("\t     Welcome To FabrieBank!");
+                Console.WriteLine("              Welcome To FabrieBank!          ");
                 Console.WriteLine("==============================================");
-                Console.WriteLine("1.Login\t\t2.New Customer\t\t3.Exit");
+                Console.WriteLine("1.Login           2.New Customer        3.Exit");
                 Console.WriteLine("==============================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
@@ -54,11 +55,11 @@ namespace FabrieBank
             //Main menu for loged in users
             for (; ; )
             {
-                Console.WriteLine("=====================================================");
-                Console.WriteLine("                      MAIN MENU");
-                Console.WriteLine("=====================================================");
-                Console.WriteLine("1.User Operations  2.ATM   3.Bank Accounts     4.Exit");
-                Console.WriteLine("=====================================================");
+                Console.WriteLine("=========================================================================");
+                Console.WriteLine("                                 MAIN MENU                               ");
+                Console.WriteLine("=========================================================================");
+                Console.WriteLine("1.User Operations  2.ATM   3.Bank Accounts   4.Money Transfers     5.Exit");
+                Console.WriteLine("=========================================================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
                 Console.Clear();
@@ -84,6 +85,12 @@ namespace FabrieBank
 
                     case "4":
 
+                        TransferMenu transferMenu = new TransferMenu(customer.MusteriId);
+                        transferMenu.ShowMenu();
+                        break;
+
+                    case "5":
+
                         Environment.Exit(0);
                         break;
 
@@ -101,12 +108,11 @@ namespace FabrieBank
 
             for (; ; )
             {
-                Console.WriteLine("==========================================================");
-                Console.WriteLine("1.New Account    2.Show Accounts    3.Upper Menu    4.Exit");
-                Console.WriteLine("==========================================================");
+                Console.WriteLine("================================================");
+                Console.WriteLine("1.New Account    2.Show Accounts    3.Upper Menu");
+                Console.WriteLine("================================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
-
                 switch (ch)
                 {
                     case "1":
@@ -124,11 +130,6 @@ namespace FabrieBank
                     case "3":
 
                         Menu(customer);
-                        break;
-
-                    case "4":
-
-                        Environment.Exit(0);
                         break;
 
                     default:
