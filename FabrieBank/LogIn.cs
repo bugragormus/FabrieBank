@@ -16,7 +16,7 @@ namespace FabrieBank
             Console.Write(">>> ");
             int sifre = int.Parse(Console.ReadLine());
 
-            LogInDB logInDB = new FabrieBank.Entity.LogInDB();
+            LogInDB logInDB = new LogInDB();
             DTOCustomer customer = logInDB.LogIn(tckn, sifre);
 
             if (customer != null)
@@ -28,7 +28,7 @@ namespace FabrieBank
                 Console.WriteLine("*            V                         V             *");
                 Console.WriteLine("******************************************************\n");
 
-                FabrieBank.Program program = new Program();
+                Program program = new Program();
                 program.Menu(customer);
             }
             else

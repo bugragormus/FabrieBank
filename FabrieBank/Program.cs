@@ -1,16 +1,4 @@
-﻿//FabrieBank.CreateMusteri createMusteri = new FabrieBank.CreateMusteri();
-//createMusteri.CreateMusteriM();
-
-//FabrieBank.Entity.BringAccount bringAccount = new FabrieBank.Entity.BringAccount();
-//bringAccount.BringAllAccounts();
-
-//FabrieBank.CreateAccount createAccount = new FabrieBank.CreateAccount();
-//createAccount.CreateAccountM();
-
-//FabrieBank.LogIn logIn = new FabrieBank.LogIn();
-//logIn.LogInM();
-
-using System;
+﻿using System;
 using FabrieBank.Common;
 using FabrieBank.Entity;
 
@@ -66,11 +54,11 @@ namespace FabrieBank
             //Main menu for loged in users
             for (; ; )
             {
-                Console.WriteLine("======================================================");
+                Console.WriteLine("===================================================");
                 Console.WriteLine("                      MAIN MENU");
-                Console.WriteLine("======================================================");
-                Console.WriteLine("1.Personal Info\t\t2.Bank Accounts\t\t3.Exit");
-                Console.WriteLine("======================================================");
+                Console.WriteLine("===================================================");
+                Console.WriteLine("1.Personal Info  2.ATM   3.Bank Accounts     4.Exit");
+                Console.WriteLine("===================================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
 
@@ -84,10 +72,16 @@ namespace FabrieBank
 
                     case "2":
 
-                        AccountMenu(customer);
+                        ATMMenu atmMenu = new ATMMenu(customer.MusteriId);
+                        atmMenu.ShowMenu();
                         break;
 
                     case "3":
+
+                        AccountMenu(customer);
+                        break;
+
+                    case "4":
 
                         Environment.Exit(0);
                         break;
