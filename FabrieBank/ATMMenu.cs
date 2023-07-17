@@ -19,7 +19,7 @@ namespace FabrieBank
 
             do
             {
-                Console.WriteLine("==============================");
+                Console.WriteLine("\n==============================");
                 Console.WriteLine("ATM İŞLEMLERİ");
                 Console.WriteLine("==============================");
                 Console.WriteLine("1. Para Yatırma");
@@ -64,11 +64,11 @@ namespace FabrieBank
 
         private void ParaCekme()
         {
-            Console.WriteLine("Para çekmek istediğiniz hesap numarasını girin: ");
+            Console.WriteLine("\nPara çekmek istediğiniz hesap numarasını girin: ");
             Console.Write(">>> ");
             long hesapNo = long.Parse(Console.ReadLine());
 
-            Console.WriteLine("Çekmek istediğiniz miktarı girin: ");
+            Console.WriteLine("\nÇekmek istediğiniz miktarı girin: ");
             Console.Write(">>> ");
             long bakiye = long.Parse(Console.ReadLine());
 

@@ -54,20 +54,21 @@ namespace FabrieBank
             //Main menu for loged in users
             for (; ; )
             {
-                Console.WriteLine("===================================================");
+                Console.WriteLine("=====================================================");
                 Console.WriteLine("                      MAIN MENU");
-                Console.WriteLine("===================================================");
-                Console.WriteLine("1.Personal Info  2.ATM   3.Bank Accounts     4.Exit");
-                Console.WriteLine("===================================================");
+                Console.WriteLine("=====================================================");
+                Console.WriteLine("1.User Operations  2.ATM   3.Bank Accounts     4.Exit");
+                Console.WriteLine("=====================================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
+                Console.Clear();
 
                 switch (ch)
                 {
                     case "1":
 
-                        PersonelInfo personelInfo = new PersonelInfo();
-                        personelInfo.PersonelInfoM(customer);
+                        CustomerMenu customerMenu = new CustomerMenu(customer.MusteriId);
+                        customerMenu.ShowMenu(customer);
                         break;
 
                     case "2":

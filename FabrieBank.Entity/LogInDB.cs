@@ -51,5 +51,26 @@ namespace FabrieBank.Entity
 
             return new DTOCustomer();
         }
+
+        public bool UpdatePersonelInfo(int musteriId, long telNo, string email)
+        {
+            using (SqlConnection connection = new SqlConnection(database1.ConnectionString))
+            {
+                connection.Open();
+
+                string sql = "UPDATE dbo.Musteri_Bilgi SET TelNo = @telNo, Email = @email WHERE MusteriId = @musteriId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@telNo", telNo);
+                    command.Parameters.AddWithValue("@email", email);
+                    command.Parameters.AddWithValue("@musteriId", musteriId);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    return rowsAffected > 0;
+                }
+            }
+        }
     }
 }

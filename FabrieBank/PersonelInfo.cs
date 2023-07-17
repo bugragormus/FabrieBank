@@ -1,5 +1,7 @@
 ﻿using System;
 using FabrieBank.Common;
+using FabrieBank.Entity;
+
 namespace FabrieBank
 {
     public class PersonelInfo
@@ -17,7 +19,6 @@ namespace FabrieBank
             Console.WriteLine("TCKN         :" + customer.Tckn);
             Console.WriteLine("Phone Number :" + customer.TelNo);
             Console.WriteLine("Email        :" + customer.Email);
-            Console.WriteLine("\n");
         }
     }
 }
