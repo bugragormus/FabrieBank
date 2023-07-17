@@ -12,6 +12,7 @@ namespace FabrieBank
         private int musteriId;
         private AccInfoDB accInfoDB;
         private TransferDB transferDB;
+        private List<DTOAccountInfo> accountInfos;
 
         public TransferMenu(int musteriId)
         {
@@ -22,6 +23,8 @@ namespace FabrieBank
 
         public void ShowMenu()
         {
+            accountInfos = accInfoDB.AccInfo(musteriId);
+
             string choice;
 
             do
@@ -217,5 +220,23 @@ namespace FabrieBank
                 Console.WriteLine("==============================");
             }
         }
+
+        public void HesapSil()
+        {
+            Console.WriteLine("\nSilmek istediğiniz hesap numarasını girin: ");
+            long hesapNo = long.Parse(Console.ReadLine());
+
+            bool hesapSilindi = accInfoDB.HesapSil(hesapNo);
+            if (hesapSilindi)
+            {
+                Console.WriteLine("\nHesap başarıyla silindi.");
+            }
+            else
+            {
+                Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
+            }
+        }
+
+
     }
 }

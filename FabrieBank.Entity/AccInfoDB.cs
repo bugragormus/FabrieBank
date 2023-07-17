@@ -52,5 +52,55 @@ namespace FabrieBank.Entity
             return accountInfos;
         }
 
+        public bool HesapSil(long hesapNo)
+        {
+            using (SqlConnection connection = new SqlConnection(database1.ConnectionString))
+            {
+                connection.Open();
+
+                // Hesap bakiyesini kontrol et
+                string sqlSelectBakiye = "SELECT Bakiye FROM dbo.Hesap WHERE HesapNo = @hesapNo";
+                using (SqlCommand commandSelectBakiye = new SqlCommand(sqlSelectBakiye, connection))
+                {
+                    commandSelectBakiye.Parameters.AddWithValue("@hesapNo", hesapNo);
+
+                    object result = commandSelectBakiye.ExecuteScalar();
+                    if (result == null)
+                    {
+                        Console.WriteLine("\nHesap bulunamadı.");
+                        return false;
+                    }
+
+                    long bakiye = (long)result;
+                    if (bakiye != 0)
+                    {
+                        Console.WriteLine("\nHesap bakiyesi 0 değil. Lütfen bakiyeyi başka bir hesaba aktarın.");
+                        return false;
+                    }
+                }
+
+                // Hesabı sil
+                string sqlDeleteHesap = "DELETE FROM dbo.Hesap WHERE HesapNo = @hesapNo";
+                using (SqlCommand commandDeleteHesap = new SqlCommand(sqlDeleteHesap, connection))
+                {
+                    commandDeleteHesap.Parameters.AddWithValue("@hesapNo", hesapNo);
+
+                    int affectedRows = commandDeleteHesap.ExecuteNonQuery();
+                    if (affectedRows > 0)
+                    {
+                        Console.WriteLine("\nHesap başarıyla silindi.");
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
+                        return false;
+                    }
+                }
+            }
+        }
+
+
+
     }
 }

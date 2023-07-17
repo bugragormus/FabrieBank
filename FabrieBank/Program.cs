@@ -108,9 +108,9 @@ namespace FabrieBank
 
             for (; ; )
             {
-                Console.WriteLine("================================================");
-                Console.WriteLine("1.New Account    2.Show Accounts    3.Upper Menu");
-                Console.WriteLine("================================================");
+                Console.WriteLine("=====================================================================");
+                Console.WriteLine("1.New Account    2.Show Accounts     3.Delete Account    4.Upper Menu");
+                Console.WriteLine("=====================================================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
                 switch (ch)
@@ -128,6 +128,12 @@ namespace FabrieBank
                         break;
 
                     case "3":
+
+                        TransferMenu transferMenu = new TransferMenu(customer.MusteriId);
+                        transferMenu.HesapSil();
+                        break;
+
+                    case "4":
 
                         Menu(customer);
                         break;
