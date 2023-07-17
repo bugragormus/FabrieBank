@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FabrieBank.Common;
 using FabrieBank.Common.Enums;
+using FabrieBank.DTO;
 using FabrieBank.Entity;
 
 namespace FabrieBank
@@ -10,14 +11,12 @@ namespace FabrieBank
     {
         private int musteriId;
         private AccInfoDB accInfoDB;
-        private ATM atm;
         private TransferDB transferDB;
 
         public TransferMenu(int musteriId)
         {
             this.musteriId = musteriId;
             accInfoDB = new AccInfoDB();
-            atm = new ATM();
             transferDB = new TransferDB();
         }
 
@@ -84,8 +83,15 @@ namespace FabrieBank
 
                 if (KaynakVeHedefDovizCinsleriUyusuyorMu(kaynakHesapNo, hedefHesapNo, kaynakDovizCinsi, hedefDovizCinsi))
                 {
-                    // Veritabanında gerekli güncellemeleri gerçekleştir
-                    bool transferBasarili = transferDB.HesaplarArasiTransfer(kaynakHesapNo, hedefHesapNo, transferMiktar);
+                    DTODovizHareket dovizHareket = new DTODovizHareket
+                    {
+                        KaynakHesapNo = kaynakHesapNo,
+                        HedefHesapNo = hedefHesapNo,
+                        DovizCinsi = kaynakDovizCinsi,
+                        Miktar = transferMiktar
+                    };
+
+                    bool transferBasarili = transferDB.HesaplarArasiTransfer(dovizHareket.KaynakHesapNo, dovizHareket.HedefHesapNo, dovizHareket.Miktar);
                     if (transferBasarili)
                     {
                         Console.WriteLine("HesaplarArasiTransfer işlemi başarıyla gerçekleştirildi.");
@@ -105,6 +111,7 @@ namespace FabrieBank
                 Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
             }
         }
+
 
         private void HavaleEFT()
         {
@@ -126,19 +133,25 @@ namespace FabrieBank
             {
                 long kaynakHesapNo = accountInfos[kaynakHesapIndex].HesapNo;
                 EnumDovizCinsleri.DovizCinsleri kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
-                EnumDovizCinsleri.DovizCinsleri hedefDovizCinsi = GetDovizCinsiFromHesapNo(hedefHesapNo);
 
-                if (kaynakDovizCinsi == hedefDovizCinsi)
+                if (kaynakDovizCinsi == GetDovizCinsiFromHesapNo(hedefHesapNo))
                 {
-                    // Veritabanında gerekli güncellemeleri gerçekleştir
-                    bool transferBasarili = transferDB.HavaleEFT(kaynakHesapNo, hedefHesapNo, transferMiktar);
-                    if (transferBasarili)
+                    bool isOwnAccount = IsOwnAccount(accountInfos, hedefHesapNo);
+                    if (isOwnAccount)
                     {
-                        Console.WriteLine("Havale/EFT işlemi başarıyla gerçekleştirildi.");
+                        Console.WriteLine("Hedef hesap kendi hesabınız. Havale/EFT işlemi gerçekleştirilemez.");
                     }
                     else
                     {
-                        Console.WriteLine("Havale/EFT işlemi gerçekleştirilemedi. Lütfen tekrar deneyin.");
+                        bool transferBasarili = transferDB.HavaleEFT(kaynakHesapNo, hedefHesapNo, transferMiktar);
+                        if (transferBasarili)
+                        {
+                            Console.WriteLine("Havale/EFT işlemi başarıyla gerçekleştirildi.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Havale/EFT işlemi gerçekleştirilemedi. Lütfen tekrar deneyin.");
+                        }
                     }
                 }
                 else
@@ -151,6 +164,19 @@ namespace FabrieBank
                 Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
             }
         }
+
+        private bool IsOwnAccount(List<DTOAccountInfo> accountInfos, long hesapNo)
+        {
+            foreach (DTOAccountInfo accountInfo in accountInfos)
+            {
+                if (accountInfo.HesapNo == hesapNo)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
         private bool KaynakVeHedefDovizCinsleriUyusuyorMu(long kaynakHesapNo, long hedefHesapNo, EnumDovizCinsleri.DovizCinsleri kaynakDovizCinsi, EnumDovizCinsleri.DovizCinsleri hedefDovizCinsi)
         {
@@ -193,15 +219,3 @@ namespace FabrieBank
         }
     }
 }
-
-
-//// Veritabanında gerekli güncellemeleri gerçekleştir
-//bool transferBasarili = transferDB.HesaplarArasiTransfer(kaynakHesapNo, hedefHesapNo, transferMiktar);
-//if (transferBasarili)
-//{
-//    Console.WriteLine("HesaplarArasiTransfer işlemi başarıyla gerçekleştirildi.");
-//}
-//else
-//{
-//    Console.WriteLine("HesaplarArasiTransfer işlemi gerçekleştirilemedi. Lütfen tekrar deneyin.");
-//}

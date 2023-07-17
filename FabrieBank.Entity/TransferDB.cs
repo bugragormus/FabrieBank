@@ -113,29 +113,15 @@ namespace FabrieBank.Entity
                     }
 
                     long kaynakBakiye = (long)result;
-                    if (kaynakBakiye < miktar)
+                    if (kaynakBakiye < miktar + 5) // 5 birim ek para kesintisi
                     {
                         Console.WriteLine("\nYetersiz bakiye. Transfer gerçekleştirilemedi.");
                         return false;
                     }
                 }
 
-                // Kontrol et: Hedef hesap var mı?
-                string sqlSelectHedef = "SELECT Bakiye FROM dbo.Hesap WHERE HesapNo = @hedefHesapNo";
-                using (SqlCommand commandSelectHedef = new SqlCommand(sqlSelectHedef, connection))
-                {
-                    commandSelectHedef.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
-
-                    object result = commandSelectHedef.ExecuteScalar();
-                    if (result == null)
-                    {
-                        Console.WriteLine("\nHedef hesap bulunamadı.");
-                        return false;
-                    }
-                }
-
                 // Para transferi gerçekleştir
-                string sqlUpdateKaynak = "UPDATE dbo.Hesap SET Bakiye = Bakiye - @miktar WHERE HesapNo = @kaynakHesapNo";
+                string sqlUpdateKaynak = "UPDATE dbo.Hesap SET Bakiye = Bakiye - @miktar - 5 WHERE HesapNo = @kaynakHesapNo";
                 string sqlUpdateHedef = "UPDATE dbo.Hesap SET Bakiye = Bakiye + @miktar WHERE HesapNo = @hedefHesapNo";
 
                 using (SqlTransaction transaction = connection.BeginTransaction())
@@ -171,5 +157,6 @@ namespace FabrieBank.Entity
                 }
             }
         }
+
     }
 }
