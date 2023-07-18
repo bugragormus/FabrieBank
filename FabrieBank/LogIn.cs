@@ -8,6 +8,8 @@ namespace FabrieBank
     {
         public void LogInM()
         {
+            LogInDB logInDB = new LogInDB();
+
             Console.WriteLine("TCKN girin:");
             Console.Write(">>> ");
             long tckn = long.Parse(Console.ReadLine());
@@ -16,7 +18,6 @@ namespace FabrieBank
             Console.Write(">>> ");
             int sifre = int.Parse(Console.ReadLine());
 
-            LogInDB logInDB = new LogInDB();
             DTOCustomer customer = logInDB.LogIn(tckn, sifre);
 
             if (customer != null)

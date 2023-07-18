@@ -49,7 +49,8 @@ namespace FabrieBank.Entity
                 }
             }
 
-            return new DTOCustomer();
+            // If no matching user is found, return null to indicate login failure
+            return null;
         }
 
         public bool UpdatePersonelInfo(int musteriId, long telNo, string email)

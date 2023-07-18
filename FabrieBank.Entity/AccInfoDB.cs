@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using FabrieBank.Common;
 using FabrieBank.Common.Enums;
+using static FabrieBank.Common.Enums.EnumDovizCinsleri;
 
 namespace FabrieBank.Entity
 {
