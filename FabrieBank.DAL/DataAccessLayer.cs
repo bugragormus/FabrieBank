@@ -120,7 +120,6 @@ namespace FabrieBank.DAL
             }
         }
 
-        // Add other database operations for Account creation, Customer creation, Transfer, etc.
-        // ...
+        //All methods i write before in ..DB.cs files.
     }
 }
