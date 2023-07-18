@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrieBank.Entity", "Fabrie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrieBank.Common", "FabrieBank.Common\FabrieBank.Common.csproj", "{F9B46104-3D32-4A76-8E3B-E0B6653DE7F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrieBank.DAL", "FabrieBank.DAL\FabrieBank.DAL.csproj", "{46CD2E5E-DBB5-4673-A22A-BBE301652BA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F9B46104-3D32-4A76-8E3B-E0B6653DE7F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9B46104-3D32-4A76-8E3B-E0B6653DE7F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9B46104-3D32-4A76-8E3B-E0B6653DE7F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46CD2E5E-DBB5-4673-A22A-BBE301652BA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46CD2E5E-DBB5-4673-A22A-BBE301652BA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46CD2E5E-DBB5-4673-A22A-BBE301652BA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46CD2E5E-DBB5-4673-A22A-BBE301652BA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

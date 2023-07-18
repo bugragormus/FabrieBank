@@ -73,5 +73,25 @@ namespace FabrieBank.Entity
                 }
             }
         }
+
+        public bool IsCredentialsValid(long tckn, int sifre)
+        {
+            using (SqlConnection connection = new SqlConnection(database1.ConnectionString))
+            {
+                connection.Open();
+
+                string sql = "SELECT COUNT(*) FROM dbo.Musteri_Bilgi WHERE Tckn = @tckn AND Sifre = @sifre";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@tckn", tckn);
+                    command.Parameters.AddWithValue("@sifre", sifre);
+
+                    int result = (int)command.ExecuteScalar();
+
+                    return result > 0;
+                }
+            }
+        }
     }
 }
