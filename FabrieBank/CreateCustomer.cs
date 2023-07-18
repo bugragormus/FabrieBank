@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Text.RegularExpressions;
 using FabrieBank.Common;
 using FabrieBank.Entity;
@@ -43,9 +44,34 @@ namespace FabrieBank
             Console.WriteLine("\n==============================================");
             Console.Write("Customer Password: ");
             int musteriSifre;
-            while (!int.TryParse(Console.ReadLine(), out musteriSifre) || musteriSifre.ToString().Length != 4)
+            while (!int.TryParse(GetMaskedInput(), out musteriSifre) || musteriSifre.ToString().Length != 4)
             {
                 Console.WriteLine("Invalid password. Please enter a 4-digit password:");
+            }
+
+            static string GetMaskedInput()
+            {
+                string input = "";
+                ConsoleKeyInfo keyInfo;
+
+                do
+                {
+                    keyInfo = Console.ReadKey(true);
+
+                    if (keyInfo.Key != ConsoleKey.Backspace && keyInfo.Key != ConsoleKey.Enter)
+                    {
+                        input += keyInfo.KeyChar;
+                        Console.Write("*");
+                    }
+                    else if (keyInfo.Key == ConsoleKey.Backspace && input.Length > 0)
+                    {
+                        input = input.Substring(0, input.Length - 1);
+                        Console.Write("\b \b");
+                    }
+                }
+                while (keyInfo.Key != ConsoleKey.Enter);
+
+                return input;
             }
 
             Console.WriteLine("\n==============================================");
