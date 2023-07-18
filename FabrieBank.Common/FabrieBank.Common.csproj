@@ -9,10 +9,14 @@
   <ItemGroup>
     <None Remove="DTOs\" />
     <None Remove="Enums\" />
+    <None Remove="Logs\" />
+    <None Remove="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DTOs\" />
     <Folder Include="Enums\" />
+    <Folder Include="Logs\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
