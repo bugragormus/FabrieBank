@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Data.SqlClient;
+using FabrieBank.Common;
 
 namespace FabrieBank.Entity
 {
@@ -14,16 +15,20 @@ namespace FabrieBank.Entity
             database1 = database.CallDB();
         }
 
-        public void CreateCustomer(string Ad, string Soyad, long Tckn, int Sifre, long TelNo, string Email)
+        public void CreateCustomer(DTOCustomer customer)
         {
             using (SqlConnection connection = new SqlConnection(database1.ConnectionString))
             {
                 connection.Open();
 
-                // Retrieve the next available MusteriId from the database
+                if (IsCustomerExists(connection, customer.Tckn))
+                {
+                    Console.WriteLine("\nCustomer already exists.");
+                    return;
+                }
+
                 int nextMusteriId = GetNextMusteriId(connection);
 
-                // Enable IDENTITY_INSERT
                 string enableIdentityInsertSql = "SET IDENTITY_INSERT dbo.Musteri_Bilgi ON";
                 using (SqlCommand enableIdentityInsertCommand = new SqlCommand(enableIdentityInsertSql, connection))
                 {
@@ -35,15 +40,16 @@ namespace FabrieBank.Entity
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@musteriId", nextMusteriId);
-                    command.Parameters.AddWithValue("@ad", Ad);
-                    command.Parameters.AddWithValue("@soyad", Soyad);
-                    command.Parameters.AddWithValue("@tckn", Tckn);
-                    command.Parameters.AddWithValue("@sifre", Sifre);
-                    command.Parameters.AddWithValue("@telNo", TelNo);
-                    command.Parameters.AddWithValue("@email", Email);
+                    command.Parameters.AddWithValue("@ad", customer.Ad);
+                    command.Parameters.AddWithValue("@soyad", customer.Soyad);
+                    command.Parameters.AddWithValue("@tckn", customer.Tckn);
+                    command.Parameters.AddWithValue("@sifre", customer.Sifre);
+                    command.Parameters.AddWithValue("@telNo", customer.TelNo);
+                    command.Parameters.AddWithValue("@email", customer.Email);
 
                     command.ExecuteNonQuery();
                 }
+                Console.Clear();
             }
         }
 
@@ -55,6 +61,19 @@ namespace FabrieBank.Entity
             {
                 int nextMusteriId = (int)command.ExecuteScalar();
                 return nextMusteriId;
+            }
+        }
+
+        private bool IsCustomerExists(SqlConnection connection, long tckn)
+        {
+            string sql = "SELECT COUNT(*) FROM dbo.Musteri_Bilgi WHERE Tckn = @tckn";
+
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@tckn", tckn);
+
+                int count = (int)command.ExecuteScalar();
+                return count > 0;
             }
         }
     }

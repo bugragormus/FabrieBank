@@ -1,5 +1,7 @@
 ﻿using System;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Text.RegularExpressions;
+using FabrieBank.Common;
+using FabrieBank.Entity;
 
 namespace FabrieBank
 {
@@ -10,33 +12,79 @@ namespace FabrieBank
             Console.WriteLine("\n==============================================");
             Console.Write("Customer Name: ");
             string? musteriAd = Console.ReadLine();
+            musteriAd = char.ToUpper(musteriAd[0]) + musteriAd.Substring(1);
+            while (string.IsNullOrEmpty(musteriAd) || musteriAd.Length <= 2)
+            {
+                Console.WriteLine("Name must be a string and longer than 2 characters.");
+                Console.Write("Customer Name: ");
+                musteriAd = Console.ReadLine();
+            }
 
             Console.WriteLine("\n==============================================");
             Console.Write("Customer Lastname: ");
             string? musteriSoyad = Console.ReadLine();
+            musteriSoyad = char.ToUpper(musteriSoyad[0]) + musteriSoyad.Substring(1);
+            while (string.IsNullOrEmpty(musteriAd) || musteriAd.Length <= 2)
+            {
+                Console.WriteLine("Lastname must be a string and longer than 2 characters.");
+                Console.Write("Customer Lastname: ");
+                musteriAd = Console.ReadLine();
+            }
 
             Console.WriteLine("\n==============================================");
             Console.Write("Customer TCKN: ");
-            long musteriTCKN = Convert.ToInt64(Console.ReadLine());
+            long musteriTckn;
+            while (!long.TryParse(Console.ReadLine(), out musteriTckn) || musteriTckn.ToString().Length != 11)
+            {
+                Console.WriteLine("Invalid TCKN. Please enter a 11-digit TCKN:");
+            }
+
 
             Console.WriteLine("\n==============================================");
             Console.Write("Customer Password: ");
-            int musteriSifre = Convert.ToInt32(Console.ReadLine());
+            int musteriSifre;
+            while (!int.TryParse(Console.ReadLine(), out musteriSifre) || musteriSifre.ToString().Length != 4)
+            {
+                Console.WriteLine("Invalid password. Please enter a 4-digit password:");
+            }
 
             Console.WriteLine("\n==============================================");
             Console.Write("Customer Cell Number: ");
-            long musteriTelNo = Convert.ToInt64(Console.ReadLine());
+            long musteriTelNo;
+            while (!long.TryParse(Console.ReadLine(), out musteriTelNo) || musteriTelNo.ToString().Length != 10)
+            {
+                Console.WriteLine("Invalid phone number. Please enter a 10-digit phone number:");
+            }
 
             Console.WriteLine("\n==============================================");
             Console.Write("Customer Email: ");
-            string? musteriEmail = Console.ReadLine();
+            string musteriEmail = Console.ReadLine();
 
-            // Retrieve other necessary inputs from the user
+            while (!IsValidEmail(musteriEmail))
+            {
+                Console.WriteLine("Invalid email address. Please enter a valid email address:");
+                musteriEmail = Console.ReadLine();
+            }
 
-            // Create an instance of CreateCustomerDB and call the CreateCustomer method
-            FabrieBank.Entity.CreateCustomerDB createCustomerDB = new FabrieBank.Entity.CreateCustomerDB();
-            createCustomerDB.CreateCustomer(musteriAd, musteriSoyad, musteriTCKN, musteriSifre, musteriTelNo, musteriEmail);
-            Console.Clear();
+            DTOCustomer customer = new DTOCustomer
+            {
+                Ad = musteriAd,
+                Soyad = musteriSoyad,
+                Tckn = musteriTckn,
+                Sifre = musteriSifre,
+                TelNo = musteriTelNo,
+                Email = musteriEmail
+            };
+
+            CreateCustomerDB createCustomerDB = new CreateCustomerDB();
+            createCustomerDB.CreateCustomer(customer);
+
+        }
+
+        private static bool IsValidEmail(string email)
+        {
+            string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            return Regex.IsMatch(email, pattern);
         }
     }
 }
