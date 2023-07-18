@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using FabrieBank.Common;
 using Microsoft.Data.SqlClient;
 
@@ -59,7 +60,8 @@ namespace FabrieBank.Entity
             {
                 // Log the error to the database using the ErrorLoggerDB
                 ErrorLoggerDB logger = new ErrorLoggerDB();
-                logger.LogError(ex);
+                MethodBase method = MethodBase.GetCurrentMethod();
+                logger.LogError(ex, method.ToString());
 
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine("An error occurred while performing ParaYatirma operation. Please try again later.");
@@ -116,7 +118,8 @@ namespace FabrieBank.Entity
             {
                 // Log the error to the database using the ErrorLoggerDB
                 ErrorLoggerDB logger = new ErrorLoggerDB();
-                logger.LogError(ex);
+                MethodBase method = MethodBase.GetCurrentMethod();
+                logger.LogError(ex, method.ToString());
 
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine("An error occurred while performing ParaCekme operation. Please try again later.");

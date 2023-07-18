@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Data.SqlClient;
 using FabrieBank.Common;
+using System.Reflection;
 
 namespace FabrieBank.Entity
 {
@@ -15,19 +16,21 @@ namespace FabrieBank.Entity
             database1 = database.CallDB();
         }
 
-        public void LogError(Exception ex)
+        public void LogError(Exception ex, string methodName)
         {
+
             using (SqlConnection connection = new SqlConnection(database1.ConnectionString))
             {
                 connection.Open();
 
-                string sql = "INSERT INTO dbo.ErrorLogs (ErrorDateTime, ErrorMessage, StackTrace) VALUES (@logTime, @errorMessage, @stackTrace)";
+                string sql = "INSERT INTO dbo.ErrorLogs (ErrorDateTime, ErrorMessage, StackTrace, OperationName) VALUES (@errorDateTime, @errorMessage, @stackTrace, @operationName)";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@logTime", DateTime.Now);
+                    command.Parameters.AddWithValue("@errorDateTime", DateTime.Now);
                     command.Parameters.AddWithValue("@errorMessage", ex.Message);
                     command.Parameters.AddWithValue("@stackTrace", ex.StackTrace);
+                    command.Parameters.AddWithValue("@operationName", methodName);
 
                     command.ExecuteNonQuery();
                 }
