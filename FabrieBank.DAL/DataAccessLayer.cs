@@ -2,6 +2,7 @@
 using FabrieBank.Common;
 using FabrieBank.Common.Enums;
 using System.Reflection;
+using System.Data;
 
     namespace FabrieBank.DAL
 {
@@ -48,19 +49,20 @@ using System.Reflection;
 
         public void LogError(Exception ex, string methodName)
         {
-
             using (SqlConnection connection = new SqlConnection(database.ConnectionString))
             {
                 connection.Open();
 
-                string sql = "INSERT INTO dbo.ErrorLogs (ErrorDateTime, ErrorMessage, StackTrace, OperationName) VALUES (@errorDateTime, @errorMessage, @stackTrace, @operationName)";
+                string storedProcedureName = "usp_InsertErrorLog";
 
-                using (SqlCommand command = new SqlCommand(sql, connection))
+                using (SqlCommand command = new SqlCommand(storedProcedureName, connection))
                 {
-                    command.Parameters.AddWithValue("@errorDateTime", DateTime.Now);
-                    command.Parameters.AddWithValue("@errorMessage", ex.Message);
-                    command.Parameters.AddWithValue("@stackTrace", ex.StackTrace);
-                    command.Parameters.AddWithValue("@operationName", methodName);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+                    command.Parameters.AddWithValue("@ErrorMessage", ex.Message);
+                    command.Parameters.AddWithValue("@StackTrace", ex.StackTrace);
+                    command.Parameters.AddWithValue("@OperationName", methodName);
 
                     command.ExecuteNonQuery();
                 }
@@ -83,11 +85,12 @@ using System.Reflection;
                 {
                     connection.Open();
 
-                    string sql = "SELECT * FROM dbo.Hesap WHERE MusteriId = @musteriId";
+                    string storedProcedureName = "usp_GetAccountInfo";
 
-                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    using (SqlCommand command = new SqlCommand(storedProcedureName, connection))
                     {
-                        command.Parameters.AddWithValue("@musteriId", musteriId);
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@MusteriId", musteriId);
 
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
