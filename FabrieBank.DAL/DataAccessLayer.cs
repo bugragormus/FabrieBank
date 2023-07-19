@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Data.SQLite;
+﻿using Microsoft.Data.SqlClient;
 using FabrieBank.Common;
 using FabrieBank.Common.Enums;
 using System.Reflection;
-using System.Collections.Generic;
-using System.Data.Entity;
 
     namespace FabrieBank.DAL
 {
@@ -579,7 +573,7 @@ using System.Data.Entity;
 
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-                return UpdatePersonelInfo(musteriId, telNo, email);
+                return false;
             }
         }
 
