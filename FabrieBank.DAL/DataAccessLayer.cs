@@ -3,12 +3,13 @@ using FabrieBank.Common;
 using FabrieBank.Common.Enums;
 using System.Reflection;
 using System.Data;
+using Npgsql;
 
     namespace FabrieBank.DAL
 {
     public class DataAccessLayer
     {
-        private SqlConnectionStringBuilder database;
+        private NpgsqlConnectionStringBuilder database;
 
         public DataAccessLayer()
         {
@@ -21,25 +22,26 @@ using System.Data;
         ************************************************************************************************
         */
 
-        private SqlConnectionStringBuilder CallDB()
+        private NpgsqlConnectionStringBuilder CallDB()
         {
             try
             {
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+                NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder();
 
-                builder.DataSource = "localhost";
-                builder.UserID = "sa";
-                builder.Password = "bugragrms4332";
-                builder.InitialCatalog = "Banka";
-                builder.TrustServerCertificate = true;
+                builder.Host = "localhost";
+                builder.Username = "postgres"; // Replace with your PostgreSQL username
+                builder.Password = "43324332"; // Replace with your PostgreSQL password
+                builder.Database = "FabrieBank";
 
                 return builder;
             }
-            catch (SqlException e)
+            catch (Exception ex)
             {
-                return new SqlConnectionStringBuilder();
+                // Log the error (you can implement this)
+                return new NpgsqlConnectionStringBuilder();
             }
         }
+
 
         /*
         ************************************************************************************************
@@ -49,25 +51,26 @@ using System.Data;
 
         public void LogError(Exception ex, string methodName)
         {
-            using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
             {
                 connection.Open();
 
-                string storedProcedureName = "usp_InsertErrorLog";
+                string functionName = "usp_InsertErrorLog";
 
-                using (SqlCommand command = new SqlCommand(storedProcedureName, connection))
+                string sqlQuery = $"CALL {functionName}(@errorDateTime, @errorMessage, @stackTrace, @operationName)";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                 {
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
-                    command.Parameters.AddWithValue("@ErrorMessage", ex.Message);
-                    command.Parameters.AddWithValue("@StackTrace", ex.StackTrace);
-                    command.Parameters.AddWithValue("@OperationName", methodName);
+                    command.Parameters.AddWithValue("errorDateTime", DateTime.Now);
+                    command.Parameters.AddWithValue("errorMessage", ex.Message);
+                    command.Parameters.AddWithValue("stackTrace", ex.StackTrace);
+                    command.Parameters.AddWithValue("operationName", methodName);
 
                     command.ExecuteNonQuery();
                 }
             }
         }
+
 
         /*
         ************************************************************************************************
@@ -81,18 +84,19 @@ using System.Data;
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
 
-                    string storedProcedureName = "usp_GetAccountInfo";
+                    string functionName = "usp_GetAccountInfo";
 
-                    using (SqlCommand command = new SqlCommand(storedProcedureName, connection))
+                    string sqlQuery = $"SELECT * FROM {functionName}(@MusteriId)";
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@MusteriId", musteriId);
+                        command.Parameters.AddWithValue("MusteriId", musteriId);
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -128,13 +132,13 @@ using System.Data;
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
 
                     // Check account balance
-                    string sqlSelectBakiye = "SELECT Bakiye FROM dbo.Hesap WHERE HesapNo = @hesapNo";
-                    using (SqlCommand commandSelectBakiye = new SqlCommand(sqlSelectBakiye, connection))
+                    string sqlSelectBakiye = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo";
+                    using (NpgsqlCommand commandSelectBakiye = new NpgsqlCommand(sqlSelectBakiye, connection))
                     {
                         commandSelectBakiye.Parameters.AddWithValue("@hesapNo", hesapNo);
 
@@ -145,7 +149,7 @@ using System.Data;
                             return false;
                         }
 
-                        long bakiye = (long)result;
+                        long bakiye = Convert.ToInt64(result);
                         if (bakiye != 0)
                         {
                             Console.WriteLine("\nHesap bakiyesi 0 değil. Lütfen bakiyeyi başka bir hesaba aktarın.");
@@ -154,8 +158,8 @@ using System.Data;
                     }
 
                     // Delete the account
-                    string sqlDeleteHesap = "DELETE FROM dbo.Hesap WHERE HesapNo = @hesapNo";
-                    using (SqlCommand commandDeleteHesap = new SqlCommand(sqlDeleteHesap, connection))
+                    string sqlDeleteHesap = "DELETE FROM public.Hesap WHERE HesapNo = @hesapNo";
+                    using (NpgsqlCommand commandDeleteHesap = new NpgsqlCommand(sqlDeleteHesap, connection))
                     {
                         commandDeleteHesap.Parameters.AddWithValue("@hesapNo", hesapNo);
 
@@ -195,21 +199,21 @@ using System.Data;
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
 
-                    string sqlSelect = "SELECT Bakiye FROM dbo.Hesap WHERE HesapNo = @hesapNo";
-                    string sqlUpdate = "UPDATE dbo.Hesap SET Bakiye = Bakiye + @bakiye WHERE HesapNo = @hesapNo";
+                    string sqlSelect = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo";
+                    string sqlUpdate = "UPDATE public.Hesap SET Bakiye = Bakiye + @bakiye WHERE HesapNo = @hesapNo";
 
-                    using (SqlCommand commandSelect = new SqlCommand(sqlSelect, connection))
+                    using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
                     {
                         commandSelect.Parameters.AddWithValue("@hesapNo", hesapNo);
 
-                        long eskiBakiye = (long)commandSelect.ExecuteScalar();
+                        long eskiBakiye = Convert.ToInt64(commandSelect.ExecuteScalar());
                         long yeniBakiye = eskiBakiye + bakiye;
 
-                        using (SqlCommand commandUpdate = new SqlCommand(sqlUpdate, connection))
+                        using (NpgsqlCommand commandUpdate = new NpgsqlCommand(sqlUpdate, connection))
                         {
                             commandUpdate.Parameters.AddWithValue("@bakiye", bakiye);
                             commandUpdate.Parameters.AddWithValue("@hesapNo", hesapNo);
@@ -245,23 +249,23 @@ using System.Data;
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
 
-                    string sqlSelect = "SELECT Bakiye FROM dbo.Hesap WHERE HesapNo = @hesapNo";
-                    string sqlUpdate = "UPDATE dbo.Hesap SET Bakiye = Bakiye - @bakiye WHERE HesapNo = @hesapNo";
+                    string sqlSelect = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo";
+                    string sqlUpdate = "UPDATE public.Hesap SET Bakiye = Bakiye - @bakiye WHERE HesapNo = @hesapNo";
 
-                    using (SqlCommand commandSelect = new SqlCommand(sqlSelect, connection))
+                    using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
                     {
                         commandSelect.Parameters.AddWithValue("@hesapNo", hesapNo);
 
-                        long eskiBakiye = (long)commandSelect.ExecuteScalar();
+                        long eskiBakiye = Convert.ToInt64(commandSelect.ExecuteScalar());
                         long yeniBakiye = eskiBakiye - bakiye;
 
                         if (yeniBakiye >= 0)
                         {
-                            using (SqlCommand commandUpdate = new SqlCommand(sqlUpdate, connection))
+                            using (NpgsqlCommand commandUpdate = new NpgsqlCommand(sqlUpdate, connection))
                             {
                                 commandUpdate.Parameters.AddWithValue("@bakiye", bakiye);
                                 commandUpdate.Parameters.AddWithValue("@hesapNo", hesapNo);
@@ -308,19 +312,22 @@ using System.Data;
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
 
-                    // Get account number and increment 
+                    // Get account number and increment
                     string hesapNumarasi = GetAndIncrementHesapNumarasi(dovizCinsi, connection);
 
-                    // Add to Hesap table
-                    string sql = "INSERT INTO dbo.Hesap (HesapNo, Bakiye, MusteriId, DovizCins, HesapAdi) VALUES (@hesapNo, 0, @musteriId, @dovizCinsi, @hesapAdi)";
+                    // Convert hesapNumarasi to long
+                    long hesapNo = long.Parse(hesapNumarasi); // or Convert.ToInt64(hesapNumarasi)
 
-                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    // Add to Hesap table
+                    string sql = "INSERT INTO public.Hesap (hesapno, bakiye, musteriid, dovizcins, hesapadi) VALUES (@hesapNo, 0, @musteriId, @dovizCinsi, @hesapAdi)";
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                     {
-                        command.Parameters.AddWithValue("@hesapNo", hesapNumarasi);
+                        command.Parameters.AddWithValue("@hesapNo", hesapNo);
                         command.Parameters.AddWithValue("@musteriId", musteriId);
                         command.Parameters.AddWithValue("@dovizCinsi", dovizCinsi);
                         command.Parameters.AddWithValue("@hesapAdi", hesapAdi);
@@ -342,20 +349,21 @@ using System.Data;
             }
         }
 
-        public string GetAndIncrementHesapNumarasi(int dovizCinsi, SqlConnection connection)
+
+        public string GetAndIncrementHesapNumarasi(int dovizCinsi, NpgsqlConnection connection)
         {
-            string sqlSelect = "SELECT HesapNumarasi FROM dbo.Hesap_No WHERE DovizCinsi = @dovizCinsi";
-            string sqlUpdate = "UPDATE dbo.Hesap_No SET HesapNumarasi = HesapNumarasi + 1 WHERE DovizCinsi = @dovizCinsi";
+            string sqlSelect = "SELECT HesapNumarasi FROM public.Hesap_No WHERE DovizCinsi = @dovizCinsi";
+            string sqlUpdate = "UPDATE public.Hesap_No SET HesapNumarasi = HesapNumarasi + 1 WHERE DovizCinsi = @dovizCinsi";
 
             string hesapNumarasi = string.Empty;
 
             try
             {
-                using (SqlCommand commandSelect = new SqlCommand(sqlSelect, connection))
+                using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
                 {
                     commandSelect.Parameters.AddWithValue("@dovizCinsi", dovizCinsi);
 
-                    using (SqlDataReader reader = commandSelect.ExecuteReader())
+                    using (NpgsqlDataReader reader = commandSelect.ExecuteReader())
                     {
                         if (reader.Read())
                         {
@@ -364,7 +372,7 @@ using System.Data;
                     }
                 }
 
-                using (SqlCommand commandUpdate = new SqlCommand(sqlUpdate, connection))
+                using (NpgsqlCommand commandUpdate = new NpgsqlCommand(sqlUpdate, connection))
                 {
                     commandUpdate.Parameters.AddWithValue("@dovizCinsi", dovizCinsi);
                     commandUpdate.ExecuteNonQuery();
@@ -394,7 +402,7 @@ using System.Data;
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
 
@@ -406,15 +414,15 @@ using System.Data;
 
                     int nextMusteriId = GetNextMusteriId(connection);
 
-                    string enableIdentityInsertSql = "SET IDENTITY_INSERT dbo.Musteri_Bilgi ON";
-                    using (SqlCommand enableIdentityInsertCommand = new SqlCommand(enableIdentityInsertSql, connection))
+                    string enableIdentityInsertSql = "ALTER TABLE public.Musteri_Bilgi ADD COLUMN IF NOT EXISTS MusteriId SERIAL PRIMARY KEY";
+                    using (NpgsqlCommand enableIdentityInsertCommand = new NpgsqlCommand(enableIdentityInsertSql, connection))
                     {
                         enableIdentityInsertCommand.ExecuteNonQuery();
                     }
 
-                    string sql = "INSERT INTO dbo.Musteri_Bilgi (MusteriId, Ad, Soyad, Tckn, Sifre, TelNo, Email) VALUES (@musteriId, @ad, @soyad, @tckn, @sifre, @telNo, @email)";
+                    string sql = "INSERT INTO public.Musteri_Bilgi (MusteriId, Ad, Soyad, Tckn, Sifre, TelNo, Email) VALUES (@musteriId, @ad, @soyad, @tckn, @sifre, @telNo, @email)";
 
-                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                     {
                         command.Parameters.AddWithValue("@musteriId", nextMusteriId);
                         command.Parameters.AddWithValue("@ad", customer.Ad);
@@ -440,15 +448,15 @@ using System.Data;
             }
         }
 
-        public int GetNextMusteriId(SqlConnection connection)
+        public int GetNextMusteriId(NpgsqlConnection connection)
         {
-            string sql = "SELECT ISNULL(MAX(MusteriId), 0) + 1 FROM dbo.Musteri_Bilgi";
+            string sql = "SELECT COALESCE(MAX(MusteriId), 0) + 1 FROM public.Musteri_Bilgi";
 
             try
             {
-                using (SqlCommand command = new SqlCommand(sql, connection))
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
-                    int nextMusteriId = (int)command.ExecuteScalar();
+                    int nextMusteriId = Convert.ToInt32(command.ExecuteScalar());
                     return nextMusteriId;
                 }
             }
@@ -464,17 +472,17 @@ using System.Data;
             }
         }
 
-        public bool IsCustomerExists(SqlConnection connection, long tckn)
+        public bool IsCustomerExists(NpgsqlConnection connection, long tckn)
         {
-            string sql = "SELECT COUNT(*) FROM dbo.Musteri_Bilgi WHERE Tckn = @tckn";
+            string sql = "SELECT COUNT(*) FROM public.Musteri_Bilgi WHERE Tckn = @tckn";
 
             try
             {
-                using (SqlCommand command = new SqlCommand(sql, connection))
+                using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@tckn", tckn);
 
-                    int count = (int)command.ExecuteScalar();
+                    int count = Convert.ToInt32(command.ExecuteScalar());
                     return count > 0;
                 }
             }
@@ -486,7 +494,7 @@ using System.Data;
 
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-                return IsCustomerExists(connection, tckn);
+                return false;
             }
         }
 
@@ -500,18 +508,18 @@ using System.Data;
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
 
-                    string sql = "SELECT * FROM dbo.Musteri_Bilgi WHERE Tckn = @tckn AND Sifre = @sifre";
+                    string sql = "SELECT * FROM public.Musteri_Bilgi WHERE Tckn = @tckn AND Sifre = @sifre";
 
-                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                     {
                         command.Parameters.AddWithValue("@tckn", tckn);
                         command.Parameters.AddWithValue("@sifre", sifre);
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.Read())
                             {
@@ -550,13 +558,13 @@ using System.Data;
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
 
-                    string sql = "UPDATE dbo.Musteri_Bilgi SET TelNo = @telNo, Email = @email WHERE MusteriId = @musteriId";
+                    string sql = "UPDATE public.Musteri_Bilgi SET TelNo = @telNo, Email = @email WHERE MusteriId = @musteriId";
 
-                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                     {
                         command.Parameters.AddWithValue("@telNo", telNo);
                         command.Parameters.AddWithValue("@email", email);
@@ -584,18 +592,18 @@ using System.Data;
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
 
-                    string sql = "SELECT COUNT(*) FROM dbo.Musteri_Bilgi WHERE Tckn = @tckn AND Sifre = @sifre";
+                    string sql = "SELECT COUNT(*) FROM public.Musteri_Bilgi WHERE Tckn = @tckn AND Sifre = @sifre";
 
-                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                     {
                         command.Parameters.AddWithValue("@tckn", tckn);
                         command.Parameters.AddWithValue("@sifre", sifre);
 
-                        int result = (int)command.ExecuteScalar();
+                        int result = Convert.ToInt32(command.ExecuteScalar());
 
                         return result > 0;
                     }
@@ -623,13 +631,13 @@ using System.Data;
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
 
                     // Kontrol et: Kaynak hesap var mı?
-                    string sqlSelectKaynak = "SELECT Bakiye FROM dbo.Hesap WHERE HesapNo = @kaynakHesapNo";
-                    using (SqlCommand commandSelectKaynak = new SqlCommand(sqlSelectKaynak, connection))
+                    string sqlSelectKaynak = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @kaynakHesapNo";
+                    using (NpgsqlCommand commandSelectKaynak = new NpgsqlCommand(sqlSelectKaynak, connection))
                     {
                         commandSelectKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
 
@@ -649,8 +657,8 @@ using System.Data;
                     }
 
                     // Kontrol et: Hedef hesap var mı?
-                    string sqlSelectHedef = "SELECT Bakiye FROM dbo.Hesap WHERE HesapNo = @hedefHesapNo";
-                    using (SqlCommand commandSelectHedef = new SqlCommand(sqlSelectHedef, connection))
+                    string sqlSelectHedef = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hedefHesapNo";
+                    using (NpgsqlCommand commandSelectHedef = new NpgsqlCommand(sqlSelectHedef, connection))
                     {
                         commandSelectHedef.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
 
@@ -663,14 +671,14 @@ using System.Data;
                     }
 
                     // Para transferi gerçekleştir
-                    string sqlUpdateKaynak = "UPDATE dbo.Hesap SET Bakiye = Bakiye - @miktar WHERE HesapNo = @kaynakHesapNo";
-                    string sqlUpdateHedef = "UPDATE dbo.Hesap SET Bakiye = Bakiye + @miktar WHERE HesapNo = @hedefHesapNo";
+                    string sqlUpdateKaynak = "UPDATE public.Hesap SET Bakiye = Bakiye - @miktar WHERE HesapNo = @kaynakHesapNo";
+                    string sqlUpdateHedef = "UPDATE public.Hesap SET Bakiye = Bakiye + @miktar WHERE HesapNo = @hedefHesapNo";
 
-                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    using (NpgsqlTransaction transaction = connection.BeginTransaction())
                     {
                         try
                         {
-                            using (SqlCommand commandUpdateKaynak = new SqlCommand(sqlUpdateKaynak, connection, transaction))
+                            using (NpgsqlCommand commandUpdateKaynak = new NpgsqlCommand(sqlUpdateKaynak, connection, transaction))
                             {
                                 commandUpdateKaynak.Parameters.AddWithValue("@miktar", miktar);
                                 commandUpdateKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
@@ -678,7 +686,7 @@ using System.Data;
                                 commandUpdateKaynak.ExecuteNonQuery();
                             }
 
-                            using (SqlCommand commandUpdateHedef = new SqlCommand(sqlUpdateHedef, connection, transaction))
+                            using (NpgsqlCommand commandUpdateHedef = new NpgsqlCommand(sqlUpdateHedef, connection, transaction))
                             {
                                 commandUpdateHedef.Parameters.AddWithValue("@miktar", miktar);
                                 commandUpdateHedef.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
@@ -715,13 +723,13 @@ using System.Data;
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(database.ConnectionString))
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
 
                     // Kontrol et: Kaynak hesap var mı?
-                    string sqlSelectKaynak = "SELECT Bakiye FROM dbo.Hesap WHERE HesapNo = @kaynakHesapNo";
-                    using (SqlCommand commandSelectKaynak = new SqlCommand(sqlSelectKaynak, connection))
+                    string sqlSelectKaynak = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @kaynakHesapNo";
+                    using (NpgsqlCommand commandSelectKaynak = new NpgsqlCommand(sqlSelectKaynak, connection))
                     {
                         commandSelectKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
 
@@ -741,14 +749,14 @@ using System.Data;
                     }
 
                     // Para transferi gerçekleştir
-                    string sqlUpdateKaynak = "UPDATE dbo.Hesap SET Bakiye = Bakiye - @miktar - 5 WHERE HesapNo = @kaynakHesapNo";
-                    string sqlUpdateHedef = "UPDATE dbo.Hesap SET Bakiye = Bakiye + @miktar WHERE HesapNo = @hedefHesapNo";
+                    string sqlUpdateKaynak = "UPDATE public.Hesap SET Bakiye = Bakiye - @miktar - 5 WHERE HesapNo = @kaynakHesapNo";
+                    string sqlUpdateHedef = "UPDATE public.Hesap SET Bakiye = Bakiye + @miktar WHERE HesapNo = @hedefHesapNo";
 
-                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    using (NpgsqlTransaction transaction = connection.BeginTransaction())
                     {
                         try
                         {
-                            using (SqlCommand commandUpdateKaynak = new SqlCommand(sqlUpdateKaynak, connection, transaction))
+                            using (NpgsqlCommand commandUpdateKaynak = new NpgsqlCommand(sqlUpdateKaynak, connection, transaction))
                             {
                                 commandUpdateKaynak.Parameters.AddWithValue("@miktar", miktar);
                                 commandUpdateKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
@@ -756,7 +764,7 @@ using System.Data;
                                 commandUpdateKaynak.ExecuteNonQuery();
                             }
 
-                            using (SqlCommand commandUpdateHedef = new SqlCommand(sqlUpdateHedef, connection, transaction))
+                            using (NpgsqlCommand commandUpdateHedef = new NpgsqlCommand(sqlUpdateHedef, connection, transaction))
                             {
                                 commandUpdateHedef.Parameters.AddWithValue("@miktar", miktar);
                                 commandUpdateHedef.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);

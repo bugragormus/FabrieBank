@@ -77,7 +77,7 @@ namespace FabrieBank
                     return input;
                 }
 
-                Console.WriteLine("\n==============================================");
+                Console.WriteLine("\n\n==============================================");
                 Console.Write("Customer Cell Number: ");
                 long musteriTelNo;
                 while (!long.TryParse(Console.ReadLine(), out musteriTelNo) || musteriTelNo.ToString().Length != 10)

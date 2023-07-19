@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using FabrieBank.Common;
 using FabrieBank.DAL;
+using Npgsql;
 
 namespace FabrieBank.Entity
 {
@@ -19,12 +20,12 @@ namespace FabrieBank.Entity
             dataAccessLayer.CreateCustomer(customer);
         }
 
-        public int GetNextMusteriId(SqlConnection connection)
+        public int GetNextMusteriId(NpgsqlConnection connection)
         {
             return dataAccessLayer.GetNextMusteriId(connection);
         }
 
-        public bool IsCustomerExists(SqlConnection connection, long tckn)
+        public bool IsCustomerExists(NpgsqlConnection connection, long tckn)
         {
             return dataAccessLayer.IsCustomerExists(connection, tckn);
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using FabrieBank.DAL;
 using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace FabrieBank.Entity
 {
@@ -18,7 +19,7 @@ namespace FabrieBank.Entity
             dataAccessLayer.CreateAccount(musteriId, dovizCinsi, hesapAdi);
         }
 
-        public string GetAndIncrementHesapNumarasi(int dovizCinsi, SqlConnection connection)
+        public string GetAndIncrementHesapNumarasi(int dovizCinsi, NpgsqlConnection connection)
         {
             return dataAccessLayer.GetAndIncrementHesapNumarasi(dovizCinsi, connection);
         }
