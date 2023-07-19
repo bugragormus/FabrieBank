@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace FabrieBank
 {
@@ -51,28 +52,54 @@ namespace FabrieBank
 
         private void ParaYatirma()
         {
-            Console.WriteLine("\nPara yatırmak istediğiniz hesap numarasını girin: ");
-            Console.Write(">>> ");
-            long hesapNo = long.Parse(Console.ReadLine());
+            try
+            {
+                Console.WriteLine("\nPara yatırmak istediğiniz hesap numarasını girin: ");
+                Console.Write(">>> ");
+                long hesapNo = long.Parse(Console.ReadLine());
 
-            Console.WriteLine("\nYatırmak istediğiniz miktarı girin: ");
-            Console.Write(">>> ");
-            long bakiye = long.Parse(Console.ReadLine());
+                Console.WriteLine("\nYatırmak istediğiniz miktarı girin: ");
+                Console.Write(">>> ");
+                long bakiye = long.Parse(Console.ReadLine());
 
-            atm.ParaYatirma(hesapNo, bakiye);
+                atm.ParaYatirma(hesapNo, bakiye);
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
         }
 
         private void ParaCekme()
         {
-            Console.WriteLine("\nPara çekmek istediğiniz hesap numarasını girin: ");
-            Console.Write(">>> ");
-            long hesapNo = long.Parse(Console.ReadLine());
+            try
+            {
+                Console.WriteLine("\nPara çekmek istediğiniz hesap numarasını girin: ");
+                Console.Write(">>> ");
+                long hesapNo = long.Parse(Console.ReadLine());
 
-            Console.WriteLine("\nÇekmek istediğiniz miktarı girin: ");
-            Console.Write(">>> ");
-            long bakiye = long.Parse(Console.ReadLine());
+                Console.WriteLine("\nÇekmek istediğiniz miktarı girin: ");
+                Console.Write(">>> ");
+                long bakiye = long.Parse(Console.ReadLine());
 
-            atm.ParaCekme(hesapNo, bakiye);
+                atm.ParaCekme(hesapNo, bakiye);
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using FabrieBank.Common;
 using FabrieBank.Entity;
 
@@ -53,23 +54,36 @@ namespace FabrieBank
 
         private void UpdatePersonelInfo()
         {
-            Console.WriteLine("\nYeni Telefon Numarasını Girin: ");
-            Console.Write(">>> ");
-            long telNo = long.Parse(Console.ReadLine());
-
-            Console.WriteLine("\nYeni Email Adresini Girin: ");
-            Console.Write(">>> ");
-            string email = Console.ReadLine();
-
-            bool updated = customerInfoDB.UpdatePersonelInfo(musteriId, telNo, email);
-
-            if (updated)
+            try
             {
-                Console.WriteLine("\nKullanıcı bilgileri güncellendi.\n");
+                Console.WriteLine("\nYeni Telefon Numarasını Girin: ");
+                Console.Write(">>> ");
+                long telNo = long.Parse(Console.ReadLine());
+
+                Console.WriteLine("\nYeni Email Adresini Girin: ");
+                Console.Write(">>> ");
+                string email = Console.ReadLine();
+
+                bool updated = customerInfoDB.UpdatePersonelInfo(musteriId, telNo, email);
+
+                if (updated)
+                {
+                    Console.WriteLine("\nKullanıcı bilgileri güncellendi.\n");
+                }
+                else
+                {
+                    Console.WriteLine("\nKullanıcı bilgileri güncellenirken bir hata oluştu.\n");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("\nKullanıcı bilgileri güncellenirken bir hata oluştu.\n");
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
     }
