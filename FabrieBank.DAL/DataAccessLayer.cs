@@ -579,9 +579,7 @@ using System.Data.Entity;
 
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-                int rowsAffected = command.ExecuteNonQuery();
-
-                return rowsAffected > 0;
+                return UpdatePersonelInfo(musteriId, telNo, email);
             }
         }
 
