@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Data;
 using Npgsql;
 
-    namespace FabrieBank.DAL
+namespace FabrieBank.DAL
 {
     public class DataAccessLayer
     {
@@ -90,7 +90,7 @@ using Npgsql;
 
                     string functionName = "usp_GetAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@MusteriId)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@musteriId)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
