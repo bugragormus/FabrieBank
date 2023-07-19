@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using FabrieBank.Common;
 using FabrieBank.Common.Enums;
 using FabrieBank.DTO;
@@ -223,17 +224,30 @@ namespace FabrieBank
 
         public void HesapSil()
         {
-            Console.WriteLine("\nSilmek istediğiniz hesap numarasını girin: ");
-            long hesapNo = long.Parse(Console.ReadLine());
+            try
+            {
+                Console.WriteLine("\nSilmek istediğiniz hesap numarasını girin: ");
+                long hesapNo = long.Parse(Console.ReadLine());
 
-            bool hesapSilindi = accInfoDB.HesapSil(hesapNo);
-            if (hesapSilindi)
-            {
-                Console.WriteLine("\nHesap başarıyla silindi.");
+                bool hesapSilindi = accInfoDB.HesapSil(hesapNo);
+                if (hesapSilindi)
+                {
+                    Console.WriteLine("\nHesap başarıyla silindi.");
+                }
+                else
+                {
+                    Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
 
