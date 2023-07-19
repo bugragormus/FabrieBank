@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SQLite;
 using System.Reflection;
 using FabrieBank.Common;
 using FabrieBank.DAL;

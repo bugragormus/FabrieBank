@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Data.SqlClient;
+using System.Data.SQLite;
 using FabrieBank.Common;
 using FabrieBank.DAL;
 

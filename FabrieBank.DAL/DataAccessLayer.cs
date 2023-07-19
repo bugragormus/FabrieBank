@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
+using System.Data.SQLite;
 using FabrieBank.Common;
 using FabrieBank.Common.Enums;
 using System.Reflection;
