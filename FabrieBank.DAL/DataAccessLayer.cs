@@ -29,15 +29,14 @@ namespace FabrieBank.DAL
                 NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder();
 
                 builder.Host = "localhost";
-                builder.Username = "postgres"; // Replace with your PostgreSQL username
-                builder.Password = "43324332"; // Replace with your PostgreSQL password
+                builder.Username = "postgres";
+                builder.Password = "43324332";
                 builder.Database = "FabrieBank";
 
                 return builder;
             }
             catch (Exception ex)
             {
-                // Log the error (you can implement this)
                 return new NpgsqlConnectionStringBuilder();
             }
         }
@@ -88,13 +87,11 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string functionName = "usp_GetAccountInfo";
+                    string sql = "SELECT * FROM Hesap WHERE MusteriId = @musteriId";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@musteriId)";
-
-                    using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
+                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                     {
-                        command.Parameters.AddWithValue("MusteriId", musteriId);
+                        command.Parameters.AddWithValue("@musteriId", musteriId);
 
                         using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
