@@ -165,7 +165,7 @@ namespace FabrieBank
                             bool transferBasarili = transferDB.HavaleEFT(kaynakHesapNo, hedefHesapNo, transferMiktar);
                             if (transferBasarili)
                             {
-                                Console.WriteLine("Havale/EFT işlemi başarıyla gerçekleştirildi.");
+                                Console.WriteLine(" ");
                             }
                             else
                             {
