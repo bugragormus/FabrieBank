@@ -37,6 +37,7 @@ namespace FabrieBank.DAL
             }
             catch (Exception ex)
             {
+
                 return new NpgsqlConnectionStringBuilder();
             }
         }
