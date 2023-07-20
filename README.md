@@ -1,2 +1,2 @@
 # FabrieBank
-Banking App with C# and SQL
+Banking App with C# and PostgreSQL
