@@ -13,12 +13,12 @@ namespace FabrieBank.Entity
             dataAccessLayer = new DataAccessLayer();
         }
 
-        public bool HesaplarArasiTransfer(long kaynakHesapNo, long hedefHesapNo, long miktar)
+        public bool HesaplarArasiTransfer(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
         {
             return dataAccessLayer.HesaplarArasiTransfer(kaynakHesapNo, hedefHesapNo, miktar);
         }
 
-        public bool HavaleEFT(long kaynakHesapNo, long hedefHesapNo, long miktar)
+        public bool HavaleEFT(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
         {
             return dataAccessLayer.HavaleEFT(kaynakHesapNo, hedefHesapNo, miktar);
         }

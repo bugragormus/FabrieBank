@@ -78,7 +78,7 @@ namespace FabrieBank
                 int hedefHesapIndex = int.Parse(Console.ReadLine());
 
                 Console.WriteLine("\nTransfer etmek istediğiniz miktarı girin: ");
-                long transferMiktar = long.Parse(Console.ReadLine());
+                decimal transferMiktar = decimal.Parse(Console.ReadLine());
 
                 if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count && hedefHesapIndex >= 0 && hedefHesapIndex < accountInfos.Count)
                 {
@@ -146,7 +146,7 @@ namespace FabrieBank
                 long hedefHesapNo = long.Parse(Console.ReadLine());
 
                 Console.WriteLine("\nTransfer etmek istediğiniz miktarı girin: ");
-                long transferMiktar = long.Parse(Console.ReadLine());
+                decimal transferMiktar = decimal.Parse(Console.ReadLine());
 
                 if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count)
                 {

@@ -60,7 +60,7 @@ namespace FabrieBank
 
                 Console.WriteLine("\nYatırmak istediğiniz miktarı girin: ");
                 Console.Write(">>> ");
-                long bakiye = long.Parse(Console.ReadLine());
+                decimal bakiye = decimal.Parse(Console.ReadLine());
 
                 atm.ParaYatirma(hesapNo, bakiye);
             }
@@ -86,7 +86,7 @@ namespace FabrieBank
 
                 Console.WriteLine("\nÇekmek istediğiniz miktarı girin: ");
                 Console.Write(">>> ");
-                long bakiye = long.Parse(Console.ReadLine());
+                decimal bakiye = decimal.Parse(Console.ReadLine());
 
                 atm.ParaCekme(hesapNo, bakiye);
             }

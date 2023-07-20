@@ -102,7 +102,7 @@ namespace FabrieBank.DAL
                                 DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
                                 {
                                     HesapNo = reader.GetInt64(0),
-                                    Bakiye = reader.GetInt64(1),
+                                    Bakiye = reader.GetDecimal(1),
                                     MusteriId = reader.GetInt32(2),
                                     DovizCins = (EnumDovizCinsleri.DovizCinsleri)reader.GetInt32(3),
                                     HesapAdi = reader.GetString(4),
@@ -148,7 +148,7 @@ namespace FabrieBank.DAL
                             return false;
                         }
 
-                        long bakiye = Convert.ToInt64(result);
+                        decimal bakiye = Convert.ToInt64(result);
                         if (bakiye != 0)
                         {
                             Console.WriteLine("\nHesap bakiyesi 0 değil. Lütfen bakiyeyi başka bir hesaba aktarın.");
@@ -194,7 +194,7 @@ namespace FabrieBank.DAL
         ************************************************************************************************
         */
 
-        public void Deposit(long hesapNo, long bakiye)
+        public void Deposit(long hesapNo, decimal bakiye)
         {
             try
             {
@@ -209,8 +209,8 @@ namespace FabrieBank.DAL
                     {
                         commandSelect.Parameters.AddWithValue("@hesapNo", hesapNo);
 
-                        long eskiBakiye = Convert.ToInt64(commandSelect.ExecuteScalar());
-                        long yeniBakiye = eskiBakiye + bakiye;
+                        decimal eskiBakiye = Convert.ToInt64(commandSelect.ExecuteScalar());
+                        decimal yeniBakiye = eskiBakiye + bakiye;
 
                         using (NpgsqlCommand commandUpdate = new NpgsqlCommand(sqlUpdate, connection))
                         {
@@ -274,7 +274,7 @@ namespace FabrieBank.DAL
             }
         }
 
-        public void Withdraw(long hesapNo, long bakiye)
+        public void Withdraw(long hesapNo, decimal bakiye)
         {
             try
             {
@@ -289,8 +289,8 @@ namespace FabrieBank.DAL
                     {
                         commandSelect.Parameters.AddWithValue("@hesapNo", hesapNo);
 
-                        long eskiBakiye = Convert.ToInt64(commandSelect.ExecuteScalar());
-                        long yeniBakiye = eskiBakiye - bakiye;
+                        decimal eskiBakiye = Convert.ToInt64(commandSelect.ExecuteScalar());
+                        decimal yeniBakiye = eskiBakiye - bakiye;
 
                         if (yeniBakiye >= 0)
                         {
@@ -686,7 +686,7 @@ namespace FabrieBank.DAL
         ************************************************************************************************
         */
 
-        public bool HesaplarArasiTransfer(long kaynakHesapNo, long hedefHesapNo, long miktar)
+        public bool HesaplarArasiTransfer(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
         {
             try
             {
@@ -702,8 +702,8 @@ namespace FabrieBank.DAL
                     {
                         commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
 
-                        long eskiBakiye = Convert.ToInt64(commandSelect.ExecuteScalar());
-                        long yeniBakiye = eskiBakiye - miktar;
+                        decimal eskiBakiye = Convert.ToInt64(commandSelect.ExecuteScalar());
+                        decimal yeniBakiye = eskiBakiye - miktar;
 
                         using (NpgsqlCommand commandSelectKaynak = new NpgsqlCommand(sqlSelectKaynak, connection))
                         {
@@ -732,7 +732,7 @@ namespace FabrieBank.DAL
                                 return false;
                             }
 
-                            long kaynakBakiye = (long)result;
+                            decimal kaynakBakiye = (decimal)result;
                             if (kaynakBakiye < miktar)
                             {
 
@@ -852,7 +852,7 @@ namespace FabrieBank.DAL
             }
         }
 
-        public bool HavaleEFT(long kaynakHesapNo, long hedefHesapNo, long miktar)
+        public bool HavaleEFT(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
         {
             try
             {
@@ -869,8 +869,8 @@ namespace FabrieBank.DAL
                     {
                         commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
 
-                        long eskiBakiye = Convert.ToInt64(commandSelect.ExecuteScalar());
-                        long yeniBakiye = eskiBakiye - miktar - 5;
+                        decimal eskiBakiye = Convert.ToInt64(commandSelect.ExecuteScalar());
+                        decimal yeniBakiye = eskiBakiye - miktar - 5;
 
 
                         using (NpgsqlCommand commandSelectKaynak = new NpgsqlCommand(sqlSelectKaynak, connection))
@@ -900,7 +900,7 @@ namespace FabrieBank.DAL
                                 return false;
                             }
 
-                            long kaynakBakiye = (long)result;
+                            decimal kaynakBakiye = (decimal)result;
                             if (kaynakBakiye < miktar + 5) // 5 birim ek para kesintisi
                             {
 
@@ -993,7 +993,7 @@ namespace FabrieBank.DAL
 
         /*
         ************************************************************************************************
-        ***************************************TransactionLog.cs****************************************
+        ***************************************TransactionLogDB.cs****************************************
         ************************************************************************************************
         */
 
@@ -1032,6 +1032,47 @@ namespace FabrieBank.DAL
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
+        }
+
+        /*
+        ************************************************************************************************
+        **************************************TransactionFeeDB.cs***************************************
+        ************************************************************************************************
+        */
+
+        public decimal GetTransactionFee(EnumTransactionFeeType transactionType)
+        {
+            try
+            {
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                {
+                    connection.Open();
+
+                    string sql = "SELECT FeeAmount FROM Transaction_Fee WHERE TransactionType = @transactionType";
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@transactionType", transactionType.ToString());
+
+                        object result = command.ExecuteScalar();
+
+                        if (result != null && decimal.TryParse(result.ToString(), out decimal feeAmount))
+                        {
+                            return feeAmount;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
+            return 0.00m;
         }
     }
 }

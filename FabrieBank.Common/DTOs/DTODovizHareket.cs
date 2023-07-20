@@ -7,6 +7,6 @@ namespace FabrieBank.DTO
         public long KaynakHesapNo { get; set; }
         public long HedefHesapNo { get; set; }
         public EnumDovizCinsleri.DovizCinsleri DovizCinsi { get; set; }
-        public long Miktar { get; set; }
+        public decimal Miktar { get; set; }
     }
 }

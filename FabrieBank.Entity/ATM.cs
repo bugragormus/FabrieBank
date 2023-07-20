@@ -15,12 +15,12 @@ namespace FabrieBank.Entity
             dataAccessLayer = new DataAccessLayer();
         }
 
-        public void ParaYatirma(long hesapNo, long bakiye)
+        public void ParaYatirma(long hesapNo, decimal bakiye)
         {
             dataAccessLayer.Deposit(hesapNo, bakiye);
         }
 
-        public void ParaCekme(long hesapNo, long bakiye)
+        public void ParaCekme(long hesapNo, decimal bakiye)
         {
             dataAccessLayer.Withdraw(hesapNo, bakiye);
         }
