@@ -4,6 +4,7 @@ using FabrieBank.Common.Enums;
 using System.Reflection;
 using System.Data;
 using Npgsql;
+using FabrieBank.Common.DTOs;
 
 namespace FabrieBank.DAL
 {
@@ -220,12 +221,40 @@ namespace FabrieBank.DAL
 
                             if (rowsAffected > 0)
                             {
+
+                                // Log the successful deposit
+                                DTOTransactionLog transactionLog = new DTOTransactionLog
+                                {
+                                    AccountNumber = hesapNo,
+                                    TransactionType = EnumTransactionType.Deposit,
+                                    TransactionStatus = EnumTransactionStatus.Success,
+                                    OldBalance = eskiBakiye,
+                                    NewBalance = yeniBakiye,
+                                    Timestamp = DateTime.Now
+                                };
+
+                                LogTransaction(transactionLog);
+
                                 Console.WriteLine("\nPara yatırma işlemi başarılı.");
                                 Console.WriteLine($"Eski bakiye: {eskiBakiye}");
                                 Console.WriteLine($"Yeni bakiye: {yeniBakiye}");
                             }
                             else
                             {
+
+                                // Log the successful deposit
+                                DTOTransactionLog transactionLog = new DTOTransactionLog
+                                {
+                                    AccountNumber = hesapNo,
+                                    TransactionType = EnumTransactionType.Deposit,
+                                    TransactionStatus = EnumTransactionStatus.Failed,
+                                    OldBalance = eskiBakiye,
+                                    NewBalance = yeniBakiye,
+                                    Timestamp = DateTime.Now
+                                };
+
+                                LogTransaction(transactionLog);
+
                                 Console.WriteLine("\nPara yatırma işlemi başarısız.");
                             }
                         }
@@ -272,12 +301,39 @@ namespace FabrieBank.DAL
 
                                 if (rowsAffected > 0)
                                 {
+                                    // Log the successful withdrawal
+                                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                                    {
+                                        AccountNumber = hesapNo,
+                                        TransactionType = EnumTransactionType.Withdrawal,
+                                        TransactionStatus = EnumTransactionStatus.Success,
+                                        OldBalance = eskiBakiye,
+                                        NewBalance = yeniBakiye,
+                                        Timestamp = DateTime.Now
+                                    };
+
+                                    LogTransaction(transactionLog);
+
                                     Console.WriteLine("\nPara çekme işlemi başarılı.");
                                     Console.WriteLine($"Eski bakiye: {eskiBakiye}");
                                     Console.WriteLine($"Yeni bakiye: {yeniBakiye}");
                                 }
                                 else
                                 {
+
+                                    // Log the successful deposit
+                                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                                    {
+                                        AccountNumber = hesapNo,
+                                        TransactionType = EnumTransactionType.Withdrawal,
+                                        TransactionStatus = EnumTransactionStatus.Failed,
+                                        OldBalance = eskiBakiye,
+                                        NewBalance = yeniBakiye,
+                                        Timestamp = DateTime.Now
+                                    };
+
+                                    LogTransaction(transactionLog);
+
                                     Console.WriteLine("\nPara çekme işlemi başarısız.");
                                 }
                             }
@@ -299,6 +355,7 @@ namespace FabrieBank.DAL
                 Console.WriteLine("An error occurred while performing ParaCekme operation. Please try again later.");
             }
         }
+
 
         /*
         ************************************************************************************************
@@ -792,6 +849,47 @@ namespace FabrieBank.DAL
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
                 return false;
+            }
+        }
+
+        /*
+        ************************************************************************************************
+        ***************************************TransactionLog.cs****************************************
+        ************************************************************************************************
+        */
+
+        public void LogTransaction(DTOTransactionLog transactionLog)
+        {
+            try
+            {
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                {
+                    connection.Open();
+
+                    string sql = "INSERT INTO Transaction_Log (AccountNumber, TransactionType, TransactionStatus, OldBalance, NewBalance, Timestamp) " +
+                        "VALUES (@accountNumber, @transactionType, @transactionStatus, @oldBalance, @newBalance, @timestamp)";
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@accountNumber", transactionLog.AccountNumber);
+                        command.Parameters.AddWithValue("@transactionType", (int)transactionLog.TransactionType);
+                        command.Parameters.AddWithValue("@transactionStatus", (int)transactionLog.TransactionStatus);
+                        command.Parameters.AddWithValue("@oldBalance", transactionLog.OldBalance);
+                        command.Parameters.AddWithValue("@newBalance", transactionLog.NewBalance);
+                        command.Parameters.AddWithValue("@timestamp", transactionLog.Timestamp);
+
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
     }
