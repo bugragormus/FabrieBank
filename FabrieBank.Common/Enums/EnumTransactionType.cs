@@ -5,6 +5,7 @@
         Deposit = 1,
         Withdrawal = 2,
         BOATransfer = 3,
-        WHETransfer = 4,
+        Havale = 4,
+        EFT = 5,
     }
 }

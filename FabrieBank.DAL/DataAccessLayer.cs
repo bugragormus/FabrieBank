@@ -723,6 +723,7 @@ namespace FabrieBank.DAL
                                     Amount = miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = yeniBakiye,
+                                    TransactionFee = 0,
                                     Timestamp = DateTime.Now
                                 };
 
@@ -746,6 +747,7 @@ namespace FabrieBank.DAL
                                     Amount = miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = eskiBakiye,
+                                    TransactionFee = 0,
                                     Timestamp = DateTime.Now
                                 };
 
@@ -776,6 +778,7 @@ namespace FabrieBank.DAL
                                     Amount = miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = eskiBakiye,
+                                    TransactionFee = 0,
                                     Timestamp = DateTime.Now
                                 };
 
@@ -823,6 +826,7 @@ namespace FabrieBank.DAL
                                     Amount = miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = yeniBakiye,
+                                    TransactionFee = 5,
                                     Timestamp = DateTime.Now
                                 };
 
@@ -1169,6 +1173,7 @@ namespace FabrieBank.DAL
                                     Amount = miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = eskiBakiye,
+                                    TransactionFee = 0,
                                     Timestamp = DateTime.Now
                                 };
 
@@ -1192,6 +1197,7 @@ namespace FabrieBank.DAL
                                     Amount = miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = eskiBakiye,
+                                    TransactionFee = 0,
                                     Timestamp = DateTime.Now
                                 };
 
@@ -1239,6 +1245,7 @@ namespace FabrieBank.DAL
                                     Amount = miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = yeniBakiye,
+                                    TransactionFee = 5,
                                     Timestamp = DateTime.Now
                                 };
 
@@ -1283,8 +1290,8 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string sql = "INSERT INTO Transaction_Log (AccountNumber, TargetAccountNumber ,TransactionType, TransactionStatus, Amount ,OldBalance, NewBalance, Timestamp) " +
-                        "VALUES (@accountNumber, @targetAccountNumber ,@transactionType, @transactionStatus, @amount ,@oldBalance, @newBalance, @timestamp)";
+                    string sql = "INSERT INTO Transaction_Log (AccountNumber, TargetAccountNumber ,TransactionType, TransactionStatus, Amount ,OldBalance, NewBalance, TransactionFee, Timestamp) " +
+                        "VALUES (@accountNumber, @targetAccountNumber ,@transactionType, @transactionStatus, @amount ,@oldBalance, @newBalance, @transactionFee, @timestamp)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                     {
@@ -1295,6 +1302,7 @@ namespace FabrieBank.DAL
                         command.Parameters.AddWithValue("@amount", transactionLog.Amount);
                         command.Parameters.AddWithValue("@oldBalance", transactionLog.OldBalance);
                         command.Parameters.AddWithValue("@newBalance", transactionLog.NewBalance);
+                        command.Parameters.AddWithValue("@transactionFee", transactionLog.TransactionFee);
                         command.Parameters.AddWithValue("@timestamp", transactionLog.Timestamp);
 
                         command.ExecuteNonQuery();

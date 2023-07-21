@@ -2,8 +2,8 @@
 {
     public enum EnumTransactionFeeType
     {
-        HavaleFee = 1,
-        EFTFee = 2,
+        Havale = 1,
+        EFT = 2,
         CurrencyFee = 3,
     }
 }
