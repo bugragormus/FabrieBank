@@ -3,7 +3,6 @@ using FabrieBank.Common.Enums;
 using System.Reflection;
 using Npgsql;
 using FabrieBank.Common.DTOs;
-using Microsoft.Data.SqlClient;
 
 namespace FabrieBank.DAL
 {
