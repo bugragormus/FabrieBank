@@ -41,7 +41,6 @@ namespace FabrieBank.DAL
             }
         }
 
-
         /*
         ************************************************************************************************
         ****************************************ErrorLoggerDB.cs****************************************
@@ -69,7 +68,6 @@ namespace FabrieBank.DAL
                 }
             }
         }
-
 
         /*
         ************************************************************************************************
@@ -358,7 +356,6 @@ namespace FabrieBank.DAL
             }
         }
 
-
         /*
         ************************************************************************************************
         ****************************************CreateAccountDB.cs**************************************
@@ -405,7 +402,6 @@ namespace FabrieBank.DAL
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
-
 
         public string GetAndIncrementHesapNumarasi(int dovizCinsi, NpgsqlConnection connection)
         {
@@ -1108,7 +1104,6 @@ namespace FabrieBank.DAL
             }
         }
 
-
         /*
         ************************************************************************************************
         ***************************************TransactionLogDB.cs****************************************
@@ -1194,6 +1189,5 @@ namespace FabrieBank.DAL
 
             return 0.00m;
         }
-
     }
 }
