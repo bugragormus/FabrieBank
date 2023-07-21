@@ -74,15 +74,15 @@ namespace FabrieBank
                 {
                     case "1":
 
-                        CustomerMenu customerMenu = new CustomerMenu(customer.MusteriId);
-                        customerMenu.ShowMenu(customer);
+                        //CustomerMenu customerMenu = new CustomerMenu(customer.MusteriId);
+                        //customerMenu.ShowMenu(customer);
 
-                        //ATM atm = new ATM();
-                        //decimal amountInEur = 100;
-                        //EnumDovizCinsleri.DovizCinsleri dovizCinsi = EnumDovizCinsleri.DovizCinsleri.EUR;
-                        //long hesapNo = 123456789; // Replace with the actual account number
+                        ATM atm = new ATM();
+                        decimal amountInEur = 100;
+                        EnumDovizCinsleri.DovizCinsleri dovizCinsi = EnumDovizCinsleri.DovizCinsleri.EUR;
+                        long hesapNo = 123456789; // Replace with the actual account number
 
-                        //atm.CurrencyTransaction(hesapNo, amountInEur, dovizCinsi);
+                        atm.CurrencyTransaction(hesapNo, amountInEur, dovizCinsi);
                         break;
 
                     case "2":
