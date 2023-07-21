@@ -1,4 +1,5 @@
 ﻿using FabrieBank.Common;
+using FabrieBank.BLL;
 
 namespace FabrieBank
 {
@@ -126,8 +127,8 @@ namespace FabrieBank
 
                     case "3":
 
-                        TransferMenu transferMenu = new TransferMenu(customer.MusteriId);
-                        transferMenu.HesapSil();
+                        AccountLogic accountLogic = new AccountLogic();
+                        accountLogic.HesapSil();
                         break;
 
                     case "4":

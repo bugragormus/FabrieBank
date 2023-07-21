@@ -6,6 +6,13 @@ namespace FabrieBank.BLL
 {
 	public class AccountLogic
 	{
+        private AccInfoDB accInfoDB;
+
+        public AccountLogic()
+        {
+            accInfoDB = new AccInfoDB();
+        }
+
         public string GetDovizCinsi(EnumDovizCinsleri.DovizCinsleri dovizCins)
         {
             switch (dovizCins)
@@ -44,6 +51,22 @@ namespace FabrieBank.BLL
 
             AccInfoDB accInfoDB = new AccInfoDB();
             accInfoDB.AccInfo(musteriId);
+        }
+
+        public void HesapSil()
+        {
+            Console.WriteLine("\nSilmek istediğiniz hesap numarasını girin: ");
+            long hesapNo = long.Parse(Console.ReadLine());
+
+            bool hesapSilindi = accInfoDB.HesapSil(hesapNo);
+            if (hesapSilindi)
+            {
+                Console.WriteLine("\nHesap başarıyla silindi.");
+            }
+            else
+            {
+                Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
+            }
         }
     }
 }

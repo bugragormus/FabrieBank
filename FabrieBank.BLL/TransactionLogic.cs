@@ -195,5 +195,16 @@ namespace FabrieBank.BLL
             // Handle the error (display a user-friendly message, rollback transactions, etc.)
             Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
         }
+
+        public void PrintAccountList(List<DTOAccountInfo> accountInfos)
+        {
+            Console.WriteLine("Hesaplarınız:");
+            for (int i = 0; i < accountInfos.Count; i++)
+            {
+                Console.WriteLine($"[{i}] Hesap No: {accountInfos[i].HesapNo}");
+                Console.WriteLine($"Bakiye: {accountInfos[i].Bakiye}");
+                Console.WriteLine("==============================");
+            }
+        }
     }
 }

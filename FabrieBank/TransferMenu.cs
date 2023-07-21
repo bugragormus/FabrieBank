@@ -61,7 +61,7 @@ namespace FabrieBank
         private void Havale(List<DTOAccountInfo> accountInfos)
         {
             Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
-            PrintAccountList(accountInfos);
+            transactionLogic.PrintAccountList(accountInfos);
 
             Console.Write("Kaynak Hesap Indexi: ");
             int kaynakHesapIndex = int.Parse(Console.ReadLine());
@@ -79,7 +79,7 @@ namespace FabrieBank
         private void EFT(List<DTOAccountInfo> accountInfos)
         {
             Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
-            PrintAccountList(accountInfos);
+            transactionLogic.PrintAccountList(accountInfos);
 
             Console.Write("Kaynak Hesap Indexi: ");
             int kaynakHesapIndex = int.Parse(Console.ReadLine());
@@ -97,13 +97,13 @@ namespace FabrieBank
         private void HesaplarArasiTransfer(List<DTOAccountInfo> accountInfos)
         {
             Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
-            PrintAccountList(accountInfos);
+            transactionLogic.PrintAccountList(accountInfos);
 
             Console.Write("Kaynak Hesap Indexi: ");
             int kaynakHesapIndex = int.Parse(Console.ReadLine());
 
             Console.WriteLine("\nHangi hesaba para aktarmak istiyorsunuz?");
-            PrintAccountList(accountInfos);
+            transactionLogic.PrintAccountList(accountInfos);
 
             Console.Write("Hedef Hesap Indexi: ");
             int hedefHesapIndex = int.Parse(Console.ReadLine());
@@ -112,33 +112,6 @@ namespace FabrieBank
             decimal transferMiktar = decimal.Parse(Console.ReadLine());
 
             transactionLogic.HesaplarArasiTransfer(musteriId, kaynakHesapIndex, hedefHesapIndex, transferMiktar);
-        }
-
-        private void PrintAccountList(List<DTOAccountInfo> accountInfos)
-        {
-            Console.WriteLine("Hesaplarınız:");
-            for (int i = 0; i < accountInfos.Count; i++)
-            {
-                Console.WriteLine($"[{i}] Hesap No: {accountInfos[i].HesapNo}");
-                Console.WriteLine($"Bakiye: {accountInfos[i].Bakiye}");
-                Console.WriteLine("==============================");
-            }
-        }
-
-        public void HesapSil()
-        {
-            Console.WriteLine("\nSilmek istediğiniz hesap numarasını girin: ");
-            long hesapNo = long.Parse(Console.ReadLine());
-
-            bool hesapSilindi = accInfoDB.HesapSil(hesapNo);
-            if (hesapSilindi)
-            {
-                Console.WriteLine("\nHesap başarıyla silindi.");
-            }
-            else
-            {
-                Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
-            }
         }
     }
 }
