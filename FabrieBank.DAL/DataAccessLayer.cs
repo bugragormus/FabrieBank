@@ -865,7 +865,7 @@ namespace FabrieBank.DAL
 
                     string sqlSelect = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo";
 
-                    using (NpgsqlCommand commandSelect = NpgsqlCommand(sqlSelect, connection))
+                    using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
                     {
                         commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
 
@@ -1004,7 +1004,7 @@ namespace FabrieBank.DAL
 
                     string sqlSelect = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo";
 
-                    using (NpgsqlCommand commandSelect = NpgsqlCommand(sqlSelect, connection))
+                    using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
                     {
                         commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
 
