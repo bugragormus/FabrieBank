@@ -864,6 +864,8 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
+                    decimal transactionFee = GetTransactionFee(EnumTransactionFeeType.Havale);
+
                     // Check if the hedefHesapNo exists in the database
                     string sqlSelectKaynak = "SELECT HesapNo FROM public.Hesap WHERE HesapNo = @hedefHesapNo";
 
@@ -888,13 +890,13 @@ namespace FabrieBank.DAL
                                 commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
 
                                 decimal eskiBakiye = Convert.ToDecimal(commandSelect.ExecuteScalar());
-                                decimal yeniBakiye = eskiBakiye - miktar - 2.27M;
+                                decimal yeniBakiye = eskiBakiye - miktar - transactionFee;
 
                                 // Check if kaynakBakiye is sufficient for the transfer
                                 if (yeniBakiye >= 0)
                                 {
                                     // Para transferi gerçekleştir
-                                    string sqlUpdateKaynak = "UPDATE public.Hesap SET Bakiye = Bakiye - @miktar - 2.27 WHERE HesapNo = @kaynakHesapNo";
+                                    string sqlUpdateKaynak = "UPDATE public.Hesap SET Bakiye = Bakiye - @miktar - @transactionFee WHERE HesapNo = @kaynakHesapNo";
                                     string sqlUpdateHedef = "UPDATE public.Hesap SET Bakiye = Bakiye + @miktar WHERE HesapNo = @hedefHesapNo";
 
                                     using (NpgsqlTransaction transaction = connection.BeginTransaction())
@@ -904,6 +906,7 @@ namespace FabrieBank.DAL
                                             using (NpgsqlCommand commandUpdateKaynak = new NpgsqlCommand(sqlUpdateKaynak, connection, transaction))
                                             {
                                                 commandUpdateKaynak.Parameters.AddWithValue("@miktar", miktar);
+                                                commandUpdateKaynak.Parameters.AddWithValue("@transactionFee", transactionFee);
                                                 commandUpdateKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
 
                                                 commandUpdateKaynak.ExecuteNonQuery();
@@ -930,7 +933,7 @@ namespace FabrieBank.DAL
                                                 Amount = miktar,
                                                 OldBalance = eskiBakiye,
                                                 NewBalance = yeniBakiye,
-                                                TransactionFee = 2.27M,
+                                                TransactionFee = transactionFee,
                                                 Timestamp = DateTime.Now
                                             };
 
@@ -962,7 +965,6 @@ namespace FabrieBank.DAL
                                         Amount = miktar,
                                         OldBalance = eskiBakiye,
                                         NewBalance = eskiBakiye,
-                                        TransactionFee = 0,
                                         Timestamp = DateTime.Now
                                     };
 
@@ -994,6 +996,8 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
+                    decimal transactionFee = GetTransactionFee(EnumTransactionFeeType.EFT);
+
                     // Check if the hedefHesapNo exists in the database
                     string sqlSelectKaynak = "SELECT HesapNo FROM public.Hesap WHERE HesapNo = @hedefHesapNo";
 
@@ -1012,13 +1016,13 @@ namespace FabrieBank.DAL
                                 commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
 
                                 decimal eskiBakiye = Convert.ToDecimal(commandSelect.ExecuteScalar());
-                                decimal yeniBakiye = eskiBakiye - miktar - 3.17M;
+                                decimal yeniBakiye = eskiBakiye - miktar - transactionFee;
 
                                 // Check if kaynakBakiye is sufficient for the EFT
                                 if (yeniBakiye >= 0)
                                 {
                                     // Para transferi gerçekleştir
-                                    string sqlUpdateKaynak = "UPDATE public.Hesap SET Bakiye = Bakiye - @miktar - 3.17 WHERE HesapNo = @kaynakHesapNo";
+                                    string sqlUpdateKaynak = "UPDATE public.Hesap SET Bakiye = Bakiye - @miktar - @transactionFee WHERE HesapNo = @kaynakHesapNo";
 
                                     using (NpgsqlTransaction transaction = connection.BeginTransaction())
                                     {
@@ -1027,6 +1031,7 @@ namespace FabrieBank.DAL
                                             using (NpgsqlCommand commandUpdateKaynak = new NpgsqlCommand(sqlUpdateKaynak, connection, transaction))
                                             {
                                                 commandUpdateKaynak.Parameters.AddWithValue("@miktar", miktar);
+                                                commandUpdateKaynak.Parameters.AddWithValue("@transactionFee", transactionFee);
                                                 commandUpdateKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
 
                                                 commandUpdateKaynak.ExecuteNonQuery();
@@ -1045,7 +1050,7 @@ namespace FabrieBank.DAL
                                                 Amount = miktar,
                                                 OldBalance = eskiBakiye,
                                                 NewBalance = yeniBakiye,
-                                                TransactionFee = 3.17M,
+                                                TransactionFee = transactionFee,
                                                 Timestamp = DateTime.Now
                                             };
 
@@ -1077,7 +1082,6 @@ namespace FabrieBank.DAL
                                         Amount = miktar,
                                         OldBalance = eskiBakiye,
                                         NewBalance = eskiBakiye,
-                                        TransactionFee = 0,
                                         Timestamp = DateTime.Now
                                     };
 
@@ -1169,7 +1173,9 @@ namespace FabrieBank.DAL
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                     {
-                        command.Parameters.AddWithValue("@transactionType", transactionType.ToString());
+                        // Convert the EnumTransactionFeeType to its integer representation
+                        int transactionTypeValue = (int)transactionType;
+                        command.Parameters.AddWithValue("@transactionType", transactionTypeValue);
 
                         object result = command.ExecuteScalar();
 
@@ -1182,14 +1188,14 @@ namespace FabrieBank.DAL
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
+                // Log the error and handle it
                 MethodBase method = MethodBase.GetCurrentMethod();
                 LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
+
             return 0.00m;
         }
+
     }
 }
