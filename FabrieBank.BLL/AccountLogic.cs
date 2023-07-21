@@ -57,16 +57,7 @@ namespace FabrieBank.BLL
         {
             Console.WriteLine("\nSilmek istediğiniz hesap numarasını girin: ");
             long hesapNo = long.Parse(Console.ReadLine());
-
-            bool hesapSilindi = accInfoDB.HesapSil(hesapNo);
-            if (hesapSilindi)
-            {
-                Console.WriteLine("\nHesap başarıyla silindi.");
-            }
-            else
-            {
-                Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
-            }
+            _ = accInfoDB.HesapSil(hesapNo);
         }
     }
 }

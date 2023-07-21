@@ -821,7 +821,6 @@ namespace FabrieBank.DAL
                                     Amount = miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = yeniBakiye,
-                                    TransactionFee = 0,
                                     Timestamp = DateTime.Now
                                 };
 
@@ -845,7 +844,6 @@ namespace FabrieBank.DAL
                                     Amount = miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = eskiBakiye,
-                                    TransactionFee = 0,
                                     Timestamp = DateTime.Now
                                 };
 
@@ -876,7 +874,6 @@ namespace FabrieBank.DAL
                                     Amount = miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = eskiBakiye,
-                                    TransactionFee = 0,
                                     Timestamp = DateTime.Now
                                 };
 
@@ -924,7 +921,6 @@ namespace FabrieBank.DAL
                                     Amount = miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = yeniBakiye,
-                                    TransactionFee = 5,
                                     Timestamp = DateTime.Now
                                 };
 

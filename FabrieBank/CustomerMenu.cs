@@ -52,7 +52,7 @@ namespace FabrieBank
                         Console.WriteLine("\nGeçersiz seçim. Tekrar deneyin.\n");
                         break;
                 }
-            } while (choice != "3");
+            } while (choice != "4");
         }
 
         private void UpdatePersonelInfo()
