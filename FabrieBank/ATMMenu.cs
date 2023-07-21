@@ -1,16 +1,17 @@
 ﻿using System.Reflection;
+using FabrieBank.Entity;
 
 namespace FabrieBank
 {
     public class ATMMenu
     {
         private int musteriId;
-        private FabrieBank.Entity.ATM atm;
+        private ATM atm;
 
         public ATMMenu(int musteriId)
         {
             this.musteriId = musteriId;
-            atm = new FabrieBank.Entity.ATM();
+            atm = new ATM();
         }
 
         public void ShowMenu()
