@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FabrieBank.Entity\FabrieBank.Entity.csproj" />
     <ProjectReference Include="..\FabrieBank.Common\FabrieBank.Common.csproj" />
     <ProjectReference Include="..\FabrieBank.DAL\FabrieBank.DAL.csproj" />
-    <ProjectReference Include="..\FabrieBank.Services\FabrieBank.Services.csproj" />
   </ItemGroup>
 </Project>

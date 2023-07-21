@@ -171,7 +171,7 @@ namespace FabrieBank.BLL
             switch (dovizKod)
             {
                 case "1":
-                    return EnumDovizCinsleri.DovizCinsleri.TL;
+                    return EnumDovizCinsleri.DovizCinsleri.TRY;
                 case "2":
                     return EnumDovizCinsleri.DovizCinsleri.USD;
                 case "3":

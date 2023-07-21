@@ -17,8 +17,8 @@ namespace FabrieBank.BLL
         {
             switch (dovizCins)
             {
-                case EnumDovizCinsleri.DovizCinsleri.TL:
-                    return "Türk Lirası (TL)";
+                case EnumDovizCinsleri.DovizCinsleri.TRY:
+                    return "Türk Lirası (TRY)";
                 case EnumDovizCinsleri.DovizCinsleri.USD:
                     return "Amerikan Doları (USD)";
                 case EnumDovizCinsleri.DovizCinsleri.EUR:

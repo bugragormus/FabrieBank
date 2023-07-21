@@ -4,7 +4,7 @@
     {
         public enum DovizCinsleri
         {
-            TL = 1,
+            TRY = 1,
             USD = 2,
             EUR = 3,
             GAU = 4,
