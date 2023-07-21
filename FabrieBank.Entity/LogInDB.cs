@@ -1,4 +1,5 @@
-﻿using FabrieBank.Common;
+﻿using System.Text;
+using FabrieBank.Common;
 using FabrieBank.DAL;
 
 namespace FabrieBank.Entity
@@ -25,6 +26,23 @@ namespace FabrieBank.Entity
         public bool IsCredentialsValid(long tckn, int sifre)
         {
             return dataAccessLayer.IsCredentialsValid(tckn, sifre);
+        }
+
+        public bool ForgotPassword(long tckn, string email)
+        {
+            int temporaryPassword = GenerateTemporaryPassword();
+            return dataAccessLayer.ForgotPassword(tckn, email, temporaryPassword);
+        }
+
+        private int GenerateTemporaryPassword()
+        {
+            Random random = new Random();
+            return random.Next(1000, 9999);
+        }
+
+        public bool ChangePassword(int musteriId, int newPassword)
+        {
+            return dataAccessLayer.ChangePassword(musteriId, newPassword);
         }
     }
 }

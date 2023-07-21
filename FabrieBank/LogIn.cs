@@ -6,6 +6,9 @@ namespace FabrieBank
 {
     public class LogIn
     {
+        LogInDB loginDB = new LogInDB();
+        bool loggedIn = false;
+
         public void LogInM()
         {
             try
@@ -87,6 +90,18 @@ namespace FabrieBank
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
+        }
+
+        public void ForgotPassword()
+        {
+            // Forgot Password functionality
+            Console.Write("TCKN: ");
+            long tckn = Convert.ToInt64(Console.ReadLine());
+
+            Console.Write("Email: ");
+            string email = Console.ReadLine();
+
+            bool forgotPasswordResult = loginDB.ForgotPassword(tckn, email);
         }
     }
 }

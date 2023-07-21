@@ -1,5 +1,6 @@
 ﻿using FabrieBank.Common;
 using FabrieBank.BLL;
+using FabrieBank.Entity;
 
 namespace FabrieBank
 {
@@ -11,11 +12,11 @@ namespace FabrieBank
 
             for (; ; )
             {
-                Console.WriteLine("==============================================");
-                Console.WriteLine("              Welcome To FabrieBank!          ");
-                Console.WriteLine("==============================================");
-                Console.WriteLine("1.Login           2.New Customer        3.Exit");
-                Console.WriteLine("==============================================");
+                Console.WriteLine("======================================================================");
+                Console.WriteLine("                          Welcome To FabrieBank!                      ");
+                Console.WriteLine("======================================================================");
+                Console.WriteLine("1.Login           2.New Customer        3.Forgot Password       4.Exit");
+                Console.WriteLine("======================================================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
 
@@ -34,6 +35,12 @@ namespace FabrieBank
                         break;
 
                     case "3":
+
+                        LogIn forgot = new LogIn();
+                        forgot.ForgotPassword();
+                        break;
+
+                    case "4":
 
                         Environment.Exit(0);
                         break;

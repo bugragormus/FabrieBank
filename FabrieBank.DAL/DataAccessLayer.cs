@@ -3,6 +3,7 @@ using FabrieBank.Common.Enums;
 using System.Reflection;
 using Npgsql;
 using FabrieBank.Common.DTOs;
+using Microsoft.Data.SqlClient;
 
 namespace FabrieBank.DAL
 {
@@ -671,6 +672,109 @@ namespace FabrieBank.DAL
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
                 return IsCredentialsValid(tckn, sifre);
+            }
+        }
+
+        public bool ForgotPassword(long tckn, string email, int temporaryPassword)
+        {
+            try
+            {
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                {
+                    connection.Open();
+
+                    // Check if the user with the given TCKN and email exists
+                    string sqlSelect = "SELECT MusteriId FROM Musteri_Bilgi WHERE Tckn = @tckn AND Email = @email";
+
+                    using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
+                    {
+                        commandSelect.Parameters.AddWithValue("@tckn", tckn);
+                        commandSelect.Parameters.AddWithValue("@email", email);
+
+                        object result = commandSelect.ExecuteScalar();
+
+                        if (result == null)
+                        {
+                            Console.WriteLine("\nHatalı TCKN veya e-posta adresi. Şifre sıfırlama işlemi başarısız.");
+                            return false;
+                        }
+
+                        int musteriId = Convert.ToInt32(result);
+
+                        // Update the password in the database
+                        string sqlUpdatePassword = "UPDATE Musteri_Bilgi SET Sifre = @temporaryPassword WHERE MusteriId = @musteriId";
+
+                        using (NpgsqlCommand commandUpdatePassword = new NpgsqlCommand(sqlUpdatePassword, connection))
+                        {
+                            commandUpdatePassword.Parameters.AddWithValue("@temporaryPassword", temporaryPassword);
+                            commandUpdatePassword.Parameters.AddWithValue("@musteriId", musteriId);
+
+                            int rowsAffected = commandUpdatePassword.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
+                            {
+                                Console.WriteLine($"\nGeçici şifreniz başarıyla oluşturuldu. Şifreniz: {temporaryPassword}");
+                                return true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nŞifre sıfırlama işlemi başarısız. Lütfen tekrar deneyin.");
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                return false;
+            }
+        }
+
+        public bool ChangePassword(int musteriId, int newPassword)
+        {
+            try
+            {
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                {
+                    connection.Open();
+
+                    string sql = "UPDATE Musteri_Bilgi SET Sifre = @newPassword WHERE MusteriId = @musteriId";
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@newPassword", newPassword);
+                        command.Parameters.AddWithValue("@musteriId", musteriId);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Şifreniz başarıyla değiştirildi.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Şifre değiştirme işlemi başarısız. Lütfen tekrar deneyin.");
+                        }
+                        return rowsAffected > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                return false;
             }
         }
 
