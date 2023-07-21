@@ -12,4 +12,7 @@
     <ProjectReference Include="..\FabrieBank.DAL\FabrieBank.DAL.csproj" />
     <ProjectReference Include="..\FabrieBank.Services\FabrieBank.Services.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
 </Project>

@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FabrieBank.Common\FabrieBank.Common.csproj" />
     <ProjectReference Include="..\FabrieBank.DAL\FabrieBank.DAL.csproj" />
+    <ProjectReference Include="..\FabrieBank.Services\FabrieBank.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />

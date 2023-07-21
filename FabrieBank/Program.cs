@@ -1,6 +1,7 @@
 ﻿using FabrieBank.Common;
 using FabrieBank.BLL;
 using FabrieBank.Entity;
+using FabrieBank.Common.Enums;
 
 namespace FabrieBank
 {
@@ -75,6 +76,13 @@ namespace FabrieBank
 
                         CustomerMenu customerMenu = new CustomerMenu(customer.MusteriId);
                         customerMenu.ShowMenu(customer);
+
+                        //ATM atm = new ATM();
+                        //decimal amountInEur = 100;
+                        //EnumDovizCinsleri.DovizCinsleri dovizCinsi = EnumDovizCinsleri.DovizCinsleri.EUR;
+                        //long hesapNo = 123456789; // Replace with the actual account number
+
+                        //atm.CurrencyTransaction(hesapNo, amountInEur, dovizCinsi);
                         break;
 
                     case "2":
