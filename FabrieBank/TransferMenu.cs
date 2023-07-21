@@ -1,54 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using FabrieBank.Common;
 using FabrieBank.Common.Enums;
 using FabrieBank.DTO;
 using FabrieBank.Entity;
+using FabrieBank.BLL;
 
 namespace FabrieBank
 {
     public class TransferMenu
     {
         private int musteriId;
+        private TransactionLogic transactionLogic;
         private AccInfoDB accInfoDB;
-        private TransferDB transferDB;
-        private List<DTOAccountInfo> accountInfos;
 
         public TransferMenu(int musteriId)
         {
             this.musteriId = musteriId;
+            transactionLogic = new TransactionLogic();
             accInfoDB = new AccInfoDB();
-            transferDB = new TransferDB();
         }
 
         public void ShowMenu()
         {
-            accountInfos = accInfoDB.AccInfo(musteriId);
+            List<DTOAccountInfo> accountInfos = accInfoDB.AccInfo(musteriId);
 
             string choice;
-
             do
             {
                 Console.WriteLine("\n==============================");
                 Console.WriteLine("PARA TRANSFERİ");
                 Console.WriteLine("==============================");
                 Console.WriteLine("1. Hesaplarım Arası Transfer");
-                Console.WriteLine("2. Başka Hesaba Havale/EFT");
-                Console.WriteLine("3. Üst Menü");
+                Console.WriteLine("2. Başka Hesaba Havale");
+                Console.WriteLine("3. Başka Hesaba EFT");
+                Console.WriteLine("4. Üst Menü");
                 Console.WriteLine("==============================");
-                Console.Write("Seçiminizi yapın (1-3): ");
+                Console.Write("Seçiminizi yapın (1-4): ");
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        HesaplarArasiTransfer();
+                        HesaplarArasiTransfer(accountInfos);
                         break;
                     case "2":
-                        HavaleEFT();
+                        Havale(accountInfos);
                         break;
                     case "3":
+                        EFT(accountInfos);
+                        break;
+                    case "4":
                         Console.WriteLine("Para transferinden çıkış yapıldı.");
                         break;
                     default:
@@ -57,184 +59,63 @@ namespace FabrieBank
                 }
 
                 Console.WriteLine("==============================\n");
-            } while (choice != "3");
+            } while (choice != "4");
         }
 
-        private void HesaplarArasiTransfer()
+        private void Havale(List<DTOAccountInfo> accountInfos)
         {
-            try
-            {
-                Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
-                List<DTOAccountInfo> accountInfos = accInfoDB.AccInfo(musteriId);
-                PrintAccountList(accountInfos);
+            Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
+            PrintAccountList(accountInfos);
 
-                Console.Write("Kaynak Hesap Indexi: ");
-                int kaynakHesapIndex = int.Parse(Console.ReadLine());
+            Console.Write("Kaynak Hesap Indexi: ");
+            int kaynakHesapIndex = int.Parse(Console.ReadLine());
 
-                Console.WriteLine("\nHangi hesaba para aktarmak istiyorsunuz?");
-                PrintAccountList(accountInfos);
+            Console.WriteLine("\nHavale yapmak istediğiniz hesap numarasını girin: ");
+            Console.Write("Hedef Hesap Numarası: ");
+            long hedefHesapNo = long.Parse(Console.ReadLine());
 
-                Console.Write("Hedef Hesap Indexi: ");
-                int hedefHesapIndex = int.Parse(Console.ReadLine());
+            Console.WriteLine("\nTransfer etmek istediğiniz miktarı girin: ");
+            decimal transferMiktar = decimal.Parse(Console.ReadLine());
 
-                Console.WriteLine("\nTransfer etmek istediğiniz miktarı girin: ");
-                decimal transferMiktar = decimal.Parse(Console.ReadLine());
-
-                if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count && hedefHesapIndex >= 0 && hedefHesapIndex < accountInfos.Count)
-                {
-                    long kaynakHesapNo = accountInfos[kaynakHesapIndex].HesapNo;
-                    long hedefHesapNo = accountInfos[hedefHesapIndex].HesapNo;
-                    EnumDovizCinsleri.DovizCinsleri kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
-                    EnumDovizCinsleri.DovizCinsleri hedefDovizCinsi = accountInfos[hedefHesapIndex].DovizCins;
-
-                    if (KaynakVeHedefDovizCinsleriUyusuyorMu(kaynakHesapNo, hedefHesapNo, kaynakDovizCinsi, hedefDovizCinsi))
-                    {
-                        DTODovizHareket dovizHareket = new DTODovizHareket
-                        {
-                            KaynakHesapNo = kaynakHesapNo,
-                            HedefHesapNo = hedefHesapNo,
-                            DovizCinsi = kaynakDovizCinsi,
-                            Miktar = transferMiktar
-                        };
-
-                        bool transferBasarili = transferDB.HesaplarArasiTransfer(dovizHareket.KaynakHesapNo, dovizHareket.HedefHesapNo, dovizHareket.Miktar);
-                        if (transferBasarili)
-                        {
-                            Console.WriteLine("HesaplarArasiTransfer işlemi başarıyla gerçekleştirildi.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("HesaplarArasiTransfer işlemi gerçekleştirilemedi. Lütfen tekrar deneyin.");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Kaynak hesap ve hedef hesap döviz cinsleri uyuşmuyor. Transfer işlemi gerçekleştirilemedi.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-            }
+            transactionLogic.Havale(musteriId, kaynakHesapIndex, hedefHesapNo, transferMiktar);
         }
 
-
-        private void HavaleEFT()
+        private void EFT(List<DTOAccountInfo> accountInfos)
         {
-            try
-            {
-                Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
-                List<DTOAccountInfo> accountInfos = accInfoDB.AccInfo(musteriId);
-                PrintAccountList(accountInfos);
+            Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
+            PrintAccountList(accountInfos);
 
-                Console.Write("Kaynak Hesap Indexi: ");
-                int kaynakHesapIndex = int.Parse(Console.ReadLine());
+            Console.Write("Kaynak Hesap Indexi: ");
+            int kaynakHesapIndex = int.Parse(Console.ReadLine());
 
-                Console.WriteLine("\nHavale/EFT yapmak istediğiniz hesap numarasını girin: ");
-                Console.Write("Hedef Hesap Numarası: ");
-                long hedefHesapNo = long.Parse(Console.ReadLine());
+            Console.WriteLine("\nEFT yapmak istediğiniz hesap numarasını girin: ");
+            Console.Write("Hedef Hesap Numarası: ");
+            long hedefHesapNo = long.Parse(Console.ReadLine());
 
-                Console.WriteLine("\nTransfer etmek istediğiniz miktarı girin: ");
-                decimal transferMiktar = decimal.Parse(Console.ReadLine());
+            Console.WriteLine("\nTransfer etmek istediğiniz miktarı girin: ");
+            decimal transferMiktar = decimal.Parse(Console.ReadLine());
 
-                if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count)
-                {
-                    long kaynakHesapNo = accountInfos[kaynakHesapIndex].HesapNo;
-                    EnumDovizCinsleri.DovizCinsleri kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
-
-                    if (kaynakDovizCinsi == GetDovizCinsiFromHesapNo(hedefHesapNo))
-                    {
-                        bool isOwnAccount = IsOwnAccount(accountInfos, hedefHesapNo);
-                        if (isOwnAccount)
-                        {
-                            Console.WriteLine("Hedef hesap kendi hesabınız. Havale/EFT işlemi gerçekleştirilemez.");
-                        }
-                        else
-                        {
-                            bool transferBasarili = transferDB.HavaleEFT(kaynakHesapNo, hedefHesapNo, transferMiktar);
-                            if (transferBasarili)
-                            {
-                                Console.WriteLine(" ");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Havale/EFT işlemi gerçekleştirilemedi. Lütfen tekrar deneyin.");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Kaynak hesap ve hedef hesap döviz cinsleri uyuşmuyor. Transfer işlemi gerçekleştirilemedi.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-            }
+            transactionLogic.EFT(musteriId, kaynakHesapIndex, hedefHesapNo, transferMiktar);
         }
 
-        private bool IsOwnAccount(List<DTOAccountInfo> accountInfos, long hesapNo)
+        private void HesaplarArasiTransfer(List<DTOAccountInfo> accountInfos)
         {
-            foreach (DTOAccountInfo accountInfo in accountInfos)
-            {
-                if (accountInfo.HesapNo == hesapNo)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+            Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
+            PrintAccountList(accountInfos);
 
+            Console.Write("Kaynak Hesap Indexi: ");
+            int kaynakHesapIndex = int.Parse(Console.ReadLine());
 
-        private bool KaynakVeHedefDovizCinsleriUyusuyorMu(long kaynakHesapNo, long hedefHesapNo, EnumDovizCinsleri.DovizCinsleri kaynakDovizCinsi, EnumDovizCinsleri.DovizCinsleri hedefDovizCinsi)
-        {
-            string kaynakDovizKod = kaynakHesapNo.ToString().Substring(0, 1);
-            string hedefDovizKod = hedefHesapNo.ToString().Substring(0, 1);
+            Console.WriteLine("\nHangi hesaba para aktarmak istiyorsunuz?");
+            PrintAccountList(accountInfos);
 
-            return kaynakDovizKod == hedefDovizKod;
-        }
+            Console.Write("Hedef Hesap Indexi: ");
+            int hedefHesapIndex = int.Parse(Console.ReadLine());
 
-        private EnumDovizCinsleri.DovizCinsleri GetDovizCinsiFromHesapNo(long hesapNo)
-        {
-            string dovizKod = hesapNo.ToString().Substring(0, 1);
+            Console.WriteLine("\nTransfer etmek istediğiniz miktarı girin: ");
+            decimal transferMiktar = decimal.Parse(Console.ReadLine());
 
-            switch (dovizKod)
-            {
-                case "1":
-                    return EnumDovizCinsleri.DovizCinsleri.TL;
-                case "2":
-                    return EnumDovizCinsleri.DovizCinsleri.USD;
-                case "3":
-                    return EnumDovizCinsleri.DovizCinsleri.EUR;
-                case "4":
-                    return EnumDovizCinsleri.DovizCinsleri.GAU;
-                case "5":
-                    return EnumDovizCinsleri.DovizCinsleri.XAG;
-                default:
-                    throw new Exception("Geçersiz döviz kodu");
-            }
+            transactionLogic.HesaplarArasiTransfer(musteriId, kaynakHesapIndex, hedefHesapIndex, transferMiktar);
         }
 
         private void PrintAccountList(List<DTOAccountInfo> accountInfos)
@@ -250,33 +131,18 @@ namespace FabrieBank
 
         public void HesapSil()
         {
-            try
-            {
-                Console.WriteLine("\nSilmek istediğiniz hesap numarasını girin: ");
-                long hesapNo = long.Parse(Console.ReadLine());
+            Console.WriteLine("\nSilmek istediğiniz hesap numarasını girin: ");
+            long hesapNo = long.Parse(Console.ReadLine());
 
-                bool hesapSilindi = accInfoDB.HesapSil(hesapNo);
-                if (hesapSilindi)
-                {
-                    Console.WriteLine("\nHesap başarıyla silindi.");
-                }
-                else
-                {
-                    Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
-                }
+            bool hesapSilindi = accInfoDB.HesapSil(hesapNo);
+            if (hesapSilindi)
+            {
+                Console.WriteLine("\nHesap başarıyla silindi.");
             }
-            catch (Exception ex)
+            else
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
             }
         }
-
-
     }
 }

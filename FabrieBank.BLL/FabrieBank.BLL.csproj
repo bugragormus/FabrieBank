@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FabrieBank.Entity\FabrieBank.Entity.csproj" />
+    <ProjectReference Include="..\FabrieBank.Common\FabrieBank.Common.csproj" />
+    <ProjectReference Include="..\FabrieBank.DAL\FabrieBank.DAL.csproj" />
+  </ItemGroup>
 </Project>

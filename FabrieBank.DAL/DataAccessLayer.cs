@@ -864,122 +864,113 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    //Kaynak hesap var mı?
+                    // Check if the hedefHesapNo exists in the database
                     string sqlSelectKaynak = "SELECT HesapNo FROM public.Hesap WHERE HesapNo = @hedefHesapNo";
 
                     string sqlSelect = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo";
 
-                    using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
+                    using (NpgsqlCommand commandSelectKaynak = new NpgsqlCommand(sqlSelectKaynak, connection))
                     {
-                        commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
+                        commandSelectKaynak.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
 
-                        decimal eskiBakiye = Convert.ToDecimal(commandSelect.ExecuteScalar());
-                        decimal yeniBakiye = eskiBakiye - miktar - 5;
-
-                        using (NpgsqlCommand commandSelectKaynak = new NpgsqlCommand(sqlSelectKaynak, connection))
+                        object result = commandSelectKaynak.ExecuteScalar();
+                        if (result == null)
                         {
-                            commandSelectKaynak.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
-
-                            object resultMoney = commandSelect.ExecuteScalar();
-                            object result = commandSelectKaynak.ExecuteScalar();
-                            if (result == null) //EFT İşlemi
-                            {
-
-                                // Log the failed transfer
-                                DTOTransactionLog transactionLog = new DTOTransactionLog
-                                {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
-                                    TransactionType = EnumTransactionType.WHETransfer,
-                                    TransactionStatus = EnumTransactionStatus.Failed,
-                                    Amount = miktar,
-                                    OldBalance = eskiBakiye,
-                                    NewBalance = eskiBakiye,
-                                    Timestamp = DateTime.Now
-                                };
-
-                                LogTransaction(transactionLog);
-
-                                Console.WriteLine("\nEFT");
-                                return false;
-                            }
-
-                            decimal kaynakBakiye = (decimal)resultMoney;
-                            if (kaynakBakiye < miktar + 5) // 5 birim ek para kesintisi
-                            {
-
-                                // Log the failed transfer
-                                DTOTransactionLog transactionLog = new DTOTransactionLog
-                                {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
-                                    TransactionType = EnumTransactionType.WHETransfer,
-                                    TransactionStatus = EnumTransactionStatus.Failed,
-                                    Amount = miktar,
-                                    OldBalance = eskiBakiye,
-                                    NewBalance = eskiBakiye,
-                                    Timestamp = DateTime.Now
-                                };
-
-                                LogTransaction(transactionLog);
-
-                                Console.WriteLine("\nYetersiz bakiye. Transfer gerçekleştirilemedi.");
-                                return false;
-                            }
+                            Console.WriteLine("Hedef hesap numarası bankamıza ait değil lütfen EFT işlemi gerçekleştiriniz.");
                         }
 
-                        // Para transferi gerçekleştir
-                        string sqlUpdateKaynak = "UPDATE public.Hesap SET Bakiye = Bakiye - @miktar - 5 WHERE HesapNo = @kaynakHesapNo";
-                        string sqlUpdateHedef = "UPDATE public.Hesap SET Bakiye = Bakiye + @miktar WHERE HesapNo = @hedefHesapNo";
-
-                        using (NpgsqlTransaction transaction = connection.BeginTransaction())
+                        else
                         {
-                            try
+                            using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
                             {
-                                using (NpgsqlCommand commandUpdateKaynak = new NpgsqlCommand(sqlUpdateKaynak, connection, transaction))
-                                {
-                                    commandUpdateKaynak.Parameters.AddWithValue("@miktar", miktar);
-                                    commandUpdateKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
 
-                                    commandUpdateKaynak.ExecuteNonQuery();
+
+                                commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
+
+                                decimal eskiBakiye = Convert.ToDecimal(commandSelect.ExecuteScalar());
+                                decimal yeniBakiye = eskiBakiye - miktar - 2.27M;
+
+                                // Check if kaynakBakiye is sufficient for the transfer
+                                if (yeniBakiye >= 0)
+                                {
+                                    // Para transferi gerçekleştir
+                                    string sqlUpdateKaynak = "UPDATE public.Hesap SET Bakiye = Bakiye - @miktar - 2.27 WHERE HesapNo = @kaynakHesapNo";
+                                    string sqlUpdateHedef = "UPDATE public.Hesap SET Bakiye = Bakiye + @miktar WHERE HesapNo = @hedefHesapNo";
+
+                                    using (NpgsqlTransaction transaction = connection.BeginTransaction())
+                                    {
+                                        try
+                                        {
+                                            using (NpgsqlCommand commandUpdateKaynak = new NpgsqlCommand(sqlUpdateKaynak, connection, transaction))
+                                            {
+                                                commandUpdateKaynak.Parameters.AddWithValue("@miktar", miktar);
+                                                commandUpdateKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
+
+                                                commandUpdateKaynak.ExecuteNonQuery();
+                                            }
+
+                                            using (NpgsqlCommand commandUpdateHedef = new NpgsqlCommand(sqlUpdateHedef, connection, transaction))
+                                            {
+                                                commandUpdateHedef.Parameters.AddWithValue("@miktar", miktar);
+                                                commandUpdateHedef.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
+
+                                                commandUpdateHedef.ExecuteNonQuery();
+                                            }
+
+                                            transaction.Commit();
+                                            Console.WriteLine("\nHavale işlemi başarıyla gerçekleştirildi.");
+
+                                            // Log the successful transfer
+                                            DTOTransactionLog transactionLog = new DTOTransactionLog
+                                            {
+                                                AccountNumber = kaynakHesapNo,
+                                                TargetAccountNumber = hedefHesapNo,
+                                                TransactionType = EnumTransactionType.Havale,
+                                                TransactionStatus = EnumTransactionStatus.Success,
+                                                Amount = miktar,
+                                                OldBalance = eskiBakiye,
+                                                NewBalance = yeniBakiye,
+                                                TransactionFee = 2.27M,
+                                                Timestamp = DateTime.Now
+                                            };
+
+                                            LogTransaction(transactionLog);
+
+                                            return true;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine($"\nHata oluştu: {ex.Message}");
+                                            transaction.Rollback();
+
+                                            return false;
+                                        }
+                                    }
                                 }
-
-                                using (NpgsqlCommand commandUpdateHedef = new NpgsqlCommand(sqlUpdateHedef, connection, transaction))
+                                else
                                 {
-                                    commandUpdateHedef.Parameters.AddWithValue("@miktar", miktar);
-                                    commandUpdateHedef.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
+                                    // Not enough balance
+                                    Console.WriteLine("\nYetersiz bakiye. Transfer gerçekleştirilemedi.");
 
-                                    commandUpdateHedef.ExecuteNonQuery();
+                                    // Log the failed transfer
+                                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                                    {
+                                        AccountNumber = kaynakHesapNo,
+                                        TargetAccountNumber = hedefHesapNo,
+                                        TransactionType = EnumTransactionType.Havale,
+                                        TransactionStatus = EnumTransactionStatus.Failed,
+                                        Amount = miktar,
+                                        OldBalance = eskiBakiye,
+                                        NewBalance = eskiBakiye,
+                                        TransactionFee = 0,
+                                        Timestamp = DateTime.Now
+                                    };
+
+                                    LogTransaction(transactionLog);
                                 }
-
-                                transaction.Commit();
-                                Console.WriteLine("\nHavale/EFT işlemi başarıyla gerçekleştirildi.");
-
-                                // Log the successful transfer
-                                DTOTransactionLog transactionLog = new DTOTransactionLog
-                                {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
-                                    TransactionType = EnumTransactionType.WHETransfer,
-                                    TransactionStatus = EnumTransactionStatus.Success,
-                                    Amount = miktar,
-                                    OldBalance = eskiBakiye,
-                                    NewBalance = yeniBakiye,
-                                    Timestamp = DateTime.Now
-                                };
-
-                                LogTransaction(transactionLog);
-
-                                return true;
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"\nHata oluştu: {ex.Message}");
-                                transaction.Rollback();
-
-                                return false;
                             }
                         }
+                        return false;
                     }
                 }
             }
@@ -1003,265 +994,104 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    //Kaynak hesap var mı?
+                    // Check if the hedefHesapNo exists in the database
                     string sqlSelectKaynak = "SELECT HesapNo FROM public.Hesap WHERE HesapNo = @hedefHesapNo";
-
-                    string sqlSelect = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo";
-
-                    using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
-                    {
-                        commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
-
-                        decimal eskiBakiye = Convert.ToDecimal(commandSelect.ExecuteScalar());
-                        decimal yeniBakiye = eskiBakiye - miktar - 5;
-
-                        using (NpgsqlCommand commandSelectKaynak = new NpgsqlCommand(sqlSelectKaynak, connection))
-                        {
-                            commandSelectKaynak.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
-
-                            object resultMoney = commandSelect.ExecuteScalar();
-                            object result = commandSelectKaynak.ExecuteScalar();
-                            if (result == null) //EFT İşlemi
-                            {
-
-                                // Log the failed transfer
-                                DTOTransactionLog transactionLog = new DTOTransactionLog
-                                {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
-                                    TransactionType = EnumTransactionType.WHETransfer,
-                                    TransactionStatus = EnumTransactionStatus.Failed,
-                                    Amount = miktar,
-                                    OldBalance = eskiBakiye,
-                                    NewBalance = eskiBakiye,
-                                    Timestamp = DateTime.Now
-                                };
-
-                                LogTransaction(transactionLog);
-
-                                Console.WriteLine("\nEFT");
-                                return false;
-                            }
-
-                            decimal kaynakBakiye = (decimal)resultMoney;
-                            if (kaynakBakiye < miktar + 5) // 5 birim ek para kesintisi
-                            {
-
-                                // Log the failed transfer
-                                DTOTransactionLog transactionLog = new DTOTransactionLog
-                                {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
-                                    TransactionType = EnumTransactionType.WHETransfer,
-                                    TransactionStatus = EnumTransactionStatus.Failed,
-                                    Amount = miktar,
-                                    OldBalance = eskiBakiye,
-                                    NewBalance = eskiBakiye,
-                                    Timestamp = DateTime.Now
-                                };
-
-                                LogTransaction(transactionLog);
-
-                                Console.WriteLine("\nYetersiz bakiye. Transfer gerçekleştirilemedi.");
-                                return false;
-                            }
-                        }
-
-                        // Para transferi gerçekleştir
-                        string sqlUpdateKaynak = "UPDATE public.Hesap SET Bakiye = Bakiye - @miktar - 5 WHERE HesapNo = @kaynakHesapNo";
-                        string sqlUpdateHedef = "UPDATE public.Hesap SET Bakiye = Bakiye + @miktar WHERE HesapNo = @hedefHesapNo";
-
-                        using (NpgsqlTransaction transaction = connection.BeginTransaction())
-                        {
-                            try
-                            {
-                                using (NpgsqlCommand commandUpdateKaynak = new NpgsqlCommand(sqlUpdateKaynak, connection, transaction))
-                                {
-                                    commandUpdateKaynak.Parameters.AddWithValue("@miktar", miktar);
-                                    commandUpdateKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
-
-                                    commandUpdateKaynak.ExecuteNonQuery();
-                                }
-
-                                using (NpgsqlCommand commandUpdateHedef = new NpgsqlCommand(sqlUpdateHedef, connection, transaction))
-                                {
-                                    commandUpdateHedef.Parameters.AddWithValue("@miktar", miktar);
-                                    commandUpdateHedef.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
-
-                                    commandUpdateHedef.ExecuteNonQuery();
-                                }
-
-                                transaction.Commit();
-                                Console.WriteLine("\nHavale/EFT işlemi başarıyla gerçekleştirildi.");
-
-                                // Log the successful transfer
-                                DTOTransactionLog transactionLog = new DTOTransactionLog
-                                {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
-                                    TransactionType = EnumTransactionType.WHETransfer,
-                                    TransactionStatus = EnumTransactionStatus.Success,
-                                    Amount = miktar,
-                                    OldBalance = eskiBakiye,
-                                    NewBalance = yeniBakiye,
-                                    Timestamp = DateTime.Now
-                                };
-
-                                LogTransaction(transactionLog);
-
-                                return true;
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"\nHata oluştu: {ex.Message}");
-                                transaction.Rollback();
-
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-                return false;
-            }
-        }
-
-        public bool HavaleEFT(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
-        {
-            try
-            {
-                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
-                {
-                    connection.Open();
 
                     // Kontrol et: Kaynak hesap var mı?
-                    string sqlSelectKaynak = "SELECT HesapNo FROM public.Hesap WHERE HesapNo = @hedefHesapNo";
-
                     string sqlSelect = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo";
 
-                    using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
+                    using (NpgsqlCommand commandSelectKaynak = new NpgsqlCommand(sqlSelectKaynak, connection))
                     {
-                        commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
+                        commandSelectKaynak.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
 
-                        decimal eskiBakiye = Convert.ToDecimal(commandSelect.ExecuteScalar());
-                        decimal yeniBakiye = eskiBakiye - miktar - 5;
-
-                        using (NpgsqlCommand commandSelectKaynak = new NpgsqlCommand(sqlSelectKaynak, connection))
+                        object result = commandSelectKaynak.ExecuteScalar();
+                        if (result == null)
                         {
-                            commandSelectKaynak.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
-
-                            object resultMoney = commandSelect.ExecuteScalar();
-                            object result = commandSelectKaynak.ExecuteScalar();
-                            if (result == null) //EFT İşlemi
+                            using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
                             {
+                                commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
 
-                                // Log the failed transfer
-                                DTOTransactionLog transactionLog = new DTOTransactionLog
+                                decimal eskiBakiye = Convert.ToDecimal(commandSelect.ExecuteScalar());
+                                decimal yeniBakiye = eskiBakiye - miktar - 3.17M;
+
+                                // Check if kaynakBakiye is sufficient for the EFT
+                                if (yeniBakiye >= 0)
                                 {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
-                                    TransactionType = EnumTransactionType.WHETransfer,
-                                    TransactionStatus = EnumTransactionStatus.Failed,
-                                    Amount = miktar,
-                                    OldBalance = eskiBakiye,
-                                    NewBalance = eskiBakiye,
-                                    TransactionFee = 0,
-                                    Timestamp = DateTime.Now
-                                };
+                                    // Para transferi gerçekleştir
+                                    string sqlUpdateKaynak = "UPDATE public.Hesap SET Bakiye = Bakiye - @miktar - 3.17 WHERE HesapNo = @kaynakHesapNo";
 
-                                LogTransaction(transactionLog);
+                                    using (NpgsqlTransaction transaction = connection.BeginTransaction())
+                                    {
+                                        try
+                                        {
+                                            using (NpgsqlCommand commandUpdateKaynak = new NpgsqlCommand(sqlUpdateKaynak, connection, transaction))
+                                            {
+                                                commandUpdateKaynak.Parameters.AddWithValue("@miktar", miktar);
+                                                commandUpdateKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
 
-                                Console.WriteLine("\nEFT");
-                                return false;
-                            }
+                                                commandUpdateKaynak.ExecuteNonQuery();
+                                            }
 
-                            decimal kaynakBakiye = (decimal)resultMoney;
-                            if (kaynakBakiye < miktar + 5) // 5 birim ek para kesintisi
-                            {
+                                            transaction.Commit();
+                                            Console.WriteLine("\nEFT işlemi başarıyla gerçekleştirildi.");
 
-                                // Log the failed transfer
-                                DTOTransactionLog transactionLog = new DTOTransactionLog
+                                            // Log the successful EFT
+                                            DTOTransactionLog transactionLog = new DTOTransactionLog
+                                            {
+                                                AccountNumber = kaynakHesapNo,
+                                                TargetAccountNumber = hedefHesapNo,
+                                                TransactionType = EnumTransactionType.EFT,
+                                                TransactionStatus = EnumTransactionStatus.Success,
+                                                Amount = miktar,
+                                                OldBalance = eskiBakiye,
+                                                NewBalance = yeniBakiye,
+                                                TransactionFee = 3.17M,
+                                                Timestamp = DateTime.Now
+                                            };
+
+                                            LogTransaction(transactionLog);
+
+                                            return true;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine($"\nHata oluştu: {ex.Message}");
+                                            transaction.Rollback();
+
+                                            return false;
+                                        }
+                                    }
+                                }
+                                else
                                 {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
-                                    TransactionType = EnumTransactionType.WHETransfer,
-                                    TransactionStatus = EnumTransactionStatus.Failed,
-                                    Amount = miktar,
-                                    OldBalance = eskiBakiye,
-                                    NewBalance = eskiBakiye,
-                                    TransactionFee = 0,
-                                    Timestamp = DateTime.Now
-                                };
+                                    // Not enough balance
+                                    Console.WriteLine("\nYetersiz bakiye. EFT işlemi gerçekleştirilemedi.");
 
-                                LogTransaction(transactionLog);
+                                    // Log the failed EFT
+                                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                                    {
+                                        AccountNumber = kaynakHesapNo,
+                                        TargetAccountNumber = hedefHesapNo,
+                                        TransactionType = EnumTransactionType.EFT,
+                                        TransactionStatus = EnumTransactionStatus.Failed,
+                                        Amount = miktar,
+                                        OldBalance = eskiBakiye,
+                                        NewBalance = eskiBakiye,
+                                        TransactionFee = 0,
+                                        Timestamp = DateTime.Now
+                                    };
 
-                                Console.WriteLine("\nYetersiz bakiye. Transfer gerçekleştirilemedi.");
-                                return false;
+                                    LogTransaction(transactionLog);
+                                }
                             }
                         }
 
-                        // Para transferi gerçekleştir
-                        string sqlUpdateKaynak = "UPDATE public.Hesap SET Bakiye = Bakiye - @miktar - 5 WHERE HesapNo = @kaynakHesapNo";
-                        string sqlUpdateHedef = "UPDATE public.Hesap SET Bakiye = Bakiye + @miktar WHERE HesapNo = @hedefHesapNo";
-
-                        using (NpgsqlTransaction transaction = connection.BeginTransaction())
+                        else
                         {
-                            try
-                            {
-                                using (NpgsqlCommand commandUpdateKaynak = new NpgsqlCommand(sqlUpdateKaynak, connection, transaction))
-                                {
-                                    commandUpdateKaynak.Parameters.AddWithValue("@miktar", miktar);
-                                    commandUpdateKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
-
-                                    commandUpdateKaynak.ExecuteNonQuery();
-                                }
-
-                                using (NpgsqlCommand commandUpdateHedef = new NpgsqlCommand(sqlUpdateHedef, connection, transaction))
-                                {
-                                    commandUpdateHedef.Parameters.AddWithValue("@miktar", miktar);
-                                    commandUpdateHedef.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
-
-                                    commandUpdateHedef.ExecuteNonQuery();
-                                }
-
-                                transaction.Commit();
-                                Console.WriteLine("\nHavale/EFT işlemi başarıyla gerçekleştirildi.");
-
-                                // Log the successful transfer
-                                DTOTransactionLog transactionLog = new DTOTransactionLog
-                                {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
-                                    TransactionType = EnumTransactionType.WHETransfer,
-                                    TransactionStatus = EnumTransactionStatus.Success,
-                                    Amount = miktar,
-                                    OldBalance = eskiBakiye,
-                                    NewBalance = yeniBakiye,
-                                    TransactionFee = 5,
-                                    Timestamp = DateTime.Now
-                                };
-
-                                LogTransaction(transactionLog);
-
-                                return true;
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"\nHata oluştu: {ex.Message}");
-                                transaction.Rollback();
-
-                                return false;
-                            }
+                            Console.WriteLine("Hedef hesap numarası bankamıza ait lütfen Havale işlemi gerçekleştiriniz.");
                         }
                     }
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -1275,6 +1105,7 @@ namespace FabrieBank.DAL
                 return false;
             }
         }
+
 
         /*
         ************************************************************************************************

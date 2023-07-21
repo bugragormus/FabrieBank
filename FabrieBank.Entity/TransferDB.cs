@@ -18,9 +18,14 @@ namespace FabrieBank.Entity
             return dataAccessLayer.HesaplarArasiTransfer(kaynakHesapNo, hedefHesapNo, miktar);
         }
 
-        public bool HavaleEFT(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
+        public bool Havale(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
         {
-            return dataAccessLayer.HavaleEFT(kaynakHesapNo, hedefHesapNo, miktar);
+            return dataAccessLayer.Havale(kaynakHesapNo, hedefHesapNo, miktar);
+        }
+
+        public bool EFT(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
+        {
+            return dataAccessLayer.EFT(kaynakHesapNo, hedefHesapNo, miktar);
         }
     }
 }

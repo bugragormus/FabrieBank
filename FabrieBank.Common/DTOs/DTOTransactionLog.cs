@@ -14,5 +14,6 @@ namespace FabrieBank.Common.DTOs
         public DateTime Timestamp { get; set; }
         public decimal OldBalance { get; set; }
         public decimal NewBalance { get; set; }
+        public decimal TransactionFee { get; set; }
     }
 }
