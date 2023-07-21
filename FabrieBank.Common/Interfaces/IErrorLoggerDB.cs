@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FabrieBank.Common
+﻿namespace FabrieBank.Common
 {
     public interface IErrorLogger
     {

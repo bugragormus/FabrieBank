@@ -1,5 +1,4 @@
 ﻿using FabrieBank.Common.Enums;
-using System;
 
 namespace FabrieBank.Common.DTOs
 {

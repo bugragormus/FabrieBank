@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FabrieBank.Common;
-using FabrieBank.Common.Enums;
-using FabrieBank.DTO;
+﻿using FabrieBank.Common;
 using FabrieBank.Entity;
 using FabrieBank.BLL;
 

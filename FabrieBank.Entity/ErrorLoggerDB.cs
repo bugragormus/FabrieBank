@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.Data.SqlClient;
-using FabrieBank.Common;
-using System.Reflection;
+﻿using FabrieBank.Common;
 using FabrieBank.DAL;
 
 namespace FabrieBank.Entity

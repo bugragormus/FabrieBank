@@ -1,8 +1,4 @@
-﻿using System;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using FabrieBank.Common.DTOs;
-using FabrieBank.Common.Enums;
+﻿using FabrieBank.Common.DTOs;
 using FabrieBank.DAL;
 
 namespace FabrieBank.Entity

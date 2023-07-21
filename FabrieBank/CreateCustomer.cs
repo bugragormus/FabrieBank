@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.RegularExpressions;
 using FabrieBank.Common;
 using FabrieBank.Entity;

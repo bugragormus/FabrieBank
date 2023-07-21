@@ -1,5 +1,4 @@
-﻿using System;
-namespace FabrieBank.Common.Enums
+﻿namespace FabrieBank.Common.Enums
 {
     public class EnumDovizCinsleri
     {

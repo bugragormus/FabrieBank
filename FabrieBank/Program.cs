@@ -1,7 +1,4 @@
-﻿using System;
-using System.Transactions;
-using FabrieBank.Common;
-using FabrieBank.Entity;
+﻿using FabrieBank.Common;
 
 namespace FabrieBank
 {

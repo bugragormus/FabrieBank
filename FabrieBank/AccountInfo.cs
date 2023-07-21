@@ -1,5 +1,4 @@
-﻿using System;
-using FabrieBank.Common;
+﻿using FabrieBank.Common;
 using FabrieBank.Entity;
 using FabrieBank.Common.Enums;
 namespace FabrieBank

@@ -1,8 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
-using FabrieBank.Common;
+﻿using FabrieBank.Common;
 using FabrieBank.Common.Enums;
 using System.Reflection;
-using System.Data;
 using Npgsql;
 using FabrieBank.Common.DTOs;
 

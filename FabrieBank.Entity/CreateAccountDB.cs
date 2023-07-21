@@ -1,6 +1,4 @@
-﻿using System;
-using FabrieBank.DAL;
-using Microsoft.Data.SqlClient;
+﻿using FabrieBank.DAL;
 using Npgsql;
 
 namespace FabrieBank.Entity

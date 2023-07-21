@@ -1,5 +1,4 @@
 ﻿using FabrieBank.Common;
-using System.Collections.Generic;
 using FabrieBank.DAL;
 namespace FabrieBank.Entity
 {

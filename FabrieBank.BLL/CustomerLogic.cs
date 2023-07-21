@@ -1,5 +1,4 @@
-﻿using System;
-namespace FabrieBank.BLL
+﻿namespace FabrieBank.BLL
 {
 	public class CustomerLogic
 	{
