@@ -1,47 +1,59 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FabrieBank.Common.DTOs;
+using FabrieBank.Common.Enums;
 using Newtonsoft.Json;
+
 namespace FabrieBank.Services
 {
     public class CurrencyService
     {
         private readonly HttpClient _httpClient;
-        private const string BaseUrl = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies";
+        private readonly string _baseUrl = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/";
+
         public CurrencyService()
         {
             _httpClient = new HttpClient();
         }
-        public async Task<decimal> GetExchangeRate(string sourceCurrency, string targetCurrency)
+
+        public async Task<Dictionary<string, double>> GetCurrencyRates(EnumDovizCinsleri.DovizCinsleri baseCurrency)
         {
-            try
+            var currencies = Enum.GetValues(typeof(EnumDovizCinsleri.DovizCinsleri));
+            var currencyRates = new Dictionary<string, double>();
+
+            foreach (EnumDovizCinsleri.DovizCinsleri targetCurrency in currencies)
             {
-                string apiUrl = $"{BaseUrl}/{sourceCurrency.ToLower()}/{targetCurrency.ToLower()}.json";
-                HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
-                if (response.IsSuccessStatusCode)
+                if (targetCurrency == baseCurrency)
                 {
-                    string content = await response.Content.ReadAsStringAsync();
-                    var currencyRate = JsonConvert.DeserializeObject<DTOCurrency>(content);
-                    return currencyRate.Rate;
+                    continue; // Skip if base currency is the same as the target currency
+                }
+
+                string url = $"{_baseUrl}{baseCurrency.ToString().ToLower()}/{targetCurrency.ToString().ToLower()}.json";
+                try
+                {
+                    HttpResponseMessage response = await _httpClient.GetAsync(url);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string content = await response.Content.ReadAsStringAsync();
+                        var rateDTO = JsonConvert.DeserializeObject<CurrencyRateDTO>(content);
+                        currencyRates.Add(targetCurrency.ToString(), rateDTO.Rate);
+                    }
+                    else
+                    {
+                        // Handle API response errors if needed
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions if needed
+                    Console.WriteLine($"Error: {ex.Message}");
                 }
             }
-            catch (Exception ex)
-            {
-                // Handle API request errors here
-                Console.WriteLine($"Error fetching currency rates: {ex.Message}");
-            }
-            return 0;
-        }
-        // Currency conversion logic
-        public decimal ConvertCurrency(decimal amount, decimal exchangeRate)
-        {
-            return amount * exchangeRate;
-        }
-        // DTO class to represent the API response
-        private class DTOCurrency
-        {
-            [JsonProperty("TRY")]
-            public decimal Rate { get; set; }
+
+            return currencyRates;
         }
     }
 }

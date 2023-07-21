@@ -74,8 +74,8 @@ namespace FabrieBank
                 {
                     case "1":
 
-                        CustomerMenu customerMenu = new CustomerMenu(customer.MusteriId);
-                        customerMenu.ShowMenu(customer);
+                        //CustomerMenu customerMenu = new CustomerMenu(customer.MusteriId);
+                        //customerMenu.ShowMenu(customer);
 
                         //ATM atm = new ATM();
                         //decimal amountInEur = 100;
@@ -83,6 +83,10 @@ namespace FabrieBank
                         //long hesapNo = 123456789; // Replace with the actual account number
 
                         //atm.CurrencyTransaction(hesapNo, amountInEur, dovizCinsi);
+
+                        CurrencyTable currencyTable = new CurrencyTable();
+                        currencyTable.DisplayCurrencyRatesTable(EnumDovizCinsleri.DovizCinsleri.TRY);
+
                         break;
 
                     case "2":

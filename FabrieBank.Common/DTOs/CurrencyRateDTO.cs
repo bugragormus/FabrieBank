@@ -1,7 +1,8 @@
 ﻿namespace FabrieBank.Common.DTOs
 {
-    public class DTOCurrency
+    public class CurrencyRateDTO
     {
-        public decimal Rate { get; set; }
+        public string Currency { get; set; }
+        public double Rate { get; set; }
     }
 }
