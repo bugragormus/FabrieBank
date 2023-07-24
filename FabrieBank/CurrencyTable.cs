@@ -35,11 +35,13 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
+                // Log the error to the database using the ErrorLoggerDB
                 MethodBase method = MethodBase.GetCurrentMethod();
+                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
 
-                // Display a user-friendly error message
-                Console.WriteLine("An error occurred while retrieving currency rates. Please try again later.");
-                Console.WriteLine($"Error: {ex.Message}");
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
     }

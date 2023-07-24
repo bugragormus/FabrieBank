@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
 using FabrieBank.Common.DTOs;
@@ -79,8 +80,13 @@ namespace FabrieBank.Services
             }
             catch (Exception ex)
             {
-                // Handle exceptions if needed
-                Console.WriteLine($"Error: {ex.Message}");
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
 
             return currencyRates;
