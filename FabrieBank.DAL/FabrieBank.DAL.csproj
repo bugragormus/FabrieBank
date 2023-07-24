@@ -7,10 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FabrieBank.Common\FabrieBank.Common.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Npgsql" Version="7.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Entity\" />
+    <None Remove="DAL\" />
+    <None Remove="DTOs\" />
+    <None Remove="Enums\" />
+    <None Remove="Interfaces\" />
+    <None Remove="Logs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Entity\" />
+    <Folder Include="DAL\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="Enums\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Logs\" />
   </ItemGroup>
 </Project>
