@@ -1,7 +1,4 @@
-﻿using FabrieBank.Common;
-using FabrieBank.Entity;
-using FabrieBank.BLL;
-using FabrieBank.Common.Enums;
+﻿using FabrieBank.Common.Enums;
 
 namespace FabrieBank
 {

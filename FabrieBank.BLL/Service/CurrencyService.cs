@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Net.Http;
+﻿using System.Globalization;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Xml;
 using FabrieBank.Common.DTOs;
 using FabrieBank.Common.Enums;
