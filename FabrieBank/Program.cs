@@ -61,11 +61,11 @@ namespace FabrieBank
             //Main menu for loged in users
             for (; ; )
             {
-                Console.WriteLine("=========================================================================");
-                Console.WriteLine("                                 MAIN MENU                               ");
-                Console.WriteLine("=========================================================================");
-                Console.WriteLine("1.User Operations  2.ATM   3.Bank Accounts   4.Money Transfers     5.Exit");
-                Console.WriteLine("=========================================================================");
+                Console.WriteLine("===============================================================================================");
+                Console.WriteLine("                                           MAIN MENU                                           ");
+                Console.WriteLine("===============================================================================================");
+                Console.WriteLine("1.User Operations   2.ATM    3.Bank Accounts    4.Money Transfers    5. Currency Rates   6.Exit");
+                Console.WriteLine("===============================================================================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
                 Console.Clear();
@@ -74,19 +74,8 @@ namespace FabrieBank
                 {
                     case "1":
 
-                        //CustomerMenu customerMenu = new CustomerMenu(customer.MusteriId);
-                        //customerMenu.ShowMenu(customer);
-
-                        //ATM atm = new ATM();
-                        //decimal amountInEur = 100;
-                        //EnumDovizCinsleri.DovizCinsleri dovizCinsi = EnumDovizCinsleri.DovizCinsleri.EUR;
-                        //long hesapNo = 123456789; // Replace with the actual account number
-
-                        //atm.CurrencyTransaction(hesapNo, amountInEur, dovizCinsi);
-
-                        CurrencyTable currencyTable = new CurrencyTable();
-                        currencyTable.DisplayCurrencyRatesTable(EnumDovizCinsleri.DovizCinsleri.TRY);
-
+                        CustomerMenu customerMenu = new CustomerMenu(customer.MusteriId);
+                        customerMenu.ShowMenu(customer);
                         break;
 
                     case "2":
@@ -107,6 +96,12 @@ namespace FabrieBank
                         break;
 
                     case "5":
+
+                        CurrencyMenu currencyMenu = new CurrencyMenu();
+                        currencyMenu.ShowMenu();
+                        break;
+
+                    case "6":
 
                         Environment.Exit(0);
                         break;

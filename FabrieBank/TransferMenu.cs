@@ -53,8 +53,6 @@ namespace FabrieBank
                         Console.WriteLine("Geçersiz seçim. Tekrar deneyin.");
                         break;
                 }
-
-                Console.WriteLine("==============================\n");
             } while (choice != "4");
         }
 

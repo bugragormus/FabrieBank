@@ -22,6 +22,7 @@ namespace FabrieBank
             {
                 var currencyRates = await _currencyService.GetCurrencyRates(baseCurrency);
 
+                Console.WriteLine("\n----------------------------------------------------------------------------------------");
                 Console.WriteLine($"                Currency Rates Table for {baseCurrency} (Base Currency)");
                 Console.WriteLine("----------------------------------------------------------------------------------------");
                 Console.WriteLine("Currency  |  Forex Buying    |  Forex Selling   |  Banknote Buying   |  Banknote Selling");
