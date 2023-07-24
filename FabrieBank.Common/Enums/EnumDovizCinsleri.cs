@@ -7,8 +7,8 @@
             TRY = 1,
             USD = 2,
             EUR = 3,
-            GAU = 4,
-            XAG = 5
+            GBP = 4,
+            CHF = 5
         }
     }
 }

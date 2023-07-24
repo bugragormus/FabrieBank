@@ -177,9 +177,9 @@ namespace FabrieBank.BLL
                 case "3":
                     return EnumDovizCinsleri.DovizCinsleri.EUR;
                 case "4":
-                    return EnumDovizCinsleri.DovizCinsleri.GAU;
+                    return EnumDovizCinsleri.DovizCinsleri.GBP;
                 case "5":
-                    return EnumDovizCinsleri.DovizCinsleri.XAG;
+                    return EnumDovizCinsleri.DovizCinsleri.CHF;
                 default:
                     throw new Exception("Geçersiz döviz kodu");
             }

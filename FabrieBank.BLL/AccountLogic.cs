@@ -23,10 +23,10 @@ namespace FabrieBank.BLL
                     return "Amerikan Doları (USD)";
                 case EnumDovizCinsleri.DovizCinsleri.EUR:
                     return "Euro (EUR)";
-                case EnumDovizCinsleri.DovizCinsleri.GAU:
-                    return "Gram Altın (GAU)";
-                case EnumDovizCinsleri.DovizCinsleri.XAG:
-                    return "Gram Gümüş (XAG)";
+                case EnumDovizCinsleri.DovizCinsleri.GBP:
+                    return "Gram Altın (GBP)";
+                case EnumDovizCinsleri.DovizCinsleri.CHF:
+                    return "Gram Gümüş (CHF)";
                 default:
                     return string.Empty;
             }

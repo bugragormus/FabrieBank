@@ -12,7 +12,7 @@ namespace FabrieBank
             {
                 int musteriId = customer.MusteriId;
 
-                Console.WriteLine("Hangi para birimi için hesap oluşturmak istiyorsunuz? (1-TRY, 2-USD, 3-EUR, 4-GAU, 5-XAG)");
+                Console.WriteLine("Hangi para birimi için hesap oluşturmak istiyorsunuz? (1-TRY, 2-USD, 3-EUR, 4-GBP, 5-CHF)");
                 Console.Write(">>> ");
                 int dovizCinsi = int.Parse(Console.ReadLine());
                 Console.WriteLine("\nHesaba bir isim verin.");
