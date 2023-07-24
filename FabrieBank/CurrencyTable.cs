@@ -17,7 +17,7 @@ namespace FabrieBank
         {
             try
             {
-                var currencyRates = await _currencyService.GetCurrencyRates(baseCurrency);
+                var currencyRates = await _currencyService.GetTodaysCurrencyRates(baseCurrency);
 
                 Console.WriteLine("\n----------------------------------------------------------------------------------------");
                 Console.WriteLine($"                Currency Rates Table for {baseCurrency} (Base Currency)");
