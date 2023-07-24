@@ -19,10 +19,10 @@ namespace FabrieBank.Services
             _httpClient = new HttpClient();
         }
 
-        public async Task<Dictionary<string, double>> GetCurrencyRates(EnumDovizCinsleri.DovizCinsleri baseCurrency)
+        public async Task<Dictionary<string, DTOCurrencyRate>> GetCurrencyRates(EnumDovizCinsleri.DovizCinsleri baseCurrency)
         {
             var currencies = Enum.GetValues(typeof(EnumDovizCinsleri.DovizCinsleri));
-            var currencyRates = new Dictionary<string, double>();
+            var currencyRates = new Dictionary<string, DTOCurrencyRate>();
 
             try
             {
@@ -42,12 +42,27 @@ namespace FabrieBank.Services
                         }
 
                         string currencyCode = targetCurrency.ToString();
-                        string xpath = $"Tarih_Date/Currency[@Kod='{currencyCode}']/BanknoteSelling";
+                        string xpath = $"Tarih_Date/Currency[@Kod='{currencyCode}']";
+
                         XmlNode node = xmlDoc.SelectSingleNode(xpath);
                         if (node != null)
                         {
-                            double rate = Convert.ToDouble(node.InnerText, CultureInfo.GetCultureInfo("en-US"));
-                            currencyRates.Add(currencyCode, rate);
+                            DTOCurrencyRate currency = new DTOCurrencyRate();
+                            currency.CurrencyCode = currencyCode;
+
+                            double banknoteBuyingRate = Convert.ToDouble(node["BanknoteBuying"].InnerText, CultureInfo.GetCultureInfo("en-US"));
+                            currency.BanknoteBuyingRate = banknoteBuyingRate;
+
+                            double banknoteSellingRate = Convert.ToDouble(node["BanknoteSelling"].InnerText, CultureInfo.GetCultureInfo("en-US"));
+                            currency.BanknoteSellingRate = banknoteSellingRate;
+
+                            double forexBuyingRate = Convert.ToDouble(node["ForexBuying"].InnerText, CultureInfo.GetCultureInfo("en-US"));
+                            currency.ForexBuyingRate = forexBuyingRate;
+
+                            double forexSellingRate = Convert.ToDouble(node["ForexSelling"].InnerText, CultureInfo.GetCultureInfo("en-US"));
+                            currency.ForexSellingRate = forexSellingRate;
+
+                            currencyRates.Add(currencyCode, currency);
                         }
                         else
                         {

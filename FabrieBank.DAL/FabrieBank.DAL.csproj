@@ -13,17 +13,19 @@
   <ItemGroup>
     <None Remove="Entity\" />
     <None Remove="DAL\" />
-    <None Remove="DTOs\" />
-    <None Remove="Enums\" />
     <None Remove="Interfaces\" />
     <None Remove="Logs\" />
+    <None Remove="Common\" />
+    <None Remove="Common\DTOs\" />
+    <None Remove="Common\Enums\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entity\" />
     <Folder Include="DAL\" />
-    <Folder Include="DTOs\" />
-    <Folder Include="Enums\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Logs\" />
+    <Folder Include="Common\" />
+    <Folder Include="Common\DTOs\" />
+    <Folder Include="Common\Enums\" />
   </ItemGroup>
 </Project>
