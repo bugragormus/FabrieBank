@@ -3,6 +3,8 @@ using FabrieBank.Common.Enums;
 using System.Reflection;
 using Npgsql;
 using FabrieBank.Common.DTOs;
+using NpgsqlTypes;
+using System.Data;
 
 namespace FabrieBank.DAL
 {
@@ -53,9 +55,9 @@ namespace FabrieBank.DAL
             {
                 connection.Open();
 
-                string functionName = "usp_InsertErrorLog";
+                string procedureName = "usp_InsertErrorLog";
 
-                string sqlQuery = $"CALL {functionName}(@errorDateTime, @errorMessage, @stackTrace, @operationName)";
+                string sqlQuery = $"CALL {procedureName}(@errorDateTime, @errorMessage, @stackTrace, @operationName)";
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                 {
@@ -85,28 +87,36 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string sql = "SELECT * FROM Hesap WHERE MusteriId = @musteriId";
-
-                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                    using (NpgsqlCommand command = new NpgsqlCommand("usp_GetAccountInfo", connection))
                     {
-                        command.Parameters.AddWithValue("@musteriId", musteriId);
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@musteri_id", musteriId);
 
-                        using (NpgsqlDataReader reader = command.ExecuteReader())
+                        // Define OUT parameters to retrieve the result data
+                        command.Parameters.Add(new NpgsqlParameter("hesap_no", NpgsqlDbType.Bigint) { Direction = ParameterDirection.Output });
+                        command.Parameters.Add(new NpgsqlParameter("bakiye", NpgsqlDbType.Numeric) { Direction = ParameterDirection.Output });
+                        command.Parameters.Add(new NpgsqlParameter("doviz_cins", NpgsqlDbType.Integer) { Direction = ParameterDirection.Output });
+                        command.Parameters.Add(new NpgsqlParameter("hesap_adi", NpgsqlDbType.Text) { Direction = ParameterDirection.Output });
+
+                        command.ExecuteNonQuery();
+
+                        // Retrieve the result data from OUT parameters
+                        long hesapNo = Convert.ToInt64(command.Parameters["hesap_no"].Value);
+                        decimal bakiye = Convert.ToDecimal(command.Parameters["bakiye"].Value);
+                        int dovizCins = Convert.ToInt32(command.Parameters["doviz_cins"].Value);
+                        string hesapAdi = command.Parameters["hesap_adi"].Value.ToString();
+
+                        // Create DTOAccountInfo object with retrieved data
+                        DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
                         {
-                            while (reader.Read())
-                            {
-                                DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
-                                {
-                                    HesapNo = reader.GetInt64(0),
-                                    Bakiye = reader.GetDecimal(1),
-                                    MusteriId = reader.GetInt32(2),
-                                    DovizCins = (EnumDovizCinsleri.DovizCinsleri)reader.GetInt32(3),
-                                    HesapAdi = reader.GetString(4),
-                                };
+                            HesapNo = hesapNo,
+                            Bakiye = bakiye,
+                            MusteriId = musteriId,
+                            DovizCins = (EnumDovizCinsleri.DovizCinsleri)dovizCins,
+                            HesapAdi = hesapAdi,
+                        };
 
-                                accountInfos.Add(dTOAccountInfo);
-                            }
-                        }
+                        accountInfos.Add(dTOAccountInfo);
                     }
                 }
             }
