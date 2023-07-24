@@ -7,7 +7,7 @@ using static System.Net.WebRequestMethods;
 
 namespace FabrieBank.Services
 {
-    public class CurrencyService
+    public class CurrencyService : IDisposable
     {
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml"; 
@@ -96,7 +96,7 @@ namespace FabrieBank.Services
 
             try
             {
-                string url = $"https://www.tcmb.gov.tr/kurlar/{year}{month}/{day}{month}{year}.xml";
+                string url = $"https://www.tcmb.gov.tr/kurlar/{year:0000}{month:00}/{day:00}{month:00}{year:0000}.xml";
                 HttpResponseMessage response = await _httpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
@@ -160,6 +160,12 @@ namespace FabrieBank.Services
             }
 
             return currencyRates;
+        }
+
+
+        public void Dispose()
+        {
+            _httpClient.Dispose();
         }
     }
 }

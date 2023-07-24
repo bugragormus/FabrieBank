@@ -7,8 +7,8 @@ namespace FabrieBank
 {
     public class CurrencyMenu
     {
-        CurrencyService currency;
-        CurrencyTable currencyTable;
+        private readonly CurrencyService currency;
+        private readonly CurrencyTable currencyTable;
 
         public CurrencyMenu()
         {
@@ -51,25 +51,36 @@ namespace FabrieBank
 
         private void TodaysRates()
         {
-            CurrencyTable currencyTable = new CurrencyTable();
-            currencyTable.DisplayCurrencyRatesTable(EnumDovizCinsleri.DovizCinsleri.TRY);
+            var baseCurrency = EnumDovizCinsleri.DovizCinsleri.TRY;
+            var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency).Result;
+            currencyTable.DisplayCurrencyRatesTable(baseCurrency, currencyRates);
         }
 
         private void CustomDateRates()
         {
             Console.WriteLine("Which date would you like to see the exchange rate information?");
-            Console.WriteLine("Please enter the date in DD / MM / YYYY format.");
+            Console.WriteLine("Please enter the date in DD/MM/YYYY format.");
             string input = Console.ReadLine();
 
             if (IsValidDate(input, out int day, out int month, out int year))
             {
                 var baseCurrency = EnumDovizCinsleri.DovizCinsleri.TRY;
 
-                // Fetch and display the currency rates for the custom date
+                // Fetch the currency rates for the custom date
                 var currencyRates = currency.GetCustomDateCurrencyRates(baseCurrency, year, month, day).Result;
-                currencyTable.DisplayCurrencyRatesTable(baseCurrency);
+
+                // Check if currency rates are available for the custom date
+                if (currencyRates.Count > 0)
+                {
+                    currencyTable.DisplayCurrencyRatesTable(baseCurrency, currencyRates);
+                }
+                else
+                {
+                    Console.WriteLine("Currency rates not found for the selected custom date.");
+                }
             }
         }
+
 
         static bool IsValidDate(string input, out int day, out int month, out int year)
         {

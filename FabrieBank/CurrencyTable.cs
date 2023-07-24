@@ -1,24 +1,17 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using FabrieBank.Common.Enums;
-using FabrieBank.Services;
+using FabrieBank.Common.DTOs;
 
 namespace FabrieBank
 {
     public class CurrencyTable
     {
-        private readonly CurrencyService _currencyService;
-
-        public CurrencyTable()
-        {
-            _currencyService = new CurrencyService();
-        }
-
-        public async Task DisplayCurrencyRatesTable(EnumDovizCinsleri.DovizCinsleri baseCurrency)
+        public void DisplayCurrencyRatesTable(EnumDovizCinsleri.DovizCinsleri baseCurrency, Dictionary<string, DTOCurrencyRate> currencyRates)
         {
             try
             {
-                var currencyRates = await _currencyService.GetTodaysCurrencyRates(baseCurrency);
-
                 Console.WriteLine("\n----------------------------------------------------------------------------------------");
                 Console.WriteLine($"                Currency Rates Table for {baseCurrency} (Base Currency)");
                 Console.WriteLine("----------------------------------------------------------------------------------------");
@@ -32,13 +25,9 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                Console.WriteLine($"An error occurred while displaying currency rates. Please try again later.");
+                Console.WriteLine($"Error: {ex.Message}");
             }
         }
     }
