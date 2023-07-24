@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using FabrieBank.Common.Enums;
 using FabrieBank.Common.DTOs;
+using System.Reflection;
 
 namespace FabrieBank
 {
@@ -25,9 +26,13 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while displaying currency rates. Please try again later.");
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
     }

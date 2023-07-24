@@ -162,7 +162,6 @@ namespace FabrieBank.Services
             return currencyRates;
         }
 
-
         public void Dispose()
         {
             _httpClient.Dispose();

@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using FabrieBank.Common.Enums;
 using FabrieBank.Services;
@@ -58,26 +59,39 @@ namespace FabrieBank
 
         private void CustomDateRates()
         {
-            Console.WriteLine("Which date would you like to see the exchange rate information?");
-            Console.WriteLine("Please enter the date in DD/MM/YYYY format.");
-            string input = Console.ReadLine();
-
-            if (IsValidDate(input, out int day, out int month, out int year))
+            try
             {
-                var baseCurrency = EnumDovizCinsleri.DovizCinsleri.TRY;
+                Console.WriteLine("Which date would you like to see the exchange rate information?");
+                Console.WriteLine("Please enter the date in DD/MM/YYYY format.");
+                string input = Console.ReadLine();
 
-                // Fetch the currency rates for the custom date
-                var currencyRates = currency.GetCustomDateCurrencyRates(baseCurrency, year, month, day).Result;
+                if (IsValidDate(input, out int day, out int month, out int year))
+                {
+                    var baseCurrency = EnumDovizCinsleri.DovizCinsleri.TRY;
 
-                // Check if currency rates are available for the custom date
-                if (currencyRates.Count > 0)
-                {
-                    currencyTable.DisplayCurrencyRatesTable(baseCurrency, currencyRates);
+                    // Fetch the currency rates for the custom date
+                    var currencyRates = currency.GetCustomDateCurrencyRates(baseCurrency, year, month, day).Result;
+
+                    // Check if currency rates are available for the custom date
+                    if (currencyRates.Count > 0)
+                    {
+                        currencyTable.DisplayCurrencyRatesTable(baseCurrency, currencyRates);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Currency rates not found for the selected custom date.");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Currency rates not found for the selected custom date.");
-                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
 
