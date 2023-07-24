@@ -98,25 +98,45 @@ namespace FabrieBank.DAL
                         command.Parameters.Add(new NpgsqlParameter("doviz_cins", NpgsqlDbType.Integer) { Direction = ParameterDirection.Output });
                         command.Parameters.Add(new NpgsqlParameter("hesap_adi", NpgsqlDbType.Text) { Direction = ParameterDirection.Output });
 
-                        command.ExecuteNonQuery();
+                        NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
+                        DataTable dataTable = new DataTable();
 
-                        // Retrieve the result data from OUT parameters
-                        long hesapNo = Convert.ToInt64(command.Parameters["hesap_no"].Value);
-                        decimal bakiye = Convert.ToDecimal(command.Parameters["bakiye"].Value);
-                        int dovizCins = Convert.ToInt32(command.Parameters["doviz_cins"].Value);
-                        string hesapAdi = command.Parameters["hesap_adi"].Value.ToString();
-
-                        // Create DTOAccountInfo object with retrieved data
-                        DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
+                        npgsqlDataAdapter.Fill(dataTable);
+                        foreach (DataRow item in dataTable.Rows)
                         {
-                            HesapNo = hesapNo,
-                            Bakiye = bakiye,
-                            MusteriId = musteriId,
-                            DovizCins = (EnumDovizCinsleri.DovizCinsleri)dovizCins,
-                            HesapAdi = hesapAdi,
-                        };
+                            DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
+                            {
+                                HesapNo = (long)item["HesapNo"],
+                                Bakiye = (decimal)item["Bakiye"],
+                                MusteriId = (int)item["MusteriId"],
+                                DovizCins = (EnumDovizCinsleri.DovizCinsleri)item["DovizCins"],
+                                HesapAdi = item["HesapAdi"].ToString(),
+                            };
+                            accountInfos.Add(dTOAccountInfo);
+                        }
 
-                        accountInfos.Add(dTOAccountInfo);
+
+
+                        //command.ExecuteNonQuery();
+
+                        //// Retrieve the result data from OUT parameters
+
+                        //long hesapNo = Convert.ToInt64(command.Parameters["hesap_no"].Value);
+                        //decimal bakiye = Convert.ToDecimal(command.Parameters["bakiye"].Value);
+                        //int dovizCins = Convert.ToInt32(command.Parameters["doviz_cins"].Value);
+                        //string hesapAdi = command.Parameters["hesap_adi"].Value.ToString();
+
+                        ////Create DTOAccountInfo object with retrieved data
+                        //DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
+                        //{
+                        //    HesapNo = hesapNo,
+                        //    Bakiye = bakiye,
+                        //    MusteriId = musteriId,
+                        //    DovizCins = (EnumDovizCinsleri.DovizCinsleri)dovizCins,
+                        //    HesapAdi = hesapAdi,
+                        //};
+
+                        //accountInfos.Add(dTOAccountInfo);
                     }
                 }
             }
