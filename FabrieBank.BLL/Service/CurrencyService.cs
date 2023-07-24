@@ -10,8 +10,7 @@ namespace FabrieBank.Services
     public class CurrencyService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml";
-        private readonly string _baseUrl1 = $"https://www.tcmb.gov.tr/kurlar/{year}{month}/{day}{month}{year}.xml";
+        private readonly string _baseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml"; 
 
         public CurrencyService()
         {
@@ -90,14 +89,15 @@ namespace FabrieBank.Services
             return currencyRates;
         }
 
-        public async Task<Dictionary<string, DTOCurrencyRate>> GetCustomDateCurrencyRates(EnumDovizCinsleri.DovizCinsleri baseCurrency)
+        public async Task<Dictionary<string, DTOCurrencyRate>> GetCustomDateCurrencyRates(EnumDovizCinsleri.DovizCinsleri baseCurrency, int year, int month, int day)
         {
             var currencies = Enum.GetValues(typeof(EnumDovizCinsleri.DovizCinsleri));
             var currencyRates = new Dictionary<string, DTOCurrencyRate>();
 
             try
             {
-                HttpResponseMessage response = await _httpClient.GetAsync(_baseUrl1);
+                string url = $"https://www.tcmb.gov.tr/kurlar/{year}{month}/{day}{month}{year}.xml";
+                HttpResponseMessage response = await _httpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
