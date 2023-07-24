@@ -4,13 +4,11 @@ namespace FabrieBank.Entity
 {
     public class ATM
     {
-        private readonly CurrencyService _currencyService;
         private DataAccessLayer dataAccessLayer;
 
         public ATM()
         {
             dataAccessLayer = new DataAccessLayer();
-            _currencyService = new CurrencyService();
         }
 
         public void ParaYatirma(long hesapNo, decimal bakiye)
