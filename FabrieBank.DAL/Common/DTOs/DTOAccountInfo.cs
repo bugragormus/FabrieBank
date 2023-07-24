@@ -7,6 +7,6 @@ namespace FabrieBank.Common
         public decimal Bakiye { get; set; }
         public int MusteriId { get; set; }
         public EnumDovizCinsleri.DovizCinsleri DovizCins { get; set; }
-        public string? HesapAdi { get; set; }
+        public string HesapAdi { get; set; }
     }
 }
