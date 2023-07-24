@@ -14,7 +14,7 @@ namespace FabrieBank
             try
             {
                 Console.WriteLine("\n----------------------------------------------------------------------------------------");
-                Console.WriteLine($"                Currency Rates Table for {baseCurrency} (Base Currency)");
+                Console.WriteLine($"                    Currency Rates Table for {baseCurrency} (Base Currency)");
                 Console.WriteLine("----------------------------------------------------------------------------------------");
                 Console.WriteLine("Currency  |  Forex Buying    |  Forex Selling   |  Banknote Buying   |  Banknote Selling");
                 Console.WriteLine("----------------------------------------------------------------------------------------");
