@@ -87,7 +87,7 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string functionName = "susp_GetAccountInfo";
+                    string functionName = "func_GetAccountInfo";
 
                     string sqlQuery = $"SELECT * FROM {functionName}(@musteri_id)";
 
