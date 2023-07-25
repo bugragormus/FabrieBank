@@ -87,56 +87,28 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    using (NpgsqlCommand command = new NpgsqlCommand("usp_GetAccountInfo", connection))
+                    string sql = "SELECT * FROM Hesap WHERE MusteriId = @musteriId";
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                     {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@musteri_id", musteriId);
+                        command.Parameters.AddWithValue("@musteriId", musteriId);
 
-                        // Define OUT parameters to retrieve the result data
-                        command.Parameters.Add(new NpgsqlParameter("hesap_no", NpgsqlDbType.Bigint) { Direction = ParameterDirection.Output });
-                        command.Parameters.Add(new NpgsqlParameter("bakiye", NpgsqlDbType.Numeric) { Direction = ParameterDirection.Output });
-                        command.Parameters.Add(new NpgsqlParameter("doviz_cins", NpgsqlDbType.Integer) { Direction = ParameterDirection.Output });
-                        command.Parameters.Add(new NpgsqlParameter("hesap_adi", NpgsqlDbType.Text) { Direction = ParameterDirection.Output });
-
-                        NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
-                        DataTable dataTable = new DataTable();
-
-                        npgsqlDataAdapter.Fill(dataTable);
-                        foreach (DataRow item in dataTable.Rows)
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
-                            DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
+                            while (reader.Read())
                             {
-                                HesapNo = (long)item["HesapNo"],
-                                Bakiye = (decimal)item["Bakiye"],
-                                MusteriId = (int)item["MusteriId"],
-                                DovizCins = (EnumDovizCinsleri.DovizCinsleri)item["DovizCins"],
-                                HesapAdi = item["HesapAdi"].ToString(),
-                            };
-                            accountInfos.Add(dTOAccountInfo);
+                                DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
+                                {
+                                    HesapNo = reader.GetInt64(0),
+                                    Bakiye = reader.GetDecimal(1),
+                                    MusteriId = reader.GetInt32(2),
+                                    DovizCins = (EnumDovizCinsleri.DovizCinsleri)reader.GetInt32(3),
+                                    HesapAdi = reader.GetString(4),
+                                };
+
+                                accountInfos.Add(dTOAccountInfo);
+                            }
                         }
-
-
-
-                        //command.ExecuteNonQuery();
-
-                        //// Retrieve the result data from OUT parameters
-
-                        //long hesapNo = Convert.ToInt64(command.Parameters["hesap_no"].Value);
-                        //decimal bakiye = Convert.ToDecimal(command.Parameters["bakiye"].Value);
-                        //int dovizCins = Convert.ToInt32(command.Parameters["doviz_cins"].Value);
-                        //string hesapAdi = command.Parameters["hesap_adi"].Value.ToString();
-
-                        ////Create DTOAccountInfo object with retrieved data
-                        //DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
-                        //{
-                        //    HesapNo = hesapNo,
-                        //    Bakiye = bakiye,
-                        //    MusteriId = musteriId,
-                        //    DovizCins = (EnumDovizCinsleri.DovizCinsleri)dovizCins,
-                        //    HesapAdi = hesapAdi,
-                        //};
-
-                        //accountInfos.Add(dTOAccountInfo);
                     }
                 }
             }
@@ -149,7 +121,6 @@ namespace FabrieBank.DAL
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
-
             return accountInfos;
         }
 
