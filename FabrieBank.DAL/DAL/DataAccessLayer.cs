@@ -1299,3 +1299,77 @@ namespace FabrieBank.DAL
         }
     }
 }
+
+
+//public bool DeleteAccount(long hesapNo)
+//{
+//    try
+//    {
+//        using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+//        {
+//            connection.Open();
+
+//            string procedureName = "usp_GetBakiye";
+
+//            string sqlSelectBakiye = $"CALL {procedureName}(@hesapNo)";
+//            using (NpgsqlCommand commandSelectBakiye = new NpgsqlCommand(sqlSelectBakiye, connection))
+//            {
+//                commandSelectBakiye.Parameters.AddWithValue("@hesapNo", hesapNo);
+
+//                commandSelectBakiye.Parameters.Add(new NpgsqlParameter("hesapNo", NpgsqlDbType.Bigint) { Direction = ParameterDirection.Output });
+
+//                NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandSelectBakiye);
+//                DataTable dataTable = new DataTable();
+
+//                npgsqlDataAdapter.Fill(dataTable);
+
+//                foreach (DataRow item in dataTable.Rows)
+//                {
+//                    //object result = commandSelectBakiye.ExecuteScalar();
+//                    if (dataTable == null)
+//                    {
+//                        Console.WriteLine("\nHesap bulunamadı.");
+//                        return false;
+//                    }
+
+//                    decimal bakiye = Convert.ToDecimal(dataTable);
+//                    if (bakiye != 0)
+//                    {
+//                        Console.WriteLine("\nHesap bakiyesi 0 değil. Lütfen bakiyeyi başka bir hesaba aktarın.");
+//                        return false;
+//                    }
+//                }
+
+//            }
+
+//            // Delete the account
+//            string sqlDeleteHesap = "DELETE FROM public.Hesap WHERE HesapNo = @hesapNo";
+//            using (NpgsqlCommand commandDeleteHesap = new NpgsqlCommand(sqlDeleteHesap, connection))
+//            {
+//                commandDeleteHesap.Parameters.AddWithValue("@hesapNo", hesapNo);
+
+//                int affectedRows = commandDeleteHesap.ExecuteNonQuery();
+//                if (affectedRows > 0)
+//                {
+//                    Console.WriteLine("\nHesap başarıyla silindi.");
+//                    return true;
+//                }
+//                else
+//                {
+//                    Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
+//                    return false;
+//                }
+//            }
+//        }
+//    }
+//    catch (Exception ex)
+//    {
+//        // Log the error to the database using the ErrorLoggerDB
+//        MethodBase method = MethodBase.GetCurrentMethod();
+//        LogError(ex, method.ToString());
+
+//        // Handle the error (display a user-friendly message, rollback transactions, etc.)
+//        Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+//        return false;
+//    }
+//}
