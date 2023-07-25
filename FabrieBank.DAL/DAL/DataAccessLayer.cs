@@ -220,7 +220,7 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string sqlSelect = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo";
+                    string sqlSelect = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo"; //func_GetBakiye ile aynı.
                     string sqlUpdate = "UPDATE public.Hesap SET Bakiye = Bakiye + @bakiye WHERE HesapNo = @hesapNo";
 
                     using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
