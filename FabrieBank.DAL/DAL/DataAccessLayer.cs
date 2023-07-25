@@ -80,35 +80,60 @@ namespace FabrieBank.DAL
         public List<DTOAccountInfo> GetAccountInfo(int musteriId)
         {
             List<DTOAccountInfo> accountInfos = new List<DTOAccountInfo>();
-
             try
             {
                 using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
                     connection.Open();
-
-                    string sql = "SELECT * FROM Hesap WHERE MusteriId = @musteriId";
-
-                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+                    using (NpgsqlCommand command = new NpgsqlCommand("usp_GetAccountInfo", connection))
                     {
-                        command.Parameters.AddWithValue("@musteriId", musteriId);
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@musteri_id", musteriId);
 
-                        using (NpgsqlDataReader reader = command.ExecuteReader())
+                        command.Parameters.Add(new NpgsqlParameter("hesap_no", NpgsqlDbType.Bigint) { Direction = ParameterDirection.Output });
+                        command.Parameters.Add(new NpgsqlParameter("bakiye", NpgsqlDbType.Numeric) { Direction = ParameterDirection.Output });
+                        command.Parameters.Add(new NpgsqlParameter("doviz_cins", NpgsqlDbType.Integer) { Direction = ParameterDirection.Output });
+                        command.Parameters.Add(new NpgsqlParameter("hesap_adi", NpgsqlDbType.Text) { Direction = ParameterDirection.Output });
+
+                        //NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
+                        //DataTable dataTable = new DataTable();
+
+                        //npgsqlDataAdapter.Fill(dataTable);
+                        //foreach (DataRow item in dataTable.Rows)
+                        //{
+                        //    DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
+                        //    {
+                        //        HesapNo = (long)item["HesapNo"],
+                        //        Bakiye = (decimal)item["Bakiye"],
+                        //        MusteriId = (int)item["MusteriId"],
+                        //        DovizCins = (EnumDovizCinsleri.DovizCinsleri)item["DovizCins"],
+                        //        HesapAdi = item["HesapAdi"].ToString(),
+                        //    };
+                        //    accountInfos.Add(dTOAccountInfo);
+                        //}
+
+
+
+                        command.ExecuteNonQuery();
+
+                        // Retrieve the result data from OUT parameters
+
+                        long hesapNo = Convert.ToInt64(command.Parameters["hesap_no"].Value);
+                        decimal bakiye = Convert.ToDecimal(command.Parameters["bakiye"].Value);
+                        int dovizCins = Convert.ToInt32(command.Parameters["doviz_cins"].Value);
+                        string hesapAdi = command.Parameters["hesap_adi"].Value.ToString();
+
+                        //Create DTOAccountInfo object with retrieved data
+                        DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
                         {
-                            while (reader.Read())
-                            {
-                                DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
-                                {
-                                    HesapNo = reader.GetInt64(0),
-                                    Bakiye = reader.GetDecimal(1),
-                                    MusteriId = reader.GetInt32(2),
-                                    DovizCins = (EnumDovizCinsleri.DovizCinsleri)reader.GetInt32(3),
-                                    HesapAdi = reader.GetString(4),
-                                };
+                            HesapNo = hesapNo,
+                            Bakiye = bakiye,
+                            MusteriId = musteriId,
+                            DovizCins = (EnumDovizCinsleri.DovizCinsleri)dovizCins,
+                            HesapAdi = hesapAdi,
+                        };
 
-                                accountInfos.Add(dTOAccountInfo);
-                            }
-                        }
+                        accountInfos.Add(dTOAccountInfo);
                     }
                 }
             }
@@ -1291,3 +1316,22 @@ namespace FabrieBank.DAL
         }
     }
 }
+
+
+//CREATE OR REPLACE PROCEDURE usp_GetAccountInfo(
+//	musteri_id INTEGER,
+//    OUT hesap_no BIGINT,
+//    OUT bakiye NUMERIC,
+//    OUT doviz_cins INTEGER,
+//    OUT hesap_adi TEXT
+//)
+//LANGUAGE plpgsql
+//AS
+//$$
+//BEGIN 
+//	SELECT Hesap.HesapNo, Hesap.Bakiye, Hesap.DovizCins, Hesap.HesapAdi
+//	INTO hesap_no, bakiye, doviz_cins, hesap_adi
+//	FROM Hesap
+//	WHERE Hesap.MusteriId = musteri_id;
+//END;
+//$$; çalışıyor ama sadece son row dönüyor çünkü out parametresi override ediyor.
