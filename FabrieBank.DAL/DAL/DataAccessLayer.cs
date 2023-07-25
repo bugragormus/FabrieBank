@@ -137,6 +137,7 @@ namespace FabrieBank.DAL
                     string functionName = "func_GetBakiye";
 
                     string sqlSelectBakiye = $"SELECT * FROM {functionName}(@hesapNo)";
+
                     using (NpgsqlCommand commandSelectBakiye = new NpgsqlCommand(sqlSelectBakiye, connection))
                     {
                         commandSelectBakiye.Parameters.AddWithValue("@hesapNo", hesapNo);
@@ -147,7 +148,7 @@ namespace FabrieBank.DAL
                         npgsqlDataAdapter.Fill(dataTable);
 
                         //object result = commandSelectBakiye.ExecuteScalar();
-                        if (dataTable.Rows.Count == null)
+                        if (dataTable.Rows.Count == 0)
                         {
                             Console.WriteLine("\nHesap bulunamadı.");
                             return false;
@@ -160,14 +161,27 @@ namespace FabrieBank.DAL
                             return false;
                         }
                     }
-                    // Delete the account
-                    string sqlDeleteHesap = "DELETE FROM public.Hesap WHERE HesapNo = @hesapNo";
-                    using (NpgsqlCommand commandDeleteHesap = new NpgsqlCommand(sqlDeleteHesap, connection))
-                    {
-                        commandDeleteHesap.Parameters.AddWithValue("@hesapNo", hesapNo);
 
-                        int affectedRows = commandDeleteHesap.ExecuteNonQuery();
-                        if (affectedRows > 0)
+                    // Delete the account usp_DelHesap
+                    string procedureName = "usp_DelHesap";
+
+                    using (NpgsqlCommand commandDeleteHesap = new NpgsqlCommand(procedureName, connection))
+                    {
+                        commandDeleteHesap.CommandType = CommandType.StoredProcedure;
+
+                        // Add the output parameter
+                        NpgsqlParameter successParam = new NpgsqlParameter("success", NpgsqlDbType.Boolean);
+                        successParam.Direction = ParameterDirection.Output;
+                        commandDeleteHesap.Parameters.Add(successParam);
+
+                        commandDeleteHesap.Parameters.AddWithValue("hesap_no", hesapNo);
+
+                        commandDeleteHesap.ExecuteNonQuery();
+
+                        // Check the output parameter to determine if the delete was successful
+                        bool success = (bool)successParam.Value;
+
+                        if (success)
                         {
                             Console.WriteLine("\nHesap başarıyla silindi.");
                             return true;
@@ -180,7 +194,6 @@ namespace FabrieBank.DAL
                     }
                 }
             }
-
             catch (Exception ex)
             {
                 // Log the error to the database using the ErrorLoggerDB
