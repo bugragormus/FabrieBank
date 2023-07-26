@@ -91,6 +91,7 @@ namespace FabrieBank.Entity
                             {
                                 HesapNo = (long)item["hesap_no"],
                                 Bakiye = (decimal)item["bakiye"],
+                                MusteriId = (int)dataTable.Rows[0]["musteri_id"],
                                 DovizCins = (EnumDovizCinsleri.DovizCinsleri)item["doviz_cins"],
                                 HesapAdi = item["hesap_adi"].ToString(),
                             };
@@ -223,11 +224,10 @@ namespace FabrieBank.Entity
 
                     string functionName = "usp_InsertAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_hesapno, @p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_hesapno", dTOAccount.HesapNo);
                         command.Parameters.AddWithValue("@p_bakiye", dTOAccount.Bakiye);
                         command.Parameters.AddWithValue("@p_musteriid", dTOAccount.MusteriId);
                         command.Parameters.AddWithValue("@p_doviz_cins", dTOAccount.DovizCins);
