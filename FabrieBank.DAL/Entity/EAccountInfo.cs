@@ -11,20 +11,14 @@ namespace FabrieBank.Entity
     public class EAccountInfo
     {
         private DataAccessLayer dataAccessLayer;
+        private NpgsqlConnectionStringBuilder database;
 
         public EAccountInfo()
         {
             dataAccessLayer = new DataAccessLayer();
-        }
-
-        public List<DTOAccountInfo> AccInfo(int musteriId)
-        {
-            return dataAccessLayer.ReadListAccountInfo(musteriId);
-        }
-
-        public bool HesapSil(long hesapNo)
-        {
-            return dataAccessLayer.DeleteAccount(hesapNo);
+            database = dataAccessLayer.CallDB();
+            
+            
         }
 
         public bool UpdateAccountInfo(DTOAccountInfo dTOAccount)
@@ -58,7 +52,7 @@ namespace FabrieBank.Entity
             {
                 // Log the error to the database using the ErrorLoggerDB
                 MethodBase method = MethodBase.GetCurrentMethod();
-                LogError(ex, method.ToString());
+                dataAccessLayer.LogError(ex, method.ToString());
 
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
@@ -111,16 +105,66 @@ namespace FabrieBank.Entity
             {
                 // Log the error to the database using the ErrorLoggerDB
                 MethodBase method = MethodBase.GetCurrentMethod();
-                LogError(ex, method.ToString());
+                dataAccessLayer.LogError(ex, method.ToString());
 
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
-
-            return accountInfos;
+            return new List<DTOAccountInfo>();
         }
 
         public bool DeleteAccount(long hesapNo)
+        {
+            try
+            {
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                {
+                    connection.Open();
+
+                    // Delete the account usp_DelHesap
+                    string procedureName = "usp_DeleteAccountInfo";
+
+                    using (NpgsqlCommand commandDeleteHesap = new NpgsqlCommand(procedureName, connection))
+                    {
+                        commandDeleteHesap.CommandType = CommandType.StoredProcedure;
+
+                        // Add the output parameter
+                        NpgsqlParameter successParam = new NpgsqlParameter("success", NpgsqlDbType.Boolean);
+                        successParam.Direction = ParameterDirection.Output;
+                        commandDeleteHesap.Parameters.Add(successParam);
+
+                        commandDeleteHesap.Parameters.AddWithValue("hesap_no", hesapNo);
+
+                        commandDeleteHesap.ExecuteNonQuery();
+
+                        // Check the output parameter to determine if the delete was successful
+                        bool success = (bool)successParam.Value;
+
+                        if (success)
+                        {
+                            Console.WriteLine("\nHesap başarıyla silindi.");
+                            return true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
+            return false;
+        }
+
+        public bool ReadAccountInfo(long hesapNo)
         {
             try
             {
@@ -155,35 +199,43 @@ namespace FabrieBank.Entity
                             return false;
                         }
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                dataAccessLayer.LogError(ex, method.ToString());
 
-                    // Delete the account usp_DelHesap
-                    string procedureName = "usp_DeleteAccountInfo";
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
+            return false;
+        }
 
-                    using (NpgsqlCommand commandDeleteHesap = new NpgsqlCommand(procedureName, connection))
+        public bool InsertAccountInfo(DTOAccountInfo dTOAccount)
+        {
+            try
+            {
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                {
+                    connection.Open();
+
+                    string functionName = "usp_InsertAccountInfo";
+
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_hesapno, @p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        commandDeleteHesap.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@p_hesapno", dTOAccount.HesapNo);
+                        command.Parameters.AddWithValue("@p_bakiye", dTOAccount.Bakiye);
+                        command.Parameters.AddWithValue("@p_musteriid", dTOAccount.MusteriId);
+                        command.Parameters.AddWithValue("@p_doviz_cins", dTOAccount.DovizCins);
+                        command.Parameters.AddWithValue("@p_hesap_adi", dTOAccount.HesapAdi);
 
-                        // Add the output parameter
-                        NpgsqlParameter successParam = new NpgsqlParameter("success", NpgsqlDbType.Boolean);
-                        successParam.Direction = ParameterDirection.Output;
-                        commandDeleteHesap.Parameters.Add(successParam);
-
-                        commandDeleteHesap.Parameters.AddWithValue("hesap_no", hesapNo);
-
-                        commandDeleteHesap.ExecuteNonQuery();
-
-                        // Check the output parameter to determine if the delete was successful
-                        bool success = (bool)successParam.Value;
-
-                        if (success)
+                        if (command.ExecuteNonQuery() > 0)
                         {
-                            Console.WriteLine("\nHesap başarıyla silindi.");
                             return true;
-                        }
-                        else
-                        {
-                            Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
-                            return false;
                         }
                     }
                 }
@@ -192,12 +244,12 @@ namespace FabrieBank.Entity
             {
                 // Log the error to the database using the ErrorLoggerDB
                 MethodBase method = MethodBase.GetCurrentMethod();
-                LogError(ex, method.ToString());
+                dataAccessLayer.LogError(ex, method.ToString());
 
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-                return false;
             }
+            return false;
         }
     }
 }

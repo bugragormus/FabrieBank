@@ -23,7 +23,7 @@ namespace FabrieBank.DAL
         ************************************************************************************************
         */
 
-        private NpgsqlConnectionStringBuilder CallDB()
+        public NpgsqlConnectionStringBuilder CallDB()
         {
             try
             {
