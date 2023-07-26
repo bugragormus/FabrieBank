@@ -8,18 +8,19 @@ namespace FabrieBank
     {
         private int musteriId;
         private TransactionLogic transactionLogic;
-        private AccInfoDB accInfoDB;
+        private EAccountInfo eAccount;
 
         public TransferMenu(int musteriId)
         {
             this.musteriId = musteriId;
             transactionLogic = new TransactionLogic();
-            accInfoDB = new AccInfoDB();
+            eAccount = new EAccountInfo();
         }
 
         public void ShowMenu()
         {
-            List<DTOAccountInfo> accountInfos = accInfoDB.AccInfo(musteriId);
+            DTOAccountInfo dTOAccount = new DTOAccountInfo();
+            List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
             string choice;
             do

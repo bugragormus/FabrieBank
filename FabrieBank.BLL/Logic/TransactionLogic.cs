@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Security.Principal;
 using FabrieBank.Common;
 using FabrieBank.Common.Enums;
 using FabrieBank.DTO;
@@ -8,12 +9,12 @@ namespace FabrieBank.BLL
 {
     public class TransactionLogic
     {
-        private AccInfoDB accInfoDB;
+        private EAccountInfo eAccount;
         private TransferDB transferDB;
 
         public TransactionLogic()
         {
-            accInfoDB = new AccInfoDB();
+            eAccount = new EAccountInfo();
             transferDB = new TransferDB();
         }
 
@@ -21,7 +22,8 @@ namespace FabrieBank.BLL
         {
             try
             {
-                List<DTOAccountInfo> accountInfos = accInfoDB.AccInfo(musteriId);
+                DTOAccountInfo dTOAccount = new DTOAccountInfo();
+                List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
                 if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count && hedefHesapIndex >= 0 && hedefHesapIndex < accountInfos.Count)
                 {
@@ -70,7 +72,8 @@ namespace FabrieBank.BLL
         {
             try
             {
-                List<DTOAccountInfo> accountInfos = accInfoDB.AccInfo(musteriId);
+                DTOAccountInfo dTOAccount = new DTOAccountInfo();
+                List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
                 if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count)
                 {
@@ -109,7 +112,8 @@ namespace FabrieBank.BLL
         {
             try
             {
-                List<DTOAccountInfo> accountInfos = accInfoDB.AccInfo(musteriId);
+                DTOAccountInfo dTOAccount = new DTOAccountInfo();
+                List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
                 if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count)
                 {

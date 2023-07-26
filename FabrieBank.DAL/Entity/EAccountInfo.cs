@@ -89,11 +89,11 @@ namespace FabrieBank.Entity
                         {
                             DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
                             {
-                                HesapNo = (long)item["hesap_no"],
-                                Bakiye = (decimal)item["bakiye"],
+                                HesapNo = (long)dataTable.Rows[0]["hesap_no"],
+                                Bakiye = (decimal)dataTable.Rows[0]["bakiye"],
                                 MusteriId = (int)dataTable.Rows[0]["musteri_id"],
-                                DovizCins = (EnumDovizCinsleri.DovizCinsleri)item["doviz_cins"],
-                                HesapAdi = item["hesap_adi"].ToString(),
+                                DovizCins = (EnumDovizCinsleri.DovizCinsleri)dataTable.Rows[0]["doviz_cins"],
+                                HesapAdi = dataTable.Rows[0]["hesap_adi"].ToString(),
                             };
                             accountsList.Add(dTOAccountInfo);
                         }
@@ -120,6 +120,9 @@ namespace FabrieBank.Entity
                 {
                     connection.Open();
 
+                    DTOAccountInfo accountInfo = new DTOAccountInfo();
+                    ReadAccountInfo(accountInfo);
+
                     // Delete the account usp_DelHesap
                     string procedureName = "usp_DeleteAccountInfo";
 
@@ -132,7 +135,7 @@ namespace FabrieBank.Entity
                         successParam.Direction = ParameterDirection.Output;
                         commandDeleteHesap.Parameters.Add(successParam);
 
-                        commandDeleteHesap.Parameters.AddWithValue("hesap_no", hesapNo);
+                        commandDeleteHesap.Parameters.AddWithValue("hesap_no", accountInfo.HesapNo);
 
                         commandDeleteHesap.ExecuteNonQuery();
 
