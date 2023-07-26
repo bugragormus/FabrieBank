@@ -1,17 +1,18 @@
 ﻿using System.Reflection;
 using FabrieBank.Entity;
+using FabrieBank.BLL;
 
 namespace FabrieBank
 {
     public class ATMMenu
     {
         private int musteriId;
-        private ATM atm;
+        private AccountLogic atm;
 
         public ATMMenu(int musteriId)
         {
             this.musteriId = musteriId;
-            atm = new ATM();
+            atm = new AccountLogic();
         }
 
         public void ShowMenu()
@@ -60,7 +61,7 @@ namespace FabrieBank
                 Console.Write(">>> ");
                 decimal bakiye = decimal.Parse(Console.ReadLine());
 
-                atm.ParaYatirma(hesapNo, bakiye);
+                atm.Deposit(hesapNo, bakiye);
             }
             catch (Exception ex)
             {
@@ -86,7 +87,7 @@ namespace FabrieBank
                 Console.Write(">>> ");
                 decimal bakiye = decimal.Parse(Console.ReadLine());
 
-                atm.ParaCekme(hesapNo, bakiye);
+                atm.Withdraw(hesapNo, bakiye);
             }
             catch (Exception ex)
             {

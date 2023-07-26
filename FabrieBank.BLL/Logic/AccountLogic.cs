@@ -2,6 +2,7 @@
 using FabrieBank.Common;
 using FabrieBank.Common.DTOs;
 using FabrieBank.Common.Enums;
+using FabrieBank.DAL;
 using FabrieBank.Entity;
 using Npgsql;
 
@@ -9,11 +10,16 @@ namespace FabrieBank.BLL
 {
 	public class AccountLogic
 	{
-        private AccInfoDB accInfoDB;
+
+        private DataAccessLayer dataAccessLayer;
+        private NpgsqlConnectionStringBuilder database;
+        private EAccountInfo eAccount;
 
         public AccountLogic()
         {
-            accInfoDB = new AccInfoDB();
+            eAccount = new EAccountInfo();
+            dataAccessLayer = new DataAccessLayer();
+            database = dataAccessLayer.CallDB();
         }
 
         public string GetDovizCinsi(EnumDovizCinsleri.DovizCinsleri dovizCins)
@@ -37,9 +43,10 @@ namespace FabrieBank.BLL
 
         public void AccountLogicM(DTOCustomer customer)
         {
-            AccInfoDB accInfoDB1 = new AccInfoDB();
+            EAccountInfo eAccount1 = new EAccountInfo();
             int musteriId = customer.MusteriId;
-            List<DTOAccountInfo> accountInfos = accInfoDB1.AccInfo(musteriId);
+            DTOAccountInfo dTOAccount = new DTOAccountInfo();
+            List<DTOAccountInfo> accountInfos = eAccount1.ReadListAccountInfo(dTOAccount);
 
             foreach (DTOAccountInfo accountInfo in accountInfos)
             {
@@ -52,15 +59,15 @@ namespace FabrieBank.BLL
                 Console.WriteLine("==============================\n");
             }
 
-            AccInfoDB accInfoDB = new AccInfoDB();
-            accInfoDB.AccInfo(musteriId);
+            EAccountInfo accInfoDB = new EAccountInfo();
+            accInfoDB.ReadListAccountInfo(dTOAccount);
         }
 
         public void HesapSil()
         {
             Console.WriteLine("\nSilmek istediğiniz hesap numarasını girin: ");
             long hesapNo = long.Parse(Console.ReadLine());
-            _ = accInfoDB.HesapSil(hesapNo);
+            _ = eAccount.DeleteAccount(hesapNo);
         }
 
         public void Deposit(long hesapNo, decimal bakiye)
@@ -105,7 +112,7 @@ namespace FabrieBank.BLL
                                     Timestamp = DateTime.Now
                                 };
 
-                                LogTransaction(transactionLog);
+                                dataAccessLayer.LogTransaction(transactionLog);
 
                                 Console.WriteLine("\nPara yatırma işlemi başarılı.");
                                 Console.WriteLine($"Eski bakiye: {eskiBakiye}");
@@ -126,7 +133,7 @@ namespace FabrieBank.BLL
                                     Timestamp = DateTime.Now
                                 };
 
-                                LogTransaction(transactionLog);
+                                dataAccessLayer.LogTransaction(transactionLog);
 
                                 Console.WriteLine("\nPara yatırma işlemi başarısız.");
                             }
@@ -138,7 +145,7 @@ namespace FabrieBank.BLL
             {
                 // Log the error to the database using the ErrorLoggerDB
                 MethodBase method = MethodBase.GetCurrentMethod();
-                LogError(ex, method.ToString());
+                dataAccessLayer.LogError(ex, method.ToString());
 
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine("An error occurred while performing ParaYatirma operation. Please try again later.");
@@ -186,7 +193,7 @@ namespace FabrieBank.BLL
                                         Timestamp = DateTime.Now
                                     };
 
-                                    LogTransaction(transactionLog);
+                                    dataAccessLayer.LogTransaction(transactionLog);
 
                                     Console.WriteLine("\nPara çekme işlemi başarılı.");
                                     Console.WriteLine($"Eski bakiye: {eskiBakiye}");
@@ -207,7 +214,7 @@ namespace FabrieBank.BLL
                                         Timestamp = DateTime.Now
                                     };
 
-                                    LogTransaction(transactionLog);
+                                    dataAccessLayer.LogTransaction(transactionLog);
 
                                     Console.WriteLine("\nPara çekme işlemi başarısız.");
                                 }
@@ -224,7 +231,7 @@ namespace FabrieBank.BLL
             {
                 // Log the error to the database using the ErrorLoggerDB
                 MethodBase method = MethodBase.GetCurrentMethod();
-                LogError(ex, method.ToString());
+                dataAccessLayer.LogError(ex, method.ToString());
 
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine("An error occurred while performing ParaCekme operation. Please try again later.");
