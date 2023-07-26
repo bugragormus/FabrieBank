@@ -134,7 +134,7 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string functionName = "func_ReadBakiye";
+                    string functionName = "func_ReadAccountInfo";
 
                     string sqlSelectBakiye = $"SELECT * FROM {functionName}(@hesapNo)";
 
@@ -163,7 +163,7 @@ namespace FabrieBank.DAL
                     }
 
                     // Delete the account usp_DelHesap
-                    string procedureName = "usp_DelHesap";
+                    string procedureName = "usp_DeleteAccountInfo";
 
                     using (NpgsqlCommand commandDeleteHesap = new NpgsqlCommand(procedureName, connection))
                     {
@@ -220,7 +220,7 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string functionName = "func_ReadBakiye";
+                    string functionName = "func_ReadAccountInfo";
 
                     string sqlSelect = $"SELECT * FROM {functionName}(@hesapNo)";
                     string sqlUpdate = "UPDATE public.Hesap SET Bakiye = Bakiye + @bakiye WHERE HesapNo = @hesapNo";
