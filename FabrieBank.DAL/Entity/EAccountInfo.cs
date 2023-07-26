@@ -162,7 +162,7 @@ namespace FabrieBank.Entity
             return false;
         }
 
-        public bool ReadAccountInfo(long hesapNo)
+        public DTOAccountInfo ReadAccountInfo(long hesapNo)
         {
             try
             {
@@ -183,18 +183,20 @@ namespace FabrieBank.Entity
 
                         npgsqlDataAdapter.Fill(dataTable);
 
+                        DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
+                        {
+                            HesapNo = (long)dataTable.Rows[0]["hesap_no"],
+                            Bakiye = (decimal)dataTable.Rows[0]["bakiye"],
+                            MusteriId = (int)dataTable.Rows[0]["musteri_id"],
+                            DovizCins = (EnumDovizCinsleri.DovizCinsleri)dataTable.Rows[0]["doviz_cins"],
+                            HesapAdi = dataTable.Rows[0]["hesap_adi"].ToString(),
+                        };
+
                         //object result = commandSelectBakiye.ExecuteScalar();
                         if (dataTable.Rows.Count == 0)
                         {
                             Console.WriteLine("\nHesap bulunamadı.");
-                            return false;
-                        }
-
-                        decimal bakiye = Convert.ToDecimal(dataTable.Rows[0][0]);
-                        if (bakiye != 0)
-                        {
-                            Console.WriteLine("\nHesap bakiyesi 0 değil. Lütfen bakiyeyi başka bir hesaba aktarın.");
-                            return false;
+                            return dTOAccountInfo;
                         }
                     }
                 }
