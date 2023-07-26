@@ -17,8 +17,6 @@ namespace FabrieBank.Entity
         {
             dataAccessLayer = new DataAccessLayer();
             database = dataAccessLayer.CallDB();
-            
-            
         }
 
         public bool UpdateAccountInfo(DTOAccountInfo dTOAccount)
