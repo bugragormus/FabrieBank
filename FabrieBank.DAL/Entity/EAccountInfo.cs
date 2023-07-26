@@ -163,7 +163,7 @@ namespace FabrieBank.Entity
             return false;
         }
 
-        public DTOAccountInfo ReadAccountInfo(long hesapNo)
+        public DTOAccountInfo ReadAccountInfo(DTOAccountInfo accountInfo)
         {
             try
             {
@@ -177,7 +177,7 @@ namespace FabrieBank.Entity
 
                     using (NpgsqlCommand commandSelectBakiye = new NpgsqlCommand(sqlSelectBakiye, connection))
                     {
-                        commandSelectBakiye.Parameters.AddWithValue("@hesapNo", hesapNo);
+                        commandSelectBakiye.Parameters.AddWithValue("@hesapNo", accountInfo.HesapNo);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandSelectBakiye);
                         DataTable dataTable = new DataTable();
@@ -211,7 +211,7 @@ namespace FabrieBank.Entity
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
-            return false;
+            return accountInfo;
         }
 
         public bool InsertAccountInfo(DTOAccountInfo dTOAccount)
