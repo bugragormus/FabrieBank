@@ -87,9 +87,9 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string functionName = "func_GetAccountInfo";
+                    string functionName = "func_ReadListAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@musteri_id)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@musteri_id, null)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
@@ -134,7 +134,7 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string functionName = "func_GetBakiye";
+                    string functionName = "func_ReadBakiye";
 
                     string sqlSelectBakiye = $"SELECT * FROM {functionName}(@hesapNo)";
 
@@ -220,7 +220,9 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string sqlSelect = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo"; //func_GetBakiye ile aynı.
+                    string functionName = "func_ReadBakiye";
+
+                    string sqlSelect = $"SELECT * FROM {functionName}(@hesapNo)";
                     string sqlUpdate = "UPDATE public.Hesap SET Bakiye = Bakiye + @bakiye WHERE HesapNo = @hesapNo";
 
                     using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
