@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using System.Reflection;
 using FabrieBank.Common;
-using FabrieBank.Common.Enums;
 using FabrieBank.DAL;
 using Npgsql;
 using NpgsqlTypes;
