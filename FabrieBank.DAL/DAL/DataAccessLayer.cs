@@ -168,7 +168,7 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string functionName = "func_ReadAccountInfo";
+                    string functionName = "func_ReadAccountNumber";
 
                     string sqlSelectBakiye = $"SELECT * FROM {functionName}(@hesapNo)";
 
