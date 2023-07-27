@@ -52,7 +52,7 @@ namespace FabrieBank
 
         private void TodaysRates()
         {
-            var baseCurrency = EnumDovizCinsleri.DovizCinsleri.TRY;
+            var baseCurrency = 1;//TRY
             var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency).Result;
             currencyTable.DisplayCurrencyRatesTable(baseCurrency, currencyRates);
         }
@@ -67,7 +67,7 @@ namespace FabrieBank
 
                 if (IsValidDate(input, out int day, out int month, out int year))
                 {
-                    var baseCurrency = EnumDovizCinsleri.DovizCinsleri.TRY;
+                    var baseCurrency = 1;//TRY
 
                     // Fetch the currency rates for the custom date
                     var currencyRates = currency.GetCustomDateCurrencyRates(baseCurrency, year, month, day).Result;

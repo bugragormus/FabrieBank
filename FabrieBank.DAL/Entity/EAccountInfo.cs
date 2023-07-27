@@ -60,7 +60,6 @@ namespace FabrieBank.Entity
 
         public List<DTOAccountInfo> ReadListAccountInfo(DTOAccountInfo dTOAccount)
         {
-
             List<DTOAccountInfo> accountsList = new List<DTOAccountInfo>();
 
             try
@@ -71,15 +70,14 @@ namespace FabrieBank.Entity
 
                     string functionName = "func_ReadListAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_bakiye, @p_musteri_id, @p_doviz_cins, @p_hesap_adi)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_bakiye, @p_musteri_id, @p_doviz_cins)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_bakiye", dTOAccount.Bakiye);
-                        command.Parameters.AddWithValue("@p_musteri_id", dTOAccount.MusteriId);
-                        command.Parameters.AddWithValue("@p_doviz_cins", dTOAccount.DovizCins);
-                        command.Parameters.AddWithValue("@p_hesap_adi", dTOAccount.HesapAdi);
-
+                        command.Parameters.AddWithValue("@p_bakiye", NpgsqlDbType.Numeric ,dTOAccount.Bakiye);
+                        command.Parameters.AddWithValue("@p_musteri_id", NpgsqlDbType.Integer ,dTOAccount.MusteriId);
+                        command.Parameters.AddWithValue("@p_doviz_cins", NpgsqlDbType.Integer ,dTOAccount.DovizCins);
+                        //command.Parameters.AddWithValue("@p_hesap_adi", NpgsqlDbType.Varchar ,dTOAccount.HesapAdi);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
                         DataTable dataTable = new DataTable();
@@ -89,11 +87,11 @@ namespace FabrieBank.Entity
                         {
                             DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
                             {
-                                HesapNo = (long)dataTable.Rows[0]["hesap_no"],
-                                Bakiye = (decimal)dataTable.Rows[0]["bakiye"],
-                                MusteriId = (int)dataTable.Rows[0]["musteri_id"],
-                                DovizCins = (EnumDovizCinsleri.DovizCinsleri)dataTable.Rows[0]["doviz_cins"],
-                                HesapAdi = dataTable.Rows[0]["hesap_adi"].ToString(),
+                                HesapNo = (long)item["hesap_no"],
+                                Bakiye = (decimal)item["bakiye"],
+                                MusteriId = (int)item["musteri_id"],
+                                DovizCins = (int)item["doviz_cins"],
+                                HesapAdi = item["hesap_adi"] != DBNull.Value ? item["hesap_adi"].ToString() : null
                             };
                             accountsList.Add(dTOAccountInfo);
                         }
@@ -109,7 +107,7 @@ namespace FabrieBank.Entity
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
-            return new List<DTOAccountInfo>();
+            return accountsList;
         }
 
         public bool DeleteAccount(long hesapNo)
@@ -192,7 +190,7 @@ namespace FabrieBank.Entity
                             HesapNo = (long)dataTable.Rows[0]["hesap_no"],
                             Bakiye = (decimal)dataTable.Rows[0]["bakiye"],
                             MusteriId = (int)dataTable.Rows[0]["musteri_id"],
-                            DovizCins = (EnumDovizCinsleri.DovizCinsleri)dataTable.Rows[0]["doviz_cins"],
+                            DovizCins = (int)dataTable.Rows[0]["doviz_cins"],
                             HesapAdi = dataTable.Rows[0]["hesap_adi"].ToString(),
                         };
 

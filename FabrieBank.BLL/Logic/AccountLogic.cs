@@ -22,45 +22,52 @@ namespace FabrieBank.BLL
             database = dataAccessLayer.CallDB();
         }
 
-        public string GetDovizCinsi(EnumDovizCinsleri.DovizCinsleri dovizCins)
-        {
-            switch (dovizCins)
-            {
-                case EnumDovizCinsleri.DovizCinsleri.TRY:
-                    return "Türk Lirası (TRY)";
-                case EnumDovizCinsleri.DovizCinsleri.USD:
-                    return "Amerikan Doları (USD)";
-                case EnumDovizCinsleri.DovizCinsleri.EUR:
-                    return "Euro (EUR)";
-                case EnumDovizCinsleri.DovizCinsleri.GBP:
-                    return "Gram Altın (GBP)";
-                case EnumDovizCinsleri.DovizCinsleri.CHF:
-                    return "Gram Gümüş (CHF)";
-                default:
-                    return string.Empty;
-            }
-        }
+        //public string GetDovizCinsi(int dovizCins)
+        //{
+        //    //switch (dovizCins)
+        //    //{
+        //    //    case int.TRY:
+        //    //        return "Türk Lirası (TRY)";
+        //    //    case int.USD:
+        //    //        return "Amerikan Doları (USD)";
+        //    //    case int.EUR:
+        //    //        return "Euro (EUR)";
+        //    //    case int.GBP:
+        //    //        return "Gram Altın (GBP)";
+        //    //    case int.CHF:
+        //    //        return "Gram Gümüş (CHF)";
+        //    //    default:
+        //    //        return string.Empty;
+        //    //}
+        //}
 
         public void AccountLogicM(DTOCustomer customer)
         {
             EAccountInfo eAccount1 = new EAccountInfo();
-            int musteriId = customer.MusteriId;
-            DTOAccountInfo dTOAccount = new DTOAccountInfo();
+            DTOAccountInfo dTOAccount = new DTOAccountInfo()
+            {
+                MusteriId = customer.MusteriId,
+            };
             List<DTOAccountInfo> accountInfos = eAccount1.ReadListAccountInfo(dTOAccount);
 
             foreach (DTOAccountInfo accountInfo in accountInfos)
             {
-                string dovizCinsi = GetDovizCinsi(accountInfo.DovizCins);
+                //string dovizCinsi = GetDovizCinsi(accountInfo.DovizCins);
 
                 Console.WriteLine($"Hesap No: {accountInfo.HesapNo}");
                 Console.WriteLine($"Bakiye: {accountInfo.Bakiye}");
-                Console.WriteLine($"DovizCins: {dovizCinsi}");
+                Console.WriteLine($"DovizCins: {accountInfo.DovizCins}");
                 Console.WriteLine($"HesapAdi: {accountInfo.HesapAdi}");
                 Console.WriteLine("==============================\n");
             }
 
             EAccountInfo accInfoDB = new EAccountInfo();
             accInfoDB.ReadListAccountInfo(dTOAccount);
+            if (accountInfos.Count == 0)
+            {
+                Console.WriteLine("yok");
+            }
+
         }
 
         public void HesapSil()

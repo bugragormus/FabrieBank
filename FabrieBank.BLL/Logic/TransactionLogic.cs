@@ -29,8 +29,8 @@ namespace FabrieBank.BLL
                 {
                     long kaynakHesapNo = accountInfos[kaynakHesapIndex].HesapNo;
                     long hedefHesapNo = accountInfos[hedefHesapIndex].HesapNo;
-                    EnumDovizCinsleri.DovizCinsleri kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
-                    EnumDovizCinsleri.DovizCinsleri hedefDovizCinsi = accountInfos[hedefHesapIndex].DovizCins;
+                    int kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
+                    int hedefDovizCinsi = accountInfos[hedefHesapIndex].DovizCins;
 
                     if (KaynakVeHedefDovizCinsleriUyusuyorMu(kaynakHesapNo, hedefHesapNo, kaynakDovizCinsi, hedefDovizCinsi))
                     {
@@ -78,9 +78,9 @@ namespace FabrieBank.BLL
                 if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count)
                 {
                     long kaynakHesapNo = accountInfos[kaynakHesapIndex].HesapNo;
-                    EnumDovizCinsleri.DovizCinsleri kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
+                    int kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
 
-                    if (kaynakDovizCinsi == GetDovizCinsiFromHesapNo(hedefHesapNo))
+                    if (kaynakDovizCinsi == (hedefHesapNo))
                     {
                         bool isOwnAccount = IsOwnAccount(accountInfos, hedefHesapNo);
                         if (isOwnAccount)
@@ -118,9 +118,9 @@ namespace FabrieBank.BLL
                 if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count)
                 {
                     long kaynakHesapNo = accountInfos[kaynakHesapIndex].HesapNo;
-                    EnumDovizCinsleri.DovizCinsleri kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
+                    int kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
 
-                    if (kaynakDovizCinsi == GetDovizCinsiFromHesapNo(hedefHesapNo))
+                    if (kaynakDovizCinsi == (hedefHesapNo))
                     {
                         bool isOwnAccount = IsOwnAccount(accountInfos, hedefHesapNo);
                         if (isOwnAccount)
@@ -160,7 +160,7 @@ namespace FabrieBank.BLL
             return false;
         }
 
-        private bool KaynakVeHedefDovizCinsleriUyusuyorMu(long kaynakHesapNo, long hedefHesapNo, EnumDovizCinsleri.DovizCinsleri kaynakDovizCinsi, EnumDovizCinsleri.DovizCinsleri hedefDovizCinsi)
+        private bool KaynakVeHedefDovizCinsleriUyusuyorMu(long kaynakHesapNo, long hedefHesapNo, int kaynakDovizCinsi, int hedefDovizCinsi)
         {
             string kaynakDovizKod = kaynakHesapNo.ToString().Substring(0, 1);
             string hedefDovizKod = hedefHesapNo.ToString().Substring(0, 1);
@@ -168,26 +168,26 @@ namespace FabrieBank.BLL
             return kaynakDovizKod == hedefDovizKod;
         }
 
-        private EnumDovizCinsleri.DovizCinsleri GetDovizCinsiFromHesapNo(long hesapNo)
-        {
-            string dovizKod = hesapNo.ToString().Substring(0, 1);
+        //private int GetDovizCinsiFromHesapNo(long hesapNo)
+        //{
+        //    string dovizKod = hesapNo.ToString().Substring(0, 1);
 
-            switch (dovizKod)
-            {
-                case "1":
-                    return EnumDovizCinsleri.DovizCinsleri.TRY;
-                case "2":
-                    return EnumDovizCinsleri.DovizCinsleri.USD;
-                case "3":
-                    return EnumDovizCinsleri.DovizCinsleri.EUR;
-                case "4":
-                    return EnumDovizCinsleri.DovizCinsleri.GBP;
-                case "5":
-                    return EnumDovizCinsleri.DovizCinsleri.CHF;
-                default:
-                    throw new Exception("Geçersiz döviz kodu");
-            }
-        }
+        //    switch (dovizKod)
+        //    {
+        //        case "1":
+        //            return int.TRY;
+        //        case "2":
+        //            return int.USD;
+        //        case "3":
+        //            return int.EUR;
+        //        case "4":
+        //            return int.GBP;
+        //        case "5":
+        //            return int.CHF;
+        //        default:
+        //            throw new Exception("Geçersiz döviz kodu");
+        //    }
+        //}
 
         private void LogAndHandleError(Exception ex)
         {

@@ -9,7 +9,7 @@ namespace FabrieBank
 {
     public class CurrencyTable
     {
-        public void DisplayCurrencyRatesTable(EnumDovizCinsleri.DovizCinsleri baseCurrency, Dictionary<string, DTOCurrencyRate> currencyRates)
+        public void DisplayCurrencyRatesTable(int baseCurrency, Dictionary<string, DTOCurrencyRate> currencyRates)
         {
             try
             {
