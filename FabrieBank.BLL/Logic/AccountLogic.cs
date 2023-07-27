@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Security.Principal;
 using FabrieBank.Common;
 using FabrieBank.Common.DTOs;
 using FabrieBank.Common.Enums;
@@ -22,24 +23,24 @@ namespace FabrieBank.BLL
             database = dataAccessLayer.CallDB();
         }
 
-        //public string GetDovizCinsi(int dovizCins)
-        //{
-        //    //switch (dovizCins)
-        //    //{
-        //    //    case int.TRY:
-        //    //        return "Türk Lirası (TRY)";
-        //    //    case int.USD:
-        //    //        return "Amerikan Doları (USD)";
-        //    //    case int.EUR:
-        //    //        return "Euro (EUR)";
-        //    //    case int.GBP:
-        //    //        return "Gram Altın (GBP)";
-        //    //    case int.CHF:
-        //    //        return "Gram Gümüş (CHF)";
-        //    //    default:
-        //    //        return string.Empty;
-        //    //}
-        //}
+        public string GetDovizCinsi(int dovizCins)
+        {
+            switch (dovizCins)
+            {
+                case 1:
+                    return "Türk Lirası (TRY)";
+                case 2:
+                    return "Amerikan Doları (USD)";
+                case 3:
+                    return "Euro (EUR)";
+                case 4:
+                    return "Gram Altın (GBP)";
+                case 5:
+                    return "Gram Gümüş (CHF)";
+                default:
+                    return string.Empty;
+            }
+        }
 
         public void AccountLogicM(DTOCustomer customer)
         {
@@ -52,7 +53,7 @@ namespace FabrieBank.BLL
 
             foreach (DTOAccountInfo accountInfo in accountInfos)
             {
-                //string dovizCinsi = GetDovizCinsi(accountInfo.DovizCins);
+                string dovizCinsi = GetDovizCinsi(accountInfo.DovizCins);
 
                 Console.WriteLine($"Hesap No: {accountInfo.HesapNo}");
                 Console.WriteLine($"Bakiye: {accountInfo.Bakiye}");
@@ -72,9 +73,10 @@ namespace FabrieBank.BLL
 
         public void HesapSil()
         {
+            DTOAccountInfo dTOAccount = new DTOAccountInfo();
             Console.WriteLine("\nSilmek istediğiniz hesap numarasını girin: ");
-            long hesapNo = long.Parse(Console.ReadLine());
-            _ = eAccount.DeleteAccount(hesapNo);
+            dTOAccount.HesapNo = long.Parse(Console.ReadLine());
+            _ = eAccount.DeleteAccountInfo(dTOAccount);
         }
 
         public void Deposit(long hesapNo, decimal bakiye)

@@ -168,26 +168,26 @@ namespace FabrieBank.BLL
             return kaynakDovizKod == hedefDovizKod;
         }
 
-        //private int GetDovizCinsiFromHesapNo(long hesapNo)
-        //{
-        //    string dovizKod = hesapNo.ToString().Substring(0, 1);
+        private int GetDovizCinsiFromHesapNo(long hesapNo)
+        {
+            string dovizKod = hesapNo.ToString().Substring(0, 1);
 
-        //    switch (dovizKod)
-        //    {
-        //        case "1":
-        //            return int.TRY;
-        //        case "2":
-        //            return int.USD;
-        //        case "3":
-        //            return int.EUR;
-        //        case "4":
-        //            return int.GBP;
-        //        case "5":
-        //            return int.CHF;
-        //        default:
-        //            throw new Exception("Geçersiz döviz kodu");
-        //    }
-        //}
+            switch (dovizKod)
+            {
+                case "1":
+                    return 1;
+                case "2":
+                    return 2;
+                case "3":
+                    return 3;
+                case "4":
+                    return 4;
+                case "5":
+                    return 5;
+                default:
+                    throw new Exception("Geçersiz döviz kodu");
+            }
+        }
 
         private void LogAndHandleError(Exception ex)
         {

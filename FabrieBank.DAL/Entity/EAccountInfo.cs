@@ -19,6 +19,11 @@ namespace FabrieBank.Entity
             database = dataAccessLayer.CallDB();
         }
 
+        /// <summary>
+        /// Hesap Tablosundaki Verileri Yeniler
+        /// </summary>
+        /// <param name="dTOAccount"></param>
+        /// <returns></returns>
         public bool UpdateAccountInfo(DTOAccountInfo dTOAccount)
         {
             try
@@ -58,6 +63,11 @@ namespace FabrieBank.Entity
             return false;
         }
 
+        /// <summary>
+        /// Hesap Tablosundan Liste Döndürür
+        /// </summary>
+        /// <param name="dTOAccount"></param>
+        /// <returns></returns>
         public List<DTOAccountInfo> ReadListAccountInfo(DTOAccountInfo dTOAccount)
         {
             List<DTOAccountInfo> accountsList = new List<DTOAccountInfo>();
@@ -74,9 +84,9 @@ namespace FabrieBank.Entity
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_bakiye", NpgsqlDbType.Numeric ,dTOAccount.Bakiye);
-                        command.Parameters.AddWithValue("@p_musteri_id", NpgsqlDbType.Integer ,dTOAccount.MusteriId);
-                        command.Parameters.AddWithValue("@p_doviz_cins", NpgsqlDbType.Integer ,dTOAccount.DovizCins);
+                        command.Parameters.AddWithValue("@p_bakiye", NpgsqlDbType.Numeric, dTOAccount.Bakiye);
+                        command.Parameters.AddWithValue("@p_musteri_id", NpgsqlDbType.Integer, dTOAccount.MusteriId);
+                        command.Parameters.AddWithValue("@p_doviz_cins", NpgsqlDbType.Integer, dTOAccount.DovizCins);
                         //command.Parameters.AddWithValue("@p_hesap_adi", NpgsqlDbType.Varchar ,dTOAccount.HesapAdi);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
@@ -110,60 +120,78 @@ namespace FabrieBank.Entity
             return accountsList;
         }
 
-        public bool DeleteAccount(long hesapNo)
+        /// <summary>
+        /// Hesap Tablosundan Veri Siler
+        /// </summary>
+        /// <param name="hesapNo">Müşteri hesap no</param>
+        /// <returns></returns>
+        public bool DeleteAccountInfo(DTOAccountInfo dTOAccount)
         {
-            try
+            dTOAccount = ReadAccountInfo(dTOAccount);
+
+            if (dTOAccount != null && dTOAccount.Bakiye == 0)
             {
-                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                try
                 {
-                    connection.Open();
-
-                    DTOAccountInfo accountInfo = new DTOAccountInfo();
-                    ReadAccountInfo(accountInfo);
-
-                    // Delete the account usp_DelHesap
-                    string procedureName = "usp_DeleteAccountInfo";
-
-                    using (NpgsqlCommand commandDeleteHesap = new NpgsqlCommand(procedureName, connection))
+                    using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                     {
-                        commandDeleteHesap.CommandType = CommandType.StoredProcedure;
+                        connection.Open();
 
-                        // Add the output parameter
-                        NpgsqlParameter successParam = new NpgsqlParameter("success", NpgsqlDbType.Boolean);
-                        successParam.Direction = ParameterDirection.Output;
-                        commandDeleteHesap.Parameters.Add(successParam);
+                        // Delete the account using func_DeleteAccountInfo function
+                        string functionName = "func_DeleteAccountInfo";
 
-                        commandDeleteHesap.Parameters.AddWithValue("hesap_no", accountInfo.HesapNo);
+                        string sqlQuery = $"SELECT * FROM {functionName}(@hesap_no)";
 
-                        commandDeleteHesap.ExecuteNonQuery();
-
-                        // Check the output parameter to determine if the delete was successful
-                        bool success = (bool)successParam.Value;
-
-                        if (success)
+                        using (NpgsqlCommand commandDeleteHesap = new NpgsqlCommand(sqlQuery, connection))
                         {
-                            Console.WriteLine("\nHesap başarıyla silindi.");
-                            return true;
-                        }
-                        else
-                        {
-                            Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
+                            commandDeleteHesap.Parameters.AddWithValue("@hesap_no", dTOAccount.HesapNo);
+
+                            NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandDeleteHesap);
+                            DataTable dataTable = new DataTable();
+
+                            npgsqlDataAdapter.Fill(dataTable);
+
+                            // Check the result in the DataTable
+                            if (dataTable.Rows.Count > 0)
+                            {
+                                bool success = (bool)dataTable.Rows[0]["func_deleteaccountinfo"];
+
+                                if (success)
+                                {
+                                    Console.WriteLine("\nHesap başarıyla silindi.");
+                                    return true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
+                                }
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                dataAccessLayer.LogError(ex, method.ToString());
+                catch (Exception ex)
+                {
+                    // Log the error to the database using the ErrorLoggerDB
+                    MethodBase method = MethodBase.GetCurrentMethod();
+                    dataAccessLayer.LogError(ex, method.ToString());
 
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                    // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                    Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("\nHesap bakiyesi 0 değil. Lütfen bakiyeyi başka bir hesaba aktarın.");
             }
             return false;
         }
 
+
+        /// <summary>
+        /// Hesap Tablosundan Tek Satır Döndürür
+        /// </summary>
+        /// <param name="accountInfo"></param>
+        /// <returns></returns>
         public DTOAccountInfo ReadAccountInfo(DTOAccountInfo accountInfo)
         {
             try
@@ -215,6 +243,11 @@ namespace FabrieBank.Entity
             return accountInfo;
         }
 
+        /// <summary>
+        /// Hesap Tablosuna Veri Gönderir
+        /// </summary>
+        /// <param name="dTOAccount"></param>
+        /// <returns></returns>
         public bool InsertAccountInfo(DTOAccountInfo dTOAccount)
         {
             try
