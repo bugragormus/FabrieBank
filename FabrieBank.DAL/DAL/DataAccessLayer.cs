@@ -3,7 +3,6 @@ using FabrieBank.Common.Enums;
 using System.Reflection;
 using Npgsql;
 using FabrieBank.Common.DTOs;
-using NpgsqlTypes;
 using System.Data;
 
 namespace FabrieBank.DAL
@@ -16,7 +15,7 @@ namespace FabrieBank.DAL
         {
             database = CallDB();
         }
-
+        
         /*
         ************************************************************************************************
         *******************************************DB Bağlanma******************************************
@@ -158,6 +157,58 @@ namespace FabrieBank.DAL
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
                 return hesapNumarasi;
             }
+        }
+
+
+        public DTOAccountInfo ReadAccountNumber(DTOAccountInfo accountInfo)
+        {
+            try
+            {
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                {
+                    connection.Open();
+
+                    string functionName = "func_ReadAccountInfo";
+
+                    string sqlSelectBakiye = $"SELECT * FROM {functionName}(@hesapNo)";
+
+                    using (NpgsqlCommand commandSelectBakiye = new NpgsqlCommand(sqlSelectBakiye, connection))
+                    {
+                        commandSelectBakiye.Parameters.AddWithValue("@hesapNo", accountInfo.HesapNo);
+
+                        NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandSelectBakiye);
+                        DataTable dataTable = new DataTable();
+
+                        npgsqlDataAdapter.Fill(dataTable);
+
+                        DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
+                        {
+                            HesapNo = (long)dataTable.Rows[0]["hesap_no"],
+                            Bakiye = (decimal)dataTable.Rows[0]["bakiye"],
+                            MusteriId = (int)dataTable.Rows[0]["musteri_id"],
+                            DovizCins = (int)dataTable.Rows[0]["doviz_cins"],
+                            HesapAdi = dataTable.Rows[0]["hesap_adi"].ToString(),
+                        };
+
+                        //object result = commandSelectBakiye.ExecuteScalar();
+                        if (dataTable.Rows.Count == 0)
+                        {
+                            Console.WriteLine("\nHesap bulunamadı.");
+                            return dTOAccountInfo;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
+            return accountInfo;
         }
 
         /*
