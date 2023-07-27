@@ -19,11 +19,11 @@ namespace FabrieBank.Entity
         }
 
         /// <summary>
-        /// Hesap Tablosundaki Verileri Yeniler
+        /// Hesap Tablosundan Tek Satır Döndürür
         /// </summary>
-        /// <param name="dTOAccount"></param>
+        /// <param name="accountInfo"></param>
         /// <returns></returns>
-        public bool UpdateAccountInfo(DTOAccountInfo dTOAccount)
+        public DTOAccountInfo ReadAccountInfo(DTOAccountInfo accountInfo)
         {
             try
             {
@@ -31,21 +31,33 @@ namespace FabrieBank.Entity
                 {
                     connection.Open();
 
-                    string functionName = "usp_UpdateAccountInfo";
+                    string functionName = "func_ReadAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_hesapno, @p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
+                    string sqlSelectBakiye = $"SELECT * FROM {functionName}(@hesapNo)";
 
-                    using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
+                    using (NpgsqlCommand commandSelectBakiye = new NpgsqlCommand(sqlSelectBakiye, connection))
                     {
-                        command.Parameters.AddWithValue("@p_hesapno", dTOAccount.HesapNo);
-                        command.Parameters.AddWithValue("@p_bakiye", dTOAccount.Bakiye);
-                        command.Parameters.AddWithValue("@p_musteriid", dTOAccount.MusteriId);
-                        command.Parameters.AddWithValue("@p_doviz_cins", dTOAccount.DovizCins);
-                        command.Parameters.AddWithValue("@p_hesap_adi", dTOAccount.HesapAdi);
+                        commandSelectBakiye.Parameters.AddWithValue("@hesapNo", accountInfo.HesapNo);
 
-                        if (command.ExecuteNonQuery() > 0)
+                        NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandSelectBakiye);
+                        DataTable dataTable = new DataTable();
+
+                        npgsqlDataAdapter.Fill(dataTable);
+
+                        DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
                         {
-                            return true;
+                            HesapNo = (long)dataTable.Rows[0]["hesap_no"],
+                            Bakiye = (decimal)dataTable.Rows[0]["bakiye"],
+                            MusteriId = (int)dataTable.Rows[0]["musteri_id"],
+                            DovizCins = (int)dataTable.Rows[0]["doviz_cins"],
+                            HesapAdi = dataTable.Rows[0]["hesap_adi"].ToString(),
+                        };
+
+                        //object result = commandSelectBakiye.ExecuteScalar();
+                        if (dataTable.Rows.Count == 0)
+                        {
+                            Console.WriteLine("\nHesap bulunamadı.");
+                            return dTOAccountInfo;
                         }
                     }
                 }
@@ -59,7 +71,7 @@ namespace FabrieBank.Entity
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
-            return false;
+            return accountInfo;
         }
 
         /// <summary>
@@ -117,6 +129,93 @@ namespace FabrieBank.Entity
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
             return accountsList;
+        }
+
+        /// <summary>
+        /// Hesap Tablosuna Veri Gönderir
+        /// </summary>
+        /// <param name="dTOAccount"></param>
+        /// <returns></returns>
+        public bool InsertAccountInfo(DTOAccountInfo dTOAccount)
+        {
+            try
+            {
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                {
+                    connection.Open();
+
+                    string functionName = "usp_InsertAccountInfo";
+
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@p_bakiye", dTOAccount.Bakiye);
+                        command.Parameters.AddWithValue("@p_musteriid", dTOAccount.MusteriId);
+                        command.Parameters.AddWithValue("@p_doviz_cins", dTOAccount.DovizCins);
+                        command.Parameters.AddWithValue("@p_hesap_adi", dTOAccount.HesapAdi);
+
+                        if (command.ExecuteNonQuery() > 0)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Hesap Tablosundaki Verileri Yeniler
+        /// </summary>
+        /// <param name="dTOAccount"></param>
+        /// <returns></returns>
+        public bool UpdateAccountInfo(DTOAccountInfo dTOAccount)
+        {
+            try
+            {
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                {
+                    connection.Open();
+
+                    string functionName = "usp_UpdateAccountInfo";
+
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_hesapno, @p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@p_hesapno", dTOAccount.HesapNo);
+                        command.Parameters.AddWithValue("@p_bakiye", dTOAccount.Bakiye);
+                        command.Parameters.AddWithValue("@p_musteriid", dTOAccount.MusteriId);
+                        command.Parameters.AddWithValue("@p_doviz_cins", dTOAccount.DovizCins);
+                        command.Parameters.AddWithValue("@p_hesap_adi", dTOAccount.HesapAdi);
+
+                        if (command.ExecuteNonQuery() > 0)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
+            return false;
         }
 
         /// <summary>
@@ -181,106 +280,6 @@ namespace FabrieBank.Entity
             else
             {
                 Console.WriteLine("\nHesap bakiyesi 0 değil. Lütfen bakiyeyi başka bir hesaba aktarın.");
-            }
-            return false;
-        }
-
-
-        /// <summary>
-        /// Hesap Tablosundan Tek Satır Döndürür
-        /// </summary>
-        /// <param name="accountInfo"></param>
-        /// <returns></returns>
-        public DTOAccountInfo ReadAccountInfo(DTOAccountInfo accountInfo)
-        {
-            try
-            {
-                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
-                {
-                    connection.Open();
-
-                    string functionName = "func_ReadAccountInfo";
-
-                    string sqlSelectBakiye = $"SELECT * FROM {functionName}(@hesapNo)";
-
-                    using (NpgsqlCommand commandSelectBakiye = new NpgsqlCommand(sqlSelectBakiye, connection))
-                    {
-                        commandSelectBakiye.Parameters.AddWithValue("@hesapNo", accountInfo.HesapNo);
-
-                        NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandSelectBakiye);
-                        DataTable dataTable = new DataTable();
-
-                        npgsqlDataAdapter.Fill(dataTable);
-
-                        DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
-                        {
-                            HesapNo = (long)dataTable.Rows[0]["hesap_no"],
-                            Bakiye = (decimal)dataTable.Rows[0]["bakiye"],
-                            MusteriId = (int)dataTable.Rows[0]["musteri_id"],
-                            DovizCins = (int)dataTable.Rows[0]["doviz_cins"],
-                            HesapAdi = dataTable.Rows[0]["hesap_adi"].ToString(),
-                        };
-
-                        //object result = commandSelectBakiye.ExecuteScalar();
-                        if (dataTable.Rows.Count == 0)
-                        {
-                            Console.WriteLine("\nHesap bulunamadı.");
-                            return dTOAccountInfo;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-            }
-            return accountInfo;
-        }
-
-        /// <summary>
-        /// Hesap Tablosuna Veri Gönderir
-        /// </summary>
-        /// <param name="dTOAccount"></param>
-        /// <returns></returns>
-        public bool InsertAccountInfo(DTOAccountInfo dTOAccount)
-        {
-            try
-            {
-                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
-                {
-                    connection.Open();
-
-                    string functionName = "usp_InsertAccountInfo";
-
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
-
-                    using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@p_bakiye", dTOAccount.Bakiye);
-                        command.Parameters.AddWithValue("@p_musteriid", dTOAccount.MusteriId);
-                        command.Parameters.AddWithValue("@p_doviz_cins", dTOAccount.DovizCins);
-                        command.Parameters.AddWithValue("@p_hesap_adi", dTOAccount.HesapAdi);
-
-                        if (command.ExecuteNonQuery() > 0)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
             return false;
         }
