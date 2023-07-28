@@ -1,4 +1,4 @@
-﻿using FabrieBank.Common;
+﻿using FabrieBank.DAL.Common.DTOs;
 
 namespace FabrieBank
 {

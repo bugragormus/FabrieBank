@@ -1,18 +1,15 @@
 ﻿using System.Reflection;
-using System.Security.Principal;
-using FabrieBank.Common;
-using FabrieBank.Common.Enums;
-using FabrieBank.DTO;
+using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.Entity;
 
 namespace FabrieBank.BLL
 {
-    public class TransactionLogic
+    public class BTransaction
     {
         private EAccountInfo eAccount;
         private TransferDB transferDB;
 
-        public TransactionLogic()
+        public BTransaction()
         {
             eAccount = new EAccountInfo();
             transferDB = new TransferDB();

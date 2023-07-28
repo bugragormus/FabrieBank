@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
-using FabrieBank.Common;
-using FabrieBank.Entity;
+using FabrieBank.DAL.Common.DTOs;
 
 namespace FabrieBank
 {
@@ -103,8 +102,8 @@ namespace FabrieBank
                     Email = musteriEmail
                 };
 
-                CreateCustomerDB createCustomerDB = new CreateCustomerDB();
-                createCustomerDB.CreateCustomer(customer);
+                //CreateCustomerDB createCustomerDB = new CreateCustomerDB();
+                //createCustomerDB.CreateCustomer(customer);
             }
             catch (Exception ex)
             {

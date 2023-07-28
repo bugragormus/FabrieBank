@@ -1,5 +1,4 @@
-﻿using FabrieBank.Common.Enums;
-namespace FabrieBank.Common
+﻿namespace FabrieBank.DAL.Common.DTOs
 {
     public class DTOAccountInfo
     {

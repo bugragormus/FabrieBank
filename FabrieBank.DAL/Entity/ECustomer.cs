@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using System.Reflection;
-using FabrieBank.Common;
+using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL;
 using Npgsql;
 using NpgsqlTypes;

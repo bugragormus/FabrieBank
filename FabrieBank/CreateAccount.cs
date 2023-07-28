@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using FabrieBank.Common;
+using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.Entity;
 
 namespace FabrieBank

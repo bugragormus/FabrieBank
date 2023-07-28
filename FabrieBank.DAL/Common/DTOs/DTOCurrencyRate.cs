@@ -1,4 +1,4 @@
-﻿namespace FabrieBank.Common.DTOs
+﻿namespace FabrieBank.DAL.Common.DTOs
 {
     public class DTOCurrencyRate
     {

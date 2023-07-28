@@ -86,12 +86,11 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "func_ReadListCurrency";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_id, @p_cins)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_cins)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_id", NpgsqlDbType.Integer, currency.Id);
-                        command.Parameters.AddWithValue("@p_cins", NpgsqlDbType.Varchar, currency.DovizCins);
+                        command.Parameters.AddWithValue("@p_cins", NpgsqlDbType.Varchar, (object)currency.DovizCins ?? DBNull.Value);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
                         DataTable dataTable = new DataTable();
@@ -101,8 +100,8 @@ namespace FabrieBank.DAL.Entity
                         {
                             DTOCurrency dTOCurrency = new DTOCurrency
                             {
-                                Id = (int)dataTable.Rows[0]["id"],
-                                DovizCins = dataTable.Rows[0]["cins"].ToString(),
+                                Id = (int)item["id"],
+                                DovizCins = item["cins"].ToString(),
                             };
                             currenciesList.Add(dTOCurrency);
                         }

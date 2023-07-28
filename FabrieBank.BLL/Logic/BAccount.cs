@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
-using FabrieBank.Common;
-using FabrieBank.Common.DTOs;
+using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.Common.Enums;
 using FabrieBank.DAL;
 using FabrieBank.Entity;
@@ -8,14 +7,14 @@ using Npgsql;
 
 namespace FabrieBank.BLL
 {
-	public class AccountLogic
+	public class BAccount
 	{
 
         private DataAccessLayer dataAccessLayer;
         private NpgsqlConnectionStringBuilder database;
         private EAccountInfo eAccount;
 
-        public AccountLogic()
+        public BAccount()
         {
             eAccount = new EAccountInfo();
             dataAccessLayer = new DataAccessLayer();

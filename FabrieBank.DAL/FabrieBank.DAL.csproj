@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Entity\" />
-    <None Remove="DAL\" />
     <None Remove="Interfaces\" />
     <None Remove="Logs\" />
     <None Remove="Common\" />
@@ -21,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entity\" />
-    <Folder Include="DAL\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Logs\" />
     <Folder Include="Common\" />

@@ -1,6 +1,4 @@
-﻿using FabrieBank.Common.Enums;
-
-namespace FabrieBank.DTO
+﻿namespace FabrieBank.DAL.Common.DTOs
 {
     public class DTODovizHareket
     {

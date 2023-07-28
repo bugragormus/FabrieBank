@@ -1,4 +1,4 @@
-﻿using FabrieBank.Common;
+﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.BLL;
 
 namespace FabrieBank
@@ -139,7 +139,7 @@ namespace FabrieBank
 
                     case "3":
 
-                        AccountLogic accountLogic = new AccountLogic();
+                        BAccount accountLogic = new BAccount();
                         accountLogic.HesapSil();
                         break;
 

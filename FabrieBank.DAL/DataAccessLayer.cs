@@ -1,10 +1,7 @@
-﻿using FabrieBank.Common;
-using FabrieBank.Common.Enums;
+﻿using FabrieBank.Common.Enums;
 using System.Reflection;
 using Npgsql;
-using FabrieBank.Common.DTOs;
-using System.Data;
-using FabrieBank.Entity;
+using FabrieBank.DAL.Common.DTOs;
 
 namespace FabrieBank.DAL
 {

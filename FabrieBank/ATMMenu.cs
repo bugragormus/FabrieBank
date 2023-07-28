@@ -7,12 +7,12 @@ namespace FabrieBank
     public class ATMMenu
     {
         private int musteriId;
-        private AccountLogic atm;
+        private BAccount atm;
 
         public ATMMenu(int musteriId)
         {
             this.musteriId = musteriId;
-            atm = new AccountLogic();
+            atm = new BAccount();
         }
 
         public void ShowMenu()

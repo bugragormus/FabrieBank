@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrieBank.DAL", "FabrieBan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrieBank.BLL", "FabrieBank.BLL\FabrieBank.BLL.csproj", "{5DE833EB-B5EA-42D4-8872-174BD8627C14}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrieBank.API", "FabrieBank.API\FabrieBank.API.csproj", "{81CBAC7C-9B4A-4B44-BA10-186603CECE41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5DE833EB-B5EA-42D4-8872-174BD8627C14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DE833EB-B5EA-42D4-8872-174BD8627C14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DE833EB-B5EA-42D4-8872-174BD8627C14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81CBAC7C-9B4A-4B44-BA10-186603CECE41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81CBAC7C-9B4A-4B44-BA10-186603CECE41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81CBAC7C-9B4A-4B44-BA10-186603CECE41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81CBAC7C-9B4A-4B44-BA10-186603CECE41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

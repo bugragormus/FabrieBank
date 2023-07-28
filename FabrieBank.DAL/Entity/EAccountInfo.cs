@@ -1,9 +1,10 @@
 ﻿using System.Data;
 using System.Reflection;
-using FabrieBank.Common;
+using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL;
 using Npgsql;
 using NpgsqlTypes;
+using FabrieBank.DAL.Entity;
 
 namespace FabrieBank.Entity
 {
@@ -91,14 +92,14 @@ namespace FabrieBank.Entity
 
                     string functionName = "func_ReadListAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_bakiye, @p_musteri_id, @p_doviz_cins, p_hesap_adi)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_bakiye, @p_musteri_id, @p_doviz_cins, @p_hesap_adi)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
                         command.Parameters.AddWithValue("@p_bakiye", NpgsqlDbType.Numeric, dTOAccount.Bakiye);
                         command.Parameters.AddWithValue("@p_musteri_id", NpgsqlDbType.Integer, dTOAccount.MusteriId);
                         command.Parameters.AddWithValue("@p_doviz_cins", NpgsqlDbType.Integer, dTOAccount.DovizCins);
-                        command.Parameters.AddWithValue("@p_hesap_adi", NpgsqlDbType.Varchar, dTOAccount.HesapAdi);
+                        command.Parameters.AddWithValue("@p_hesap_adi", NpgsqlDbType.Varchar, (object)dTOAccount.HesapAdi ?? DBNull.Value);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
                         DataTable dataTable = new DataTable();
@@ -112,7 +113,7 @@ namespace FabrieBank.Entity
                                 Bakiye = (decimal)item["bakiye"],
                                 MusteriId = (int)item["musteri_id"],
                                 DovizCins = (int)item["doviz_cins"],
-                                HesapAdi = item["hesap_adi"] != DBNull.Value ? item["hesap_adi"].ToString() : null
+                                HesapAdi = item["hesap_adi"].ToString() //!= DBNull.Value ? item["hesap_adi"].ToString() : null
                             };
                             accountsList.Add(dTOAccountInfo);
                         }

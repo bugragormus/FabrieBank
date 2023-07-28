@@ -1,19 +1,17 @@
-﻿using System.Numerics;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.RegularExpressions;
-using FabrieBank.Common.Enums;
 using FabrieBank.Services;
 
 namespace FabrieBank
 {
     public class CurrencyMenu
     {
-        private readonly CurrencyService currency;
+        private readonly SCurrency currency;
         private readonly CurrencyTable currencyTable;
 
         public CurrencyMenu()
         {
-            currency = new CurrencyService();
+            currency = new SCurrency();
             currencyTable = new CurrencyTable();
         }
 

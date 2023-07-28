@@ -1,14 +1,14 @@
-﻿using FabrieBank.Common;
+﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.BLL;
 namespace FabrieBank
 {
     public class AccountInfo
     {
-        private AccountLogic accountLogic;
+        private BAccount accountLogic;
 
         public AccountInfo()
         {
-            accountLogic = new AccountLogic();
+            accountLogic = new BAccount();
         }
 
         public void AccountInfoM(DTOCustomer customer)

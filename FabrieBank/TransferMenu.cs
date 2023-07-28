@@ -1,4 +1,4 @@
-﻿using FabrieBank.Common;
+﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.Entity;
 using FabrieBank.BLL;
 
@@ -7,13 +7,13 @@ namespace FabrieBank
     public class TransferMenu
     {
         private int musteriId;
-        private TransactionLogic transactionLogic;
+        private BTransaction transactionLogic;
         private EAccountInfo eAccount;
 
         public TransferMenu(int musteriId)
         {
             this.musteriId = musteriId;
-            transactionLogic = new TransactionLogic();
+            transactionLogic = new BTransaction();
             eAccount = new EAccountInfo();
         }
 

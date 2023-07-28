@@ -1,18 +1,17 @@
 ﻿using System.Globalization;
 using System.Reflection;
 using System.Xml;
-using FabrieBank.Common.DTOs;
-using FabrieBank.Common.Enums;
-using static System.Net.WebRequestMethods;
+using FabrieBank.DAL.Common.DTOs;
+using FabrieBank.DAL.Entity;
 
 namespace FabrieBank.Services
 {
-    public class CurrencyService : IDisposable
+    public class SCurrency : IDisposable
     {
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml"; 
 
-        public CurrencyService()
+        public SCurrency()
         {
             _httpClient = new HttpClient();
         }
@@ -165,6 +164,12 @@ namespace FabrieBank.Services
         public void Dispose()
         {
             _httpClient.Dispose();
+        }
+
+        public List<DTOCurrency> ReadListCurrency(DTOCurrency currency)
+        {
+            ECurrency eCurrency = new ECurrency();
+            return eCurrency.ReadListCurrency(currency);
         }
     }
 }

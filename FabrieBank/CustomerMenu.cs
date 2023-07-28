@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
-using FabrieBank.Common;
+using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.Entity;
 
 namespace FabrieBank

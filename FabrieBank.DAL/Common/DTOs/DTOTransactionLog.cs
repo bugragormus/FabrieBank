@@ -1,6 +1,6 @@
 ﻿using FabrieBank.Common.Enums;
 
-namespace FabrieBank.Common.DTOs
+namespace FabrieBank.DAL.Common.DTOs
 {
     public class DTOTransactionLog
     {

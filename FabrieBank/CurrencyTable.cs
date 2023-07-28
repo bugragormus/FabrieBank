@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using FabrieBank.Common.Enums;
-using FabrieBank.Common.DTOs;
+﻿using FabrieBank.DAL.Common.DTOs;
 using System.Reflection;
 
 namespace FabrieBank
