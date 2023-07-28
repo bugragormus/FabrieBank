@@ -1,7 +1,7 @@
 ﻿using FabrieBank.DAL;
 using Npgsql;
 
-namespace FabrieBank.Entity
+namespace FabrieBank.DAL.Entity
 {
     public class CreateAccountDB
     {

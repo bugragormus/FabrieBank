@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
 using FabrieBank.DAL.Common.DTOs;
-using FabrieBank.Entity;
+using FabrieBank.DAL.Entity;
 
 namespace FabrieBank
 {

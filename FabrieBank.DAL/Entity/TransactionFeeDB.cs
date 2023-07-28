@@ -1,7 +1,7 @@
 ﻿using FabrieBank.Common.Enums;
 using FabrieBank.DAL;
 
-namespace FabrieBank.Entity
+namespace FabrieBank.Common.Entity
 {
 	public class TransactionFeeDB
 	{

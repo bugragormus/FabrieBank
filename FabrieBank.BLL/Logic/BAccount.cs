@@ -2,7 +2,7 @@
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.Common.Enums;
 using FabrieBank.DAL;
-using FabrieBank.Entity;
+using FabrieBank.DAL.Entity;
 using Npgsql;
 
 namespace FabrieBank.BLL

@@ -4,9 +4,8 @@ using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL;
 using Npgsql;
 using NpgsqlTypes;
-using FabrieBank.DAL.Entity;
 
-namespace FabrieBank.Entity
+namespace FabrieBank.DAL.Entity
 {
     public class EAccountInfo
     {

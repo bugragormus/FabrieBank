@@ -1,7 +1,7 @@
 ﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL;
 
-namespace FabrieBank.Entity
+namespace FabrieBank.DAL.Entity
 {
     public class TransactionLogDB
     {

@@ -1,5 +1,5 @@
 ﻿using FabrieBank.DAL.Common.DTOs;
-using FabrieBank.Entity;
+using FabrieBank.DAL.Entity;
 using FabrieBank.BLL;
 
 namespace FabrieBank

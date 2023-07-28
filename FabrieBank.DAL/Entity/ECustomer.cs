@@ -5,7 +5,7 @@ using FabrieBank.DAL;
 using Npgsql;
 using NpgsqlTypes;
 
-namespace FabrieBank.Entity
+namespace FabrieBank.DAL.Entity
 {
     public class ECustomer
     {
