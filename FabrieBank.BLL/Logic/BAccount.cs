@@ -76,7 +76,7 @@ namespace FabrieBank.BLL.Logic
             dTOAccount.HesapNo = long.Parse(Console.ReadLine());
             _ = eAccount.DeleteAccountInfo(dTOAccount);
         }
-
+        // 34462193956
         public void Deposit(long hesapNo, decimal bakiye)
         {
             try

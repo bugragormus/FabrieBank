@@ -4,7 +4,6 @@
     {
         public enum DovizCinsleri
         {
-            NONE = 0,
             TRY = 1,
             USD = 2,
             EUR = 3,
