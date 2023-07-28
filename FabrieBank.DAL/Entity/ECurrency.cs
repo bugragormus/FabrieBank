@@ -1,6 +1,4 @@
-﻿using System;
-using FabrieBank.Common;
-using System.Data;
+﻿using System.Data;
 using System.Reflection;
 using Npgsql;
 using NpgsqlTypes;
@@ -210,7 +208,7 @@ namespace FabrieBank.DAL.Entity
         /// </summary>
         /// <param name="hesapNo">Müşteri hesap no</param>
         /// <returns></returns>
-        public bool func_DeleteCurrency(DTOCurrency currency)
+        public bool DeleteCurrency(DTOCurrency currency)
         {
             try
             {
