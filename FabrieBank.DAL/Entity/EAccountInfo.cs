@@ -91,14 +91,14 @@ namespace FabrieBank.Entity
 
                     string functionName = "func_ReadListAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_bakiye, @p_musteri_id, @p_doviz_cins)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_bakiye, @p_musteri_id, @p_doviz_cins, p_hesap_adi)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
                         command.Parameters.AddWithValue("@p_bakiye", NpgsqlDbType.Numeric, dTOAccount.Bakiye);
                         command.Parameters.AddWithValue("@p_musteri_id", NpgsqlDbType.Integer, dTOAccount.MusteriId);
                         command.Parameters.AddWithValue("@p_doviz_cins", NpgsqlDbType.Integer, dTOAccount.DovizCins);
-                        //command.Parameters.AddWithValue("@p_hesap_adi", NpgsqlDbType.Varchar ,dTOAccount.HesapAdi);
+                        command.Parameters.AddWithValue("@p_hesap_adi", NpgsqlDbType.Varchar, dTOAccount.HesapAdi);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
                         DataTable dataTable = new DataTable();
