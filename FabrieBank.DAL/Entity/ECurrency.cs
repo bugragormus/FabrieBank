@@ -263,4 +263,3 @@ namespace FabrieBank.DAL.Entity
         }
     }
 }
-
