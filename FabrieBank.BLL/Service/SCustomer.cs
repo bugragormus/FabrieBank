@@ -15,6 +15,30 @@ namespace FabrieBank.BLL.Service
             ECustomer eCustomer = new ECustomer();
             return eCustomer.ReadListCustomer(customer);
         }
+
+        public DTOCustomer ReadCustomer(DTOCustomer Customer)
+        {
+            ECustomer eCustomer = new ECustomer();
+            return eCustomer.ReadCustomer(Customer);
+        }
+
+        public bool InsertCustomer(DTOCustomer Customer)
+        {
+            ECustomer eCustomer = new ECustomer();
+            return eCustomer.InsertCustomer(Customer);
+        }
+
+        public bool UpdateCustomer(DTOCustomer Customer)
+        {
+            ECustomer eCustomer = new ECustomer();
+            return eCustomer.UpdateCustomer(Customer);
+        }
+
+        public bool DeleteCustomer(DTOCustomer Customer)
+        {
+            ECustomer eCustomer = new ECustomer();
+            return eCustomer.DeleteCustomer(Customer);
+        }
     }
 }
 

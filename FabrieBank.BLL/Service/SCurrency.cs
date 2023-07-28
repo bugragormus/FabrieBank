@@ -171,5 +171,29 @@ namespace FabrieBank.Services
             ECurrency eCurrency = new ECurrency();
             return eCurrency.ReadListCurrency(currency);
         }
+
+        public DTOCurrency ReadCurrency(DTOCurrency accountInfo)
+        {
+            ECurrency eCurrency = new ECurrency();
+            return eCurrency.ReadCurrency(accountInfo);
+        }
+
+        public bool InsertCurrency(DTOCurrency accountInfo)
+        {
+            ECurrency eCurrency = new ECurrency();
+            return eCurrency.InsertCurrency(accountInfo);
+        }
+
+        public bool UpdateCurrency(DTOCurrency accountInfo)
+        {
+            ECurrency eCurrency = new ECurrency();
+            return eCurrency.UpdateCurrency(accountInfo);
+        }
+
+        public bool DeleteCurrency(DTOCurrency accountInfo)
+        {
+            ECurrency eCurrency = new ECurrency();
+            return eCurrency.DeleteCurrency(accountInfo);
+        }
     }
 }

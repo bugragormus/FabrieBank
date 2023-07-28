@@ -16,40 +16,40 @@ namespace FabrieBank.API.Controllers
 
         public DTOAccountInfo demoAccountInfo = new DTOAccountInfo();
 
-        [HttpGet]
+        [HttpGet("list")]
         public IEnumerable<DTOAccountInfo> ReadListAccountInfo()
         {
             SAccountInfo sAccountInfo = new SAccountInfo();
             return sAccountInfo.ReadListAccountInfo(demoAccountInfo);
         }
 
-        //[HttpGet]
-        //public DTOAccountInfo ReadAccountInfo()
-        //{
-        //    SAccountInfo sAccountInfo = new SAccountInfo();
-        //    return sAccountInfo.ReadAccountInfo(demoAccountInfo);
-        //}
+        [HttpGet]
+        public DTOAccountInfo ReadAccountInfo(DTOAccountInfo accountInfo)
+        {
+            SAccountInfo sAccountInfo = new SAccountInfo();
+            return sAccountInfo.ReadAccountInfo(accountInfo);
+        }
 
-        //[HttpGet]
-        //public bool InsertAccountInfo()
-        //{
-        //    SAccountInfo sAccountInfo = new SAccountInfo();
-        //    return sAccountInfo.InsertAccountInfo(demoAccountInfo);
-        //}
+        [HttpPost]
+        public bool InsertAccountInfo()
+        {
+            SAccountInfo sAccountInfo = new SAccountInfo();
+            return sAccountInfo.InsertAccountInfo(demoAccountInfo);
+        }
 
-        //[HttpGet]
-        //public bool UpdateAccountInfo()
-        //{
-        //    SAccountInfo sAccountInfo = new SAccountInfo();
-        //    return sAccountInfo.UpdateAccountInfo(demoAccountInfo);
-        //}
+        [HttpPut]
+        public bool UpdateAccountInfo()
+        {
+            SAccountInfo sAccountInfo = new SAccountInfo();
+            return sAccountInfo.UpdateAccountInfo(demoAccountInfo);
+        }
 
-        //[HttpGet]
-        //public bool DeleteAccountInfo()
-        //{
-        //    SAccountInfo sAccountInfo = new SAccountInfo();
-        //    return sAccountInfo.DeleteAccountInfo(demoAccountInfo);
-        //}
+        [HttpDelete]
+        public bool DeleteAccountInfo()
+        {
+            SAccountInfo sAccountInfo = new SAccountInfo();
+            return sAccountInfo.DeleteAccountInfo(demoAccountInfo);
+        }
     }
 }
 
