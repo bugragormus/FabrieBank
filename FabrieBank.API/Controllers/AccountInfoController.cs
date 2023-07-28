@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FabrieBank.BLL.Service;
+﻿using FabrieBank.BLL.Service;
 using FabrieBank.DAL.Common.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,10 +14,7 @@ namespace FabrieBank.API.Controllers
         {
         }
 
-        public DTOAccountInfo demoAccountInfo = new DTOAccountInfo()
-        {
-            //DovizCins = "TRY"
-        };
+        public DTOAccountInfo demoAccountInfo = new DTOAccountInfo();
 
         [HttpGet]
         public IEnumerable<DTOAccountInfo> ReadListAccountInfo()
@@ -29,6 +22,34 @@ namespace FabrieBank.API.Controllers
             SAccountInfo sAccountInfo = new SAccountInfo();
             return sAccountInfo.ReadListAccountInfo(demoAccountInfo);
         }
+
+        //[HttpGet]
+        //public DTOAccountInfo ReadAccountInfo()
+        //{
+        //    SAccountInfo sAccountInfo = new SAccountInfo();
+        //    return sAccountInfo.ReadAccountInfo(demoAccountInfo);
+        //}
+
+        //[HttpGet]
+        //public bool InsertAccountInfo()
+        //{
+        //    SAccountInfo sAccountInfo = new SAccountInfo();
+        //    return sAccountInfo.InsertAccountInfo(demoAccountInfo);
+        //}
+
+        //[HttpGet]
+        //public bool UpdateAccountInfo()
+        //{
+        //    SAccountInfo sAccountInfo = new SAccountInfo();
+        //    return sAccountInfo.UpdateAccountInfo(demoAccountInfo);
+        //}
+
+        //[HttpGet]
+        //public bool DeleteAccountInfo()
+        //{
+        //    SAccountInfo sAccountInfo = new SAccountInfo();
+        //    return sAccountInfo.DeleteAccountInfo(demoAccountInfo);
+        //}
     }
 }
 

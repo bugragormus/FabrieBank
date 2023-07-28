@@ -96,7 +96,7 @@ namespace FabrieBank.DAL.Entity
         /// </summary>
         /// <param name="dTOAccount"></param>
         /// <returns></returns>
-        public List<DTOCustomer> ReadListAccountInfo(DTOCustomer customer)
+        public List<DTOCustomer> ReadListCustomer(DTOCustomer customer)
         {
             List<DTOCustomer> accountsList = new List<DTOCustomer>();
 
@@ -112,10 +112,10 @@ namespace FabrieBank.DAL.Entity
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_ad", NpgsqlDbType.Varchar, customer.Ad);
-                        command.Parameters.AddWithValue("@p_soyad", NpgsqlDbType.Varchar, customer.Soyad);
+                        command.Parameters.AddWithValue("@p_ad", NpgsqlDbType.Varchar, (object)customer.Ad ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_soyad", NpgsqlDbType.Varchar, (object)customer.Soyad ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_tel_no", NpgsqlDbType.Bigint, customer.TelNo);
-                        command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, customer.Email);
+                        command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
                         DataTable dataTable = new DataTable();
@@ -125,13 +125,13 @@ namespace FabrieBank.DAL.Entity
                         {
                             DTOCustomer dTOCustomer = new DTOCustomer
                             {
-                                MusteriId = (int)dataTable.Rows[0]["musteri_id"],
-                                Ad = dataTable.Rows[0]["ad"].ToString(),
-                                Soyad = dataTable.Rows[0]["soyad"].ToString(),
-                                Tckn = (long)dataTable.Rows[0]["tckn"],
-                                Sifre = (int)dataTable.Rows[0]["sifre"],
-                                TelNo = (long)dataTable.Rows[0]["tel_no"],
-                                Email = dataTable.Rows[0]["email"].ToString(),
+                                MusteriId = (int)item["musteri_id"],
+                                Ad = item["ad"].ToString(),
+                                Soyad = item["soyad"].ToString(),
+                                Tckn = (long)item["tckn"],
+                                Sifre = (int)item["sifre"],
+                                TelNo = (long)item["tel_no"],
+                                Email = item["email"].ToString(),
                             };
                             accountsList.Add(dTOCustomer);
                         }
@@ -169,12 +169,12 @@ namespace FabrieBank.DAL.Entity
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_ad", NpgsqlDbType.Varchar, customer.Ad);
-                        command.Parameters.AddWithValue("@p_soyad", NpgsqlDbType.Varchar, customer.Soyad);
-                        command.Parameters.AddWithValue("@p_tckn", NpgsqlDbType.Bigint, customer.Soyad);
-                        command.Parameters.AddWithValue("@p_sifre", NpgsqlDbType.Integer, customer.Soyad);
+                        command.Parameters.AddWithValue("@p_ad", NpgsqlDbType.Varchar, (object)customer.Ad ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_soyad", NpgsqlDbType.Varchar, (object)customer.Soyad ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_tckn", NpgsqlDbType.Bigint, customer.Tckn);
+                        command.Parameters.AddWithValue("@p_sifre", NpgsqlDbType.Integer, customer.Sifre);
                         command.Parameters.AddWithValue("@p_tel_no", NpgsqlDbType.Bigint, customer.TelNo);
-                        command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, customer.Email);
+                        command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
 
                         if (command.ExecuteNonQuery() > 0)
                         {
@@ -200,7 +200,7 @@ namespace FabrieBank.DAL.Entity
         /// </summary>
         /// <param name="dTOAccount"></param>
         /// <returns></returns>
-        public bool UpdateAccountInfo(DTOCustomer customer)
+        public bool UpdateCustomer(DTOCustomer customer)
         {
             try
             {
@@ -214,12 +214,12 @@ namespace FabrieBank.DAL.Entity
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_ad", NpgsqlDbType.Varchar, customer.Ad);
-                        command.Parameters.AddWithValue("@p_soyad", NpgsqlDbType.Varchar, customer.Soyad);
-                        command.Parameters.AddWithValue("@p_tckn", NpgsqlDbType.Bigint, customer.Soyad);
-                        command.Parameters.AddWithValue("@p_sifre", NpgsqlDbType.Integer, customer.Soyad);
+                        command.Parameters.AddWithValue("@p_ad", NpgsqlDbType.Varchar, (object)customer.Ad ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_soyad", NpgsqlDbType.Varchar, (object)customer.Soyad ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_tckn", NpgsqlDbType.Bigint, customer.Tckn);
+                        command.Parameters.AddWithValue("@p_sifre", NpgsqlDbType.Integer, customer.Sifre);
                         command.Parameters.AddWithValue("@p_tel_no", NpgsqlDbType.Bigint, customer.TelNo);
-                        command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, customer.Email);
+                        command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
 
                         if (command.ExecuteNonQuery() > 0)
                         {
@@ -245,7 +245,7 @@ namespace FabrieBank.DAL.Entity
         /// </summary>
         /// <param name="hesapNo">Müşteri hesap no</param>
         /// <returns></returns>
-        public bool func_DeleteCustomer(DTOCustomer customer)
+        public bool DeleteCustomer(DTOCustomer customer)
         {
             try
             {
