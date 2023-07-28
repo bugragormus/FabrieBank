@@ -1,4 +1,4 @@
-﻿namespace FabrieBank.Common
+﻿namespace FabrieBank.DAL
 {
     public interface IErrorLogger
     {

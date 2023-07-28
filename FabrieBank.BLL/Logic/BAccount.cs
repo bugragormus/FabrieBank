@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 using FabrieBank.DAL.Common.DTOs;
-using FabrieBank.Common.Enums;
+using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Entity;
 using Npgsql;
 
-namespace FabrieBank.BLL
+namespace FabrieBank.BLL.Logic
 {
 	public class BAccount
 	{

@@ -1,5 +1,6 @@
 ﻿using FabrieBank.DAL.Common.DTOs;
-using FabrieBank.BLL;
+using FabrieBank.BLL.Logic;
+
 namespace FabrieBank
 {
     public class AccountInfo

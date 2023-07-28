@@ -2,7 +2,7 @@
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
 
-namespace FabrieBank.BLL
+namespace FabrieBank.BLL.Logic
 {
     public class BTransaction
     {

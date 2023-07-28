@@ -1,4 +1,4 @@
-﻿namespace FabrieBank.Common.Enums
+﻿namespace FabrieBank.DAL.Common.Enums
 {
     public enum EnumTransactionFeeType
     {

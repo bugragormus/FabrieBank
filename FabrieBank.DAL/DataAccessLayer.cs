@@ -1,4 +1,4 @@
-﻿using FabrieBank.Common.Enums;
+﻿using FabrieBank.DAL.Common.Enums;
 using System.Reflection;
 using Npgsql;
 using FabrieBank.DAL.Common.DTOs;

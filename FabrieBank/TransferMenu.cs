@@ -1,6 +1,6 @@
 ﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
-using FabrieBank.BLL;
+using FabrieBank.BLL.Logic;
 
 namespace FabrieBank
 {
