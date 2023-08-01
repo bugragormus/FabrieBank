@@ -163,56 +163,6 @@ namespace FabrieBank.DAL
         ************************************************************************************************
         */
 
-        public DTOCustomer LogIn(long tckn, int sifre)
-        {
-            try
-            {
-                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
-                {
-                    connection.Open();
-
-                    string sql = "SELECT * FROM public.Musteri_Bilgi WHERE Tckn = @tckn AND Sifre = @sifre";
-
-                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
-                    {
-                        command.Parameters.AddWithValue("@tckn", tckn);
-                        command.Parameters.AddWithValue("@sifre", sifre);
-
-                        using (NpgsqlDataReader reader = command.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                DTOCustomer customer = new DTOCustomer()
-                                {
-                                    MusteriId = reader.GetInt32(0),
-                                    Ad = reader.GetString(1),
-                                    Soyad = reader.GetString(2),
-                                    Tckn = reader.GetInt64(3),
-                                    Sifre = reader.GetInt32(4),
-                                    TelNo = reader.GetInt64(5),
-                                    Email = reader.GetString(6)
-                                };
-
-                                return customer;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-            }
-
-            // If no matching user is found, return null to indicate login failure
-            return null;
-        }
-
         public bool UpdatePersonelInfo(int musteriId, long telNo, string email)
         {
             try

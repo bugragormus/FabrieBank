@@ -6,15 +6,17 @@ namespace FabrieBank.DAL.Entity
     public class LogInDB
     {
         private DataAccessLayer dataAccessLayer;
+        private ECustomer eCustomer;
 
         public LogInDB()
         {
             dataAccessLayer = new DataAccessLayer();
+            eCustomer = new ECustomer();
         }
 
         public DTOCustomer LogIn(long tckn, int sifre)
         {
-            return dataAccessLayer.LogIn(tckn, sifre);
+            return eCustomer.LogIn(tckn, sifre);
         }
 
         public bool UpdatePersonelInfo(int musteriId, long telNo, string email)

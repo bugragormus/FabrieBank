@@ -30,6 +30,21 @@ namespace FabrieBank.DAL.Entity
             else
             {
                 _ = InsertCustomer(customer);
+                Console.WriteLine("\nA customer created succesfully.\n");
+            }
+        }
+
+        public DTOCustomer LogIn(long tckn, int sifre)
+        {
+            DTOCustomer customer = ReadCustomer(new DTOCustomer { Tckn = tckn });
+
+            if (customer != null && customer.Sifre == sifre)
+            {
+                return customer;
+            }
+            else
+            {
+                return null;
             }
         }
 
@@ -59,21 +74,24 @@ namespace FabrieBank.DAL.Entity
 
                         npgsqlDataAdapter.Fill(dataTable);
 
-                        DTOCustomer dTOCustomer = new DTOCustomer
+                        if (dataTable.Rows.Count > 0)
                         {
-                            MusteriId = (int)dataTable.Rows[0]["musteri_id"],
-                            Ad = dataTable.Rows[0]["ad"].ToString(),
-                            Soyad = dataTable.Rows[0]["soyad"].ToString(),
-                            Tckn = (long)dataTable.Rows[0]["tckn"],
-                            Sifre = (int)dataTable.Rows[0]["sifre"],
-                            TelNo = (long)dataTable.Rows[0]["tel_no"],
-                            Email = dataTable.Rows[0]["email"].ToString(),
-                        };
+                            DTOCustomer dTOCustomer = new DTOCustomer
+                            {
+                                MusteriId = (int)dataTable.Rows[0]["musteri_id"],
+                                Ad = dataTable.Rows[0]["ad"].ToString(),
+                                Soyad = dataTable.Rows[0]["soyad"].ToString(),
+                                Tckn = (long)dataTable.Rows[0]["tckn"],
+                                Sifre = (int)dataTable.Rows[0]["sifre"],
+                                TelNo = (long)dataTable.Rows[0]["tel_no"],
+                                Email = dataTable.Rows[0]["email"].ToString(),
+                            };
 
-                        if (dataTable.Rows.Count == 0)
-                        {
-                            Console.WriteLine("\nHesap bulunamadı.");
                             return dTOCustomer;
+                        }
+                        else
+                        {
+                            return null;
                         }
                     }
                 }
