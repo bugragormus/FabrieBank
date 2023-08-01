@@ -228,13 +228,12 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_UpdateCustomer";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_ad, @p_soyad, @p_tckn, @p_sifre ,@p_tel_no, @p_email)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_ad, @p_soyad, @p_sifre ,@p_tel_no, @p_email)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
                         command.Parameters.AddWithValue("@p_ad", NpgsqlDbType.Varchar, (object)customer.Ad ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_soyad", NpgsqlDbType.Varchar, (object)customer.Soyad ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@p_tckn", NpgsqlDbType.Bigint, customer.Tckn);
                         command.Parameters.AddWithValue("@p_sifre", NpgsqlDbType.Integer, customer.Sifre);
                         command.Parameters.AddWithValue("@p_tel_no", NpgsqlDbType.Bigint, customer.TelNo);
                         command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
