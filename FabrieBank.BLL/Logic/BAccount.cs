@@ -87,7 +87,7 @@ namespace FabrieBank.BLL.Logic
 
                     string functionName = "func_ReadAccountInfo";
 
-                    string sqlSelect = $"SELECT * FROM {functionName}(@hesapNo)";
+                    string sqlSelect = $"SELECT Bakiye FROM {functionName}(@hesapNo)";
                     string sqlUpdate = "UPDATE public.Hesap SET Bakiye = Bakiye + @bakiye WHERE HesapNo = @hesapNo";
 
                     using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))

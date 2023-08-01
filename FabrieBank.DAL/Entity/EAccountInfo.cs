@@ -189,7 +189,7 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_UpdateAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_hesapno, @p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
+                    string sqlQuery = $"CALL {functionName}(@p_hesapno, @p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
