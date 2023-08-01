@@ -20,17 +20,17 @@ namespace FabrieBank.DAL.Entity
 
         public void CreateCustomer(DTOCustomer customer)
         {
-            dataAccessLayer.CreateCustomer(customer);
-        }
 
-        public int GetNextMusteriId(NpgsqlConnection connection)
-        {
-            return dataAccessLayer.GetNextMusteriId(connection);
-        }
+            DTOCustomer existingCustomer = ReadCustomer(customer);
 
-        public bool IsCustomerExists(NpgsqlConnection connection, long tckn)
-        {
-            return dataAccessLayer.IsCustomerExists(connection, tckn);
+            if (existingCustomer != null)
+            {
+                Console.WriteLine("\nA customer with the same TCKN already exists.\n");
+            }
+            else
+            {
+                _ = InsertCustomer(customer);
+            }
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_InsertCustomer";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_ad, @p_soyad, @p_tckn, @p_sifre ,@p_tel_no, @p_email)";
+                    string sqlQuery = $"CALL {functionName}(@p_ad, @p_soyad, @p_tckn, @p_sifre ,@p_tel_no, @p_email)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
