@@ -12,14 +12,14 @@ namespace FabrieBank.DAL.Entity
             dataAccessLayer = new DataAccessLayer();
         }
 
-        public void CreateAccount(int musteriId, int dovizCinsi, string hesapAdi)
-        {
-            dataAccessLayer.CreateAccount(musteriId, dovizCinsi, hesapAdi);
-        }
+        //public void CreateAccount(int musteriId, int dovizCinsi, string hesapAdi)
+        //{
+        //    dataAccessLayer.CreateAccount(musteriId, dovizCinsi, hesapAdi);
+        //}
 
-        public string GetAndIncrementHesapNumarasi(int dovizCinsi, NpgsqlConnection connection)
-        {
-            return dataAccessLayer.GetAndIncrementHesapNumarasi(dovizCinsi, connection);
-        }
+        //public string GetAndIncrementHesapNumarasi(int dovizCinsi, NpgsqlConnection connection)
+        //{
+        //    return dataAccessLayer.GetAndIncrementHesapNumarasi(dovizCinsi, connection);
+        //}
     }
 }

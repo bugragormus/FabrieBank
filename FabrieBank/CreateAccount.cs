@@ -19,8 +19,18 @@ namespace FabrieBank
                 Console.Write(">>> ");
                 string? hesapAdi = Console.ReadLine();
 
-                CreateAccountDB createAccountDB = new CreateAccountDB();
-                createAccountDB.CreateAccount(musteriId, dovizCinsi, hesapAdi);
+                DTOAccountInfo accountInfo = new DTOAccountInfo()
+                {
+                    MusteriId = musteriId,
+                    DovizCins = dovizCinsi,
+                    HesapAdi = hesapAdi
+                };
+
+                EAccountInfo accountInfos = new EAccountInfo();
+                accountInfos.CreateAccount(accountInfo);
+
+                //CreateAccountDB createAccountDB = new CreateAccountDB();
+                //createAccountDB.CreateAccount(musteriId, dovizCinsi, hesapAdi);
             }
             catch (Exception ex)
             {

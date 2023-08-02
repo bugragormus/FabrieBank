@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using System.Reflection;
 using FabrieBank.DAL.Common.DTOs;
-using FabrieBank.DAL;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -16,6 +15,16 @@ namespace FabrieBank.DAL.Entity
         {
             dataAccessLayer = new DataAccessLayer();
             database = dataAccessLayer.CallDB();
+        }
+
+        public void CreateAccount(DTOAccountInfo accountInfo)
+        {
+
+            _ = InsertAccountInfo(accountInfo);
+
+
+
+            //Console.WriteLine($"\n'{hesapNumarasi}' Numaralı yeni hesap oluşturuldu.\n");
         }
 
         /// <summary>
@@ -144,9 +153,9 @@ namespace FabrieBank.DAL.Entity
                 {
                     connection.Open();
 
-                    string functionName = "usp_InsertAccountInfo";
+                    string procedureName = "usp_InsertAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
+                    string sqlQuery = $"CALL {procedureName}(@p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
