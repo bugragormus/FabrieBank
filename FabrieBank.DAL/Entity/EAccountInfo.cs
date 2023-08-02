@@ -70,6 +70,7 @@ namespace FabrieBank.DAL.Entity
                 // Handle the error (display a user-friendly message, rollback transactions, etc.)
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
+
             return accountInfo;
         }
 
@@ -192,11 +193,11 @@ namespace FabrieBank.DAL.Entity
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_hesapno", dTOAccount.HesapNo);
-                        command.Parameters.AddWithValue("@p_bakiye", dTOAccount.Bakiye);
-                        command.Parameters.AddWithValue("@p_musteriid", dTOAccount.MusteriId);
-                        command.Parameters.AddWithValue("@p_doviz_cins", dTOAccount.DovizCins);
-                        command.Parameters.AddWithValue("@p_hesap_adi", dTOAccount.HesapAdi);
+                        command.Parameters.AddWithValue("@p_hesapno", NpgsqlDbType.Bigint, dTOAccount.HesapNo);
+                        command.Parameters.AddWithValue("@p_bakiye", NpgsqlDbType.Numeric, dTOAccount.Bakiye);
+                        command.Parameters.AddWithValue("@p_musteriid", NpgsqlDbType.Integer, dTOAccount.MusteriId);
+                        command.Parameters.AddWithValue("@p_doviz_cins", NpgsqlDbType.Integer, dTOAccount.DovizCins);
+                        command.Parameters.AddWithValue("@p_hesap_adi", NpgsqlDbType.Varchar, (object)dTOAccount.HesapAdi ?? DBNull.Value);
 
                         if (command.ExecuteNonQuery() > 0)
                         {

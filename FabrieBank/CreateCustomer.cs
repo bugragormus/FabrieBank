@@ -26,11 +26,11 @@ namespace FabrieBank
                 Console.Write("Customer Lastname: ");
                 string? musteriSoyad = Console.ReadLine();
                 musteriSoyad = char.ToUpper(musteriSoyad[0]) + musteriSoyad.Substring(1);
-                while (string.IsNullOrEmpty(musteriAd) || musteriAd.Length <= 2)
+                while (string.IsNullOrEmpty(musteriSoyad) || musteriSoyad.Length <= 2)
                 {
                     Console.WriteLine("Lastname must be a string and longer than 2 characters.");
                     Console.Write("Customer Lastname: ");
-                    musteriAd = Console.ReadLine();
+                    musteriSoyad = Console.ReadLine();
                 }
 
                 Console.WriteLine("\n==============================================");
