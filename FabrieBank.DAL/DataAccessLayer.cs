@@ -14,12 +14,10 @@ namespace FabrieBank.DAL
             database = CallDB();
         }
 
-        /*
-        ************************************************************************************************
-        *******************************************DB Bağlanma******************************************
-        ************************************************************************************************
-        */
-
+        /// <summary>
+        /// DB Bağlanma
+        /// </summary>
+        /// <returns></returns>
         public NpgsqlConnectionStringBuilder CallDB()
         {
             try
@@ -40,12 +38,11 @@ namespace FabrieBank.DAL
             }
         }
 
-        /*
-        ************************************************************************************************
-        ****************************************ErrorLoggerDB.cs****************************************
-        ************************************************************************************************
-        */
-
+        /// <summary>
+        /// ErrorLoggerDB.cs
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="methodName"></param>
         public void LogError(Exception ex, string methodName)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
@@ -68,12 +65,13 @@ namespace FabrieBank.DAL
             }
         }
 
-        /*
-        ************************************************************************************************
-        *******************************************LogInDB.cs*******************************************
-        ************************************************************************************************
-        */
-
+        /// <summary>
+        /// LogInDB.cs
+        /// </summary>
+        /// <param name="musteriId"></param>
+        /// <param name="telNo"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public bool UpdatePersonelInfo(int musteriId, long telNo, string email)
         {
             try
@@ -244,12 +242,13 @@ namespace FabrieBank.DAL
             }
         }
 
-        /*
-        ************************************************************************************************
-        *****************************************TransferDB.cs******************************************
-        ************************************************************************************************
-        */
-
+        /// <summary>
+        /// TransferDB.cs
+        /// </summary>
+        /// <param name="kaynakHesapNo"></param>
+        /// <param name="hedefHesapNo"></param>
+        /// <param name="miktar"></param>
+        /// <returns></returns>
         public bool HesaplarArasiTransfer(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
         {
             try
@@ -670,12 +669,10 @@ namespace FabrieBank.DAL
             }
         }
 
-        /*
-        ************************************************************************************************
-        ***************************************TransactionLogDB.cs****************************************
-        ************************************************************************************************
-        */
-
+        /// <summary>
+        /// TransactionLogDB.cs
+        /// </summary>
+        /// <param name="transactionLog"></param>
         public void LogTransaction(DTOTransactionLog transactionLog)
         {
             try
@@ -714,12 +711,11 @@ namespace FabrieBank.DAL
             }
         }
 
-        /*
-        ************************************************************************************************
-        **************************************TransactionFeeDB.cs***************************************
-        ************************************************************************************************
-        */
-
+        /// <summary>
+        /// TransactionFeeDB.cs
+        /// </summary>
+        /// <param name="transactionType"></param>
+        /// <returns></returns>
         public decimal GetTransactionFee(EnumTransactionFeeType transactionType)
         {
             try

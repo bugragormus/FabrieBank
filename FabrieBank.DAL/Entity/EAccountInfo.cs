@@ -43,7 +43,7 @@ namespace FabrieBank.DAL.Entity
 
                         npgsqlDataAdapter.Fill(dataTable);
 
-                        DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
+                        accountInfo = new DTOAccountInfo
                         {
                             HesapNo = (long)dataTable.Rows[0]["hesap_no"],
                             Bakiye = (decimal)dataTable.Rows[0]["bakiye"],
@@ -56,7 +56,7 @@ namespace FabrieBank.DAL.Entity
                         if (dataTable.Rows.Count == 0)
                         {
                             Console.WriteLine("\nHesap bulunamadı.");
-                            return dTOAccountInfo;
+                            return accountInfo;
                         }
                     }
                 }
