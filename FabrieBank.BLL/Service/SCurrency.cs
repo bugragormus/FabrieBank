@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Xml;
 using FabrieBank.DAL.Common.DTOs;
+using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank.Services
@@ -16,9 +17,9 @@ namespace FabrieBank.Services
             _httpClient = new HttpClient();
         }
 
-        public async Task<Dictionary<string, DTOCurrencyRate>> GetTodaysCurrencyRates(int baseCurrency)
+        public async Task<Dictionary<string, DTOCurrencyRate>> GetTodaysCurrencyRates(EnumDovizCinsleri.DovizCinsleri baseCurrency)
         {
-            var currencies = Enum.GetValues(typeof(int));
+            var currencies = Enum.GetValues(typeof(EnumDovizCinsleri.DovizCinsleri));
             var currencyRates = new Dictionary<string, DTOCurrencyRate>();
 
             try
@@ -31,7 +32,7 @@ namespace FabrieBank.Services
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.LoadXml(content);
 
-                    foreach (int targetCurrency in currencies)
+                    foreach (EnumDovizCinsleri.DovizCinsleri targetCurrency in currencies)
                     {
                         if (targetCurrency == baseCurrency)
                         {
