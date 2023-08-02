@@ -89,9 +89,9 @@ namespace FabrieBank.Services
             return currencyRates;
         }
 
-        public async Task<Dictionary<string, DTOCurrencyRate>> GetCustomDateCurrencyRates(int baseCurrency, int year, int month, int day)
+        public async Task<Dictionary<string, DTOCurrencyRate>> GetCustomDateCurrencyRates(EnumDovizCinsleri.DovizCinsleri baseCurrency, int year, int month, int day)
         {
-            var currencies = Enum.GetValues(typeof(int));
+            var currencies = Enum.GetValues(typeof(EnumDovizCinsleri.DovizCinsleri));
             var currencyRates = new Dictionary<string, DTOCurrencyRate>();
 
             try
@@ -105,7 +105,7 @@ namespace FabrieBank.Services
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.LoadXml(content);
 
-                    foreach (int targetCurrency in currencies)
+                    foreach (EnumDovizCinsleri.DovizCinsleri targetCurrency in currencies)
                     {
                         if (targetCurrency == baseCurrency)
                         {

@@ -37,7 +37,7 @@ namespace FabrieBank
                         TodaysRates();
                         break;
                     case "2":
-                        //CustomDateRates();
+                        CustomDateRates();
                         break;
                     case "3":
                         Console.WriteLine("\nPara transferinden çıkış yapıldı.\n");
@@ -69,43 +69,43 @@ namespace FabrieBank
             }
         }
 
-        //private void CustomDateRates()
-        //{
-        //    try
-        //    {
-        //        Console.WriteLine("Which date would you like to see the exchange rate information?");
-        //        Console.WriteLine("Please enter the date in DD/MM/YYYY format.");
-        //        string input = Console.ReadLine();
+        private void CustomDateRates()
+        {
+            try
+            {
+                Console.WriteLine("Which date would you like to see the exchange rate information?");
+                Console.WriteLine("Please enter the date in DD/MM/YYYY format.");
+                string input = Console.ReadLine();
 
-        //        if (IsValidDate(input, out int day, out int month, out int year))
-        //        {
-        //            var baseCurrency = 1;//TRY
+                if (IsValidDate(input, out int day, out int month, out int year))
+                {
+                    var baseCurrency = EnumDovizCinsleri.DovizCinsleri.TRY;//TRY
 
-        //            // Fetch the currency rates for the custom date
-        //            var currencyRates = currency.GetCustomDateCurrencyRates(baseCurrency, year, month, day).Result;
+                    // Fetch the currency rates for the custom date
+                    var currencyRates = currency.GetCustomDateCurrencyRates(baseCurrency, year, month, day).Result;
 
-        //            // Check if currency rates are available for the custom date
-        //            if (currencyRates.Count > 0)
-        //            {
-        //                currencyTable.DisplayCurrencyRatesTable(baseCurrency, currencyRates);
-        //            }
-        //            else
-        //            {
-        //                Console.WriteLine("Currency rates not found for the selected custom date.");
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log the error to the database using the ErrorLoggerDB
-        //        MethodBase method = MethodBase.GetCurrentMethod();
-        //        FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-        //        dataAccessLayer.LogError(ex, method.ToString());
+                    // Check if currency rates are available for the custom date
+                    if (currencyRates.Count > 0)
+                    {
+                        currencyTable.DisplayCurrencyRatesTable(baseCurrency, currencyRates);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Currency rates not found for the selected custom date.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error to the database using the ErrorLoggerDB
+                MethodBase method = MethodBase.GetCurrentMethod();
+                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
 
-        //        // Handle the error (display a user-friendly message, rollback transactions, etc.)
-        //        Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-        //    }
-        //}
+                // Handle the error (display a user-friendly message, rollback transactions, etc.)
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
+        }
 
 
         static bool IsValidDate(string input, out int day, out int month, out int year)
