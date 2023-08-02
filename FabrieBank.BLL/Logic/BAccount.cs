@@ -5,6 +5,7 @@ using FabrieBank.DAL;
 using FabrieBank.DAL.Entity;
 using Npgsql;
 using System.Security.Principal;
+using FabrieBank.BLL.Service;
 
 namespace FabrieBank.BLL.Logic
 {
@@ -80,7 +81,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         public void Deposit(DTOAccountInfo accountInfo, decimal bakiye)
-            {
+        {
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
             if (accountInfo != null)
             {
@@ -136,89 +137,60 @@ namespace FabrieBank.BLL.Logic
             }
         }
 
-        public void Withdraw(long hesapNo, decimal bakiye)
+        public void Withdraw(DTOAccountInfo accountInfo, decimal bakiye)
         {
-            try
+            accountInfo = eAccount.ReadAccountInfo(accountInfo);
+            if (accountInfo != null)
             {
-                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                decimal eskiBakiye = Convert.ToDecimal(accountInfo.Bakiye);
+                decimal yeniBakiye = eskiBakiye - bakiye;
+
+                DTOAccountInfo dTOAccount = new DTOAccountInfo()
                 {
-                    connection.Open();
+                    HesapNo = accountInfo.HesapNo,
+                    Bakiye = yeniBakiye,
+                    MusteriId = accountInfo.MusteriId,
+                    DovizCins = accountInfo.DovizCins,
+                    HesapAdi = accountInfo.HesapAdi
+                };
 
-                    string sqlSelect = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hesapNo";
-                    string sqlUpdate = "UPDATE public.Hesap SET Bakiye = @bakiye WHERE HesapNo = @hesapNo";
+                eAccount.UpdateAccountInfo(dTOAccount);
 
-                    using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
-                    {
-                        commandSelect.Parameters.AddWithValue("@hesapNo", hesapNo);
+                // Log the successful deposit
+                DTOTransactionLog transactionLog = new DTOTransactionLog
+                {
+                    AccountNumber = accountInfo.HesapNo,
+                    TransactionType = EnumTransactionType.Deposit,
+                    TransactionStatus = EnumTransactionStatus.Success,
+                    Amount = eskiBakiye - yeniBakiye,
+                    OldBalance = eskiBakiye,
+                    NewBalance = yeniBakiye,
+                    Timestamp = DateTime.Now
+                };
 
-                        decimal eskiBakiye = Convert.ToDecimal(commandSelect.ExecuteScalar());
-                        decimal yeniBakiye = eskiBakiye - bakiye;
+                dataAccessLayer.LogTransaction(transactionLog);
 
-                        if (yeniBakiye >= 0)
-                        {
-                            using (NpgsqlCommand commandUpdate = new NpgsqlCommand(sqlUpdate, connection))
-                            {
-                                commandUpdate.Parameters.AddWithValue("@bakiye", yeniBakiye);
-                                commandUpdate.Parameters.AddWithValue("@hesapNo", hesapNo);
-
-                                int rowsAffected = commandUpdate.ExecuteNonQuery();
-
-                                if (rowsAffected > 0)
-                                {
-                                    // Log the successful withdrawal
-                                    DTOTransactionLog transactionLog = new DTOTransactionLog
-                                    {
-                                        AccountNumber = hesapNo,
-                                        TransactionType = EnumTransactionType.Withdrawal,
-                                        TransactionStatus = EnumTransactionStatus.Success,
-                                        Amount = eskiBakiye - yeniBakiye,
-                                        OldBalance = eskiBakiye,
-                                        NewBalance = yeniBakiye,
-                                        Timestamp = DateTime.Now
-                                    };
-
-                                    dataAccessLayer.LogTransaction(transactionLog);
-
-                                    Console.WriteLine("\nPara çekme işlemi başarılı.");
-                                    Console.WriteLine($"Eski bakiye: {eskiBakiye}");
-                                    Console.WriteLine($"Yeni bakiye: {yeniBakiye}");
-                                }
-                                else
-                                {
-
-                                    // Log the failed withdraw
-                                    DTOTransactionLog transactionLog = new DTOTransactionLog
-                                    {
-                                        AccountNumber = hesapNo,
-                                        TransactionType = EnumTransactionType.Withdrawal,
-                                        TransactionStatus = EnumTransactionStatus.Failed,
-                                        Amount = eskiBakiye - yeniBakiye,
-                                        OldBalance = eskiBakiye,
-                                        NewBalance = yeniBakiye,
-                                        Timestamp = DateTime.Now
-                                    };
-
-                                    dataAccessLayer.LogTransaction(transactionLog);
-
-                                    Console.WriteLine("\nPara çekme işlemi başarısız.");
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("\n\nYetersiz bakiye. Para çekme işlemi gerçekleştirilemedi.");
-                        }
-                    }
-                }
+                Console.WriteLine("\nPara yatırma işlemi başarılı.");
+                Console.WriteLine($"Eski bakiye: {eskiBakiye}");
+                Console.WriteLine($"Yeni bakiye: {yeniBakiye}");
             }
-            catch (Exception ex)
+            else
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                dataAccessLayer.LogError(ex, method.ToString());
+                // Log the failed deposit
+                DTOTransactionLog transactionLog = new DTOTransactionLog
+                {
+                    AccountNumber = accountInfo.HesapNo,
+                    TransactionType = EnumTransactionType.Deposit,
+                    TransactionStatus = EnumTransactionStatus.Failed,
+                    Amount = bakiye,
+                    OldBalance = accountInfo.Bakiye,
+                    NewBalance = accountInfo.Bakiye,
+                    Timestamp = DateTime.Now
+                };
 
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine("An error occurred while performing ParaCekme operation. Please try again later.");
+                dataAccessLayer.LogTransaction(transactionLog);
+
+                Console.WriteLine("\nPara yatırma işlemi başarısız.");
             }
         }
     }

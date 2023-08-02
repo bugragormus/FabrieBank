@@ -122,7 +122,7 @@ namespace FabrieBank
                             Bakiye = bakiye
                         };
 
-                        atm.Withdraw(hesapNo, bakiye);
+                        atm.Withdraw(accountInfo, bakiye);
                     }
                     else
                     {
