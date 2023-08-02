@@ -4,8 +4,6 @@ using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Entity;
 using Npgsql;
-using System.Security.Principal;
-using FabrieBank.BLL.Service;
 
 namespace FabrieBank.BLL.Logic
 {
@@ -71,6 +69,9 @@ namespace FabrieBank.BLL.Logic
 
         }
 
+        /// <summary>
+        /// Hesap Silme
+        /// </summary>
         public void HesapSil()
         {
             DTOAccountInfo dTOAccount = new DTOAccountInfo();
@@ -80,6 +81,11 @@ namespace FabrieBank.BLL.Logic
             _ = eAccount.DeleteAccountInfo(dTOAccount);
         }
 
+        /// <summary>
+        /// Para Yatırma
+        /// </summary>
+        /// <param name="accountInfo"></param>
+        /// <param name="bakiye"></param>
         public void Deposit(DTOAccountInfo accountInfo, decimal bakiye)
         {
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
@@ -92,8 +98,6 @@ namespace FabrieBank.BLL.Logic
                 {
                     HesapNo = accountInfo.HesapNo,
                     Bakiye = yeniBakiye,
-                    MusteriId = accountInfo.MusteriId,
-                    DovizCins = accountInfo.DovizCins,
                     HesapAdi = accountInfo.HesapAdi
                 };
 
@@ -137,6 +141,11 @@ namespace FabrieBank.BLL.Logic
             }
         }
 
+        /// <summary>
+        /// Para Çekme
+        /// </summary>
+        /// <param name="accountInfo"></param>
+        /// <param name="bakiye"></param>
         public void Withdraw(DTOAccountInfo accountInfo, decimal bakiye)
         {
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
@@ -149,8 +158,6 @@ namespace FabrieBank.BLL.Logic
                 {
                     HesapNo = accountInfo.HesapNo,
                     Bakiye = yeniBakiye,
-                    MusteriId = accountInfo.MusteriId,
-                    DovizCins = accountInfo.DovizCins,
                     HesapAdi = accountInfo.HesapAdi
                 };
 
