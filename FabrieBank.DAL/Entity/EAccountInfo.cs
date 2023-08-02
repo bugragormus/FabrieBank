@@ -17,16 +17,6 @@ namespace FabrieBank.DAL.Entity
             database = dataAccessLayer.CallDB();
         }
 
-        public void CreateAccount(DTOAccountInfo accountInfo)
-        {
-
-            _ = InsertAccountInfo(accountInfo);
-
-
-
-            //Console.WriteLine($"\n'{hesapNumarasi}' Numaralı yeni hesap oluşturuldu.\n");
-        }
-
         /// <summary>
         /// Hesap Tablosundan Tek Satır Döndürür
         /// </summary>

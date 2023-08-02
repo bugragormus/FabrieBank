@@ -1,25 +1,28 @@
 ﻿using FabrieBank.DAL;
+using FabrieBank.DAL.Common.DTOs;
 using Npgsql;
 
 namespace FabrieBank.DAL.Entity
 {
     public class CreateAccountDB
     {
+        private EAccountInfo eAccount;
         private DataAccessLayer dataAccessLayer;
 
         public CreateAccountDB()
         {
+            eAccount = new EAccountInfo();
             dataAccessLayer = new DataAccessLayer();
         }
 
-        //public void CreateAccount(int musteriId, int dovizCinsi, string hesapAdi)
-        //{
-        //    dataAccessLayer.CreateAccount(musteriId, dovizCinsi, hesapAdi);
-        //}
+        public void CreateAccount(DTOAccountInfo accountInfo)
+        {
 
-        //public string GetAndIncrementHesapNumarasi(int dovizCinsi, NpgsqlConnection connection)
-        //{
-        //    return dataAccessLayer.GetAndIncrementHesapNumarasi(dovizCinsi, connection);
-        //}
+            _ = eAccount.InsertAccountInfo(accountInfo);
+
+
+
+            //Console.WriteLine($"\n'{hesapNumarasi}' Numaralı yeni hesap oluşturuldu.\n");
+        }
     }
 }

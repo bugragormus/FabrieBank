@@ -26,11 +26,8 @@ namespace FabrieBank
                     HesapAdi = hesapAdi
                 };
 
-                EAccountInfo accountInfos = new EAccountInfo();
-                accountInfos.CreateAccount(accountInfo);
-
-                //CreateAccountDB createAccountDB = new CreateAccountDB();
-                //createAccountDB.CreateAccount(musteriId, dovizCinsi, hesapAdi);
+                CreateAccountDB createAccountDB = new CreateAccountDB();
+                createAccountDB.CreateAccount(accountInfo);
             }
             catch (Exception ex)
             {
