@@ -44,20 +44,22 @@ namespace FabrieBank.DAL.Entity
 
                         npgsqlDataAdapter.Fill(dataTable);
 
-                        accountInfo = new DTOAccountInfo
-                        {
-                            HesapNo = (long)dataTable.Rows[0]["hesap_no"],
-                            Bakiye = (decimal)dataTable.Rows[0]["bakiye"],
-                            MusteriId = (int)dataTable.Rows[0]["musteri_id"],
-                            DovizCins = (int)dataTable.Rows[0]["doviz_cins"],
-                            HesapAdi = dataTable.Rows[0]["hesap_adi"].ToString(),
-                        };
-
-                        //object result = commandSelectBakiye.ExecuteScalar();
                         if (dataTable.Rows.Count == 0)
                         {
                             Console.WriteLine("\nHesap bulunamadı.");
                             return accountInfo;
+                        }
+
+                        else
+                        {
+                            accountInfo = new DTOAccountInfo
+                            {
+                                HesapNo = (long)dataTable.Rows[0]["hesap_no"],
+                                Bakiye = (decimal)dataTable.Rows[0]["bakiye"],
+                                MusteriId = (int)dataTable.Rows[0]["musteri_id"],
+                                DovizCins = (int)dataTable.Rows[0]["doviz_cins"],
+                                HesapAdi = dataTable.Rows[0]["hesap_adi"].ToString(),
+                            };
                         }
                     }
                 }

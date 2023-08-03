@@ -77,38 +77,70 @@ namespace FabrieBank.BLL.Logic
             }
         }
 
-        public void Havale(int musteriId, int kaynakHesapIndex, long hedefHesapNo, decimal transferMiktar)
+        public void Havale(int musteriId, DTOTransfer transfer)
         {
             try
             {
-                DTOAccountInfo dTOAccount = new DTOAccountInfo();
-                List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
-
-                if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count)
+                DTOAccountInfo dTOAccount1 = new DTOAccountInfo()
                 {
-                    long kaynakHesapNo = accountInfos[kaynakHesapIndex].HesapNo;
-                    int kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
+                    HesapNo = transfer.HedefHesapNo
+                };
 
-                    if (kaynakDovizCinsi == (hedefHesapNo))
+                DTOAccountInfo hedefAccountInfo = eAccount.ReadAccountInfo(dTOAccount1);
+                if (hedefAccountInfo.MusteriId != 0)
+                {
+                    int hedefDovizCinsi = hedefAccountInfo.DovizCins;
+
+                    DTOAccountInfo dTOAccount = new DTOAccountInfo()
                     {
-                        bool isOwnAccount = IsOwnAccount(accountInfos, hedefHesapNo);
-                        if (isOwnAccount)
+                        MusteriId = musteriId
+                    };
+                    List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
+
+                    if (transfer.KaynakHesapIndex >= 0 && transfer.KaynakHesapIndex < accountInfos.Count)
+                    {
+                        long kaynakHesapNo = accountInfos[transfer.KaynakHesapIndex].HesapNo;
+                        int kaynakDovizCinsi = accountInfos[transfer.KaynakHesapIndex].DovizCins;
+
+                        DTODovizHareket dovizHareket = new DTODovizHareket
                         {
-                            Console.WriteLine("Hedef hesap kendi hesabınız. Havale işlemi gerçekleştirilemez.");
+                            KaynakHesapNo = kaynakHesapNo,
+                            HedefHesapNo = transfer.HedefHesapNo,
+                            KaynakDovizCinsi = kaynakDovizCinsi,
+                            HedefDovizCinsi = hedefDovizCinsi,
+                            Miktar = transfer.Miktar
+                        };
+
+                        if (kaynakDovizCinsi == hedefDovizCinsi)
+                        {
+                            bool isOwnAccount = IsOwnAccount(accountInfos, transfer.HedefHesapNo);
+                            if (isOwnAccount)
+                            {
+                                Console.WriteLine("Hedef hesap kendi hesabınız. Havale işlemi gerçekleştirilemez.");
+                            }
+                            else
+                            {
+                                DTOAccountInfo accountInfo = new DTOAccountInfo()
+                                {
+                                    HesapNo = kaynakHesapNo
+                                };
+
+                                bool transferBasarili = account.Havale(dovizHareket, accountInfo);
+                            }
                         }
                         else
                         {
-                            bool transferBasarili = transferDB.Havale(kaynakHesapNo, hedefHesapNo, transferMiktar);
+                            Console.WriteLine("Kaynak hesap ve hedef hesap döviz cinsleri uyuşmuyor. Havale işlemi gerçekleştirilemedi.");
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Kaynak hesap ve hedef hesap döviz cinsleri uyuşmuyor. Havale işlemi gerçekleştirilemedi.");
+                        Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
+                    Console.WriteLine("Hedef hesap numarası bankamıza ait değil lütfen EFT işlemi gerçekleştiriniz.");
                 }
             }
             catch (Exception ex)
