@@ -29,10 +29,10 @@ namespace FabrieBank.DAL.Entity
             return dataAccessLayer.IsCredentialsValid(tckn, sifre);
         }
 
-        public bool ForgotPassword(long tckn, string email)
+        public bool ForgotPassword(DTOCustomer customer, string email)
         {
             int temporaryPassword = GenerateTemporaryPassword();
-            return dataAccessLayer.ForgotPassword(tckn, email, temporaryPassword);
+            return eCustomer.ForgotPassword(customer, email, temporaryPassword);
         }
 
         private int GenerateTemporaryPassword()

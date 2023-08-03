@@ -92,16 +92,38 @@ namespace FabrieBank
             }
         }
 
-        public void ForgotPassword()
+        public void ForgotPassword(DTOCustomer customer)
         {
-            // Forgot Password functionality
             Console.Write("TCKN: ");
-            long tckn = Convert.ToInt64(Console.ReadLine());
+            long tckn;
+            while (!long.TryParse(Console.ReadLine(), out tckn) || tckn.ToString().Length != 11)
+            {
+                Console.WriteLine("Invalid TCKN. Please enter a 11-digit TCKN:");
+            }
 
             Console.Write("Email: ");
             string email = Console.ReadLine();
 
-            loginDB.ForgotPassword(tckn, email);
+            while (!CreateMusteri.IsValidEmail(email))
+            {
+                Console.WriteLine("Invalid email address. Please enter a valid email address:");
+                email = Console.ReadLine();
+            }
+
+            //while (customer.Email != email)
+            //{
+            //    Console.WriteLine("\nGüncel şifre ile girilen şifre uyuşmuyor yeniden deneyin:");
+            //    Console.Write(">>> ");
+            //    while (!CreateMusteri.IsValidEmail(email))
+            //    {
+            //        Console.WriteLine("Invalid email address. Please enter a valid email address:");
+            //        email = Console.ReadLine();
+            //    }
+            //}
+
+            customer.Tckn = tckn;
+
+            loginDB.ForgotPassword(customer, email);
         }
     }
 }

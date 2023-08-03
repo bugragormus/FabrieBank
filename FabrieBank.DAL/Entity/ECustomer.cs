@@ -81,56 +81,39 @@ namespace FabrieBank.DAL.Entity
             return true;
         }
 
-        /*
-        public bool ForgotPassword(long tckn, string email, int temporaryPassword)
+        /// <summary>
+        /// Şifremi unuttum işlemleri
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="email"></param>
+        /// <param name="temporaryPassword"></param>
+        /// <returns></returns>
+        public bool ForgotPassword(DTOCustomer customer, string email, int temporaryPassword)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+            customer = ReadCustomer(customer);
+
+            if (customer.Email != email)
             {
-                connection.Open();
-
-                // Check if the user with the given TCKN and email exists
-                string sqlSelect = "SELECT MusteriId FROM Musteri_Bilgi WHERE Tckn = @tckn AND Email = @email";
-
-                using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
+                Console.WriteLine("Girmiş olduğunuz bilgiler uyuşmuyor. Lütfen tekrar deneyiniz.");
+                return false;
+            }
+            else
+            {
+                DTOCustomer dTOCustomer = new DTOCustomer()
                 {
-                    commandSelect.Parameters.AddWithValue("@tckn", tckn);
-                    commandSelect.Parameters.AddWithValue("@email", email);
+                    MusteriId = customer.MusteriId,
+                    Ad = customer.Ad,
+                    Soyad = customer.Soyad,
+                    Sifre = temporaryPassword,
+                    TelNo = customer.TelNo,
+                    Email = customer.Email
+                };
 
-                    object result = commandSelect.ExecuteScalar();
-
-                    if (result == null)
-                    {
-                        Console.WriteLine("\nHatalı TCKN veya e-posta adresi. Şifre sıfırlama işlemi başarısız.");
-                        return false;
-                    }
-
-                    int musteriId = Convert.ToInt32(result);
-
-                    // Update the password in the database
-                    string sqlUpdatePassword = "UPDATE Musteri_Bilgi SET Sifre = @temporaryPassword WHERE MusteriId = @musteriId";
-
-                    using (NpgsqlCommand commandUpdatePassword = new NpgsqlCommand(sqlUpdatePassword, connection))
-                    {
-                        commandUpdatePassword.Parameters.AddWithValue("@temporaryPassword", temporaryPassword);
-                        commandUpdatePassword.Parameters.AddWithValue("@musteriId", musteriId);
-
-                        int rowsAffected = commandUpdatePassword.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
-                        {
-                            Console.WriteLine($"\nGeçici şifreniz başarıyla oluşturuldu. Şifreniz: {temporaryPassword}");
-                            return true;
-                        }
-                        else
-                        {
-                            Console.WriteLine("\nŞifre sıfırlama işlemi başarısız. Lütfen tekrar deneyin.");
-                            return false;
-                        }
-                    }
-                }
+                UpdateCustomer(dTOCustomer);
+                Console.WriteLine($"\nGeçici şifreniz başarıyla oluşturuldu. Şifreniz: {temporaryPassword}");
+                return true;
             }
         }
-        */ //Forgot Password
 
         /// <summary>
         /// Müşteri Tablosundan Tek Veri Döndürür

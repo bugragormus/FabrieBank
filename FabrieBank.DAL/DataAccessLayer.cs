@@ -73,100 +73,100 @@ namespace FabrieBank.DAL
         /// <param name="email"></param>
         /// <returns></returns>
 
-        public bool IsCredentialsValid(long tckn, int sifre)
-        {
-            try
-            {
-                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
-                {
-                    connection.Open();
+        //public bool IsCredentialsValid(long tckn, int sifre)
+        //{
+        //    try
+        //    {
+        //        using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+        //        {
+        //            connection.Open();
 
-                    string sql = "SELECT COUNT(*) FROM public.Musteri_Bilgi WHERE Tckn = @tckn AND Sifre = @sifre";
+        //            string sql = "SELECT COUNT(*) FROM public.Musteri_Bilgi WHERE Tckn = @tckn AND Sifre = @sifre";
 
-                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
-                    {
-                        command.Parameters.AddWithValue("@tckn", tckn);
-                        command.Parameters.AddWithValue("@sifre", sifre);
+        //            using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
+        //            {
+        //                command.Parameters.AddWithValue("@tckn", tckn);
+        //                command.Parameters.AddWithValue("@sifre", sifre);
 
-                        int result = Convert.ToInt32(command.ExecuteScalar());
+        //                int result = Convert.ToInt32(command.ExecuteScalar());
 
-                        return result > 0;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                LogError(ex, method.ToString());
+        //                return result > 0;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the error to the database using the ErrorLoggerDB
+        //        MethodBase method = MethodBase.GetCurrentMethod();
+        //        LogError(ex, method.ToString());
 
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-                return IsCredentialsValid(tckn, sifre);
-            }
-        }
+        //        // Handle the error (display a user-friendly message, rollback transactions, etc.)
+        //        Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+        //        return IsCredentialsValid(tckn, sifre);
+        //    }
+        //}
 
-        public bool ForgotPassword(long tckn, string email, int temporaryPassword)
-        {
-            try
-            {
-                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
-                {
-                    connection.Open();
+        //public bool ForgotPassword(long tckn, string email, int temporaryPassword)
+        //{
+        //    try
+        //    {
+        //        using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+        //        {
+        //            connection.Open();
 
-                    // Check if the user with the given TCKN and email exists
-                    string sqlSelect = "SELECT MusteriId FROM Musteri_Bilgi WHERE Tckn = @tckn AND Email = @email";
+        //            // Check if the user with the given TCKN and email exists
+        //            string sqlSelect = "SELECT MusteriId FROM Musteri_Bilgi WHERE Tckn = @tckn AND Email = @email";
 
-                    using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
-                    {
-                        commandSelect.Parameters.AddWithValue("@tckn", tckn);
-                        commandSelect.Parameters.AddWithValue("@email", email);
+        //            using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
+        //            {
+        //                commandSelect.Parameters.AddWithValue("@tckn", tckn);
+        //                commandSelect.Parameters.AddWithValue("@email", email);
 
-                        object result = commandSelect.ExecuteScalar();
+        //                object result = commandSelect.ExecuteScalar();
 
-                        if (result == null)
-                        {
-                            Console.WriteLine("\nHatalı TCKN veya e-posta adresi. Şifre sıfırlama işlemi başarısız.");
-                            return false;
-                        }
+        //                if (result == null)
+        //                {
+        //                    Console.WriteLine("\nHatalı TCKN veya e-posta adresi. Şifre sıfırlama işlemi başarısız.");
+        //                    return false;
+        //                }
 
-                        int musteriId = Convert.ToInt32(result);
+        //                int musteriId = Convert.ToInt32(result);
 
-                        // Update the password in the database
-                        string sqlUpdatePassword = "UPDATE Musteri_Bilgi SET Sifre = @temporaryPassword WHERE MusteriId = @musteriId";
+        //                // Update the password in the database
+        //                string sqlUpdatePassword = "UPDATE Musteri_Bilgi SET Sifre = @temporaryPassword WHERE MusteriId = @musteriId";
 
-                        using (NpgsqlCommand commandUpdatePassword = new NpgsqlCommand(sqlUpdatePassword, connection))
-                        {
-                            commandUpdatePassword.Parameters.AddWithValue("@temporaryPassword", temporaryPassword);
-                            commandUpdatePassword.Parameters.AddWithValue("@musteriId", musteriId);
+        //                using (NpgsqlCommand commandUpdatePassword = new NpgsqlCommand(sqlUpdatePassword, connection))
+        //                {
+        //                    commandUpdatePassword.Parameters.AddWithValue("@temporaryPassword", temporaryPassword);
+        //                    commandUpdatePassword.Parameters.AddWithValue("@musteriId", musteriId);
 
-                            int rowsAffected = commandUpdatePassword.ExecuteNonQuery();
+        //                    int rowsAffected = commandUpdatePassword.ExecuteNonQuery();
 
-                            if (rowsAffected > 0)
-                            {
-                                Console.WriteLine($"\nGeçici şifreniz başarıyla oluşturuldu. Şifreniz: {temporaryPassword}");
-                                return true;
-                            }
-                            else
-                            {
-                                Console.WriteLine("\nŞifre sıfırlama işlemi başarısız. Lütfen tekrar deneyin.");
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                LogError(ex, method.ToString());
+        //                    if (rowsAffected > 0)
+        //                    {
+        //                        Console.WriteLine($"\nGeçici şifreniz başarıyla oluşturuldu. Şifreniz: {temporaryPassword}");
+        //                        return true;
+        //                    }
+        //                    else
+        //                    {
+        //                        Console.WriteLine("\nŞifre sıfırlama işlemi başarısız. Lütfen tekrar deneyin.");
+        //                        return false;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the error to the database using the ErrorLoggerDB
+        //        MethodBase method = MethodBase.GetCurrentMethod();
+        //        LogError(ex, method.ToString());
 
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-                return false;
-            }
-        }
+        //        // Handle the error (display a user-friendly message, rollback transactions, etc.)
+        //        Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+        //        return false;
+        //    }
+        //}
 
         /// <summary>
         /// TransferDB.cs

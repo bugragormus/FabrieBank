@@ -35,8 +35,9 @@ namespace FabrieBank
 
                     case "3":
 
+                        DTOCustomer customer = new DTOCustomer();
                         LogIn forgot = new LogIn();
-                        forgot.ForgotPassword();
+                        forgot.ForgotPassword(customer);
                         break;
 
                     case "4":
