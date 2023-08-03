@@ -40,7 +40,7 @@ namespace FabrieBank
                         personelInfo.PersonelInfoM(customer);
                         break;
                     case "2":
-                        UpdatePersonelInfo();
+                        UpdatePersonelInfo(customer);
                         break;
                     case "3":
                         ChangePassword();
@@ -55,7 +55,7 @@ namespace FabrieBank
             } while (choice != "4");
         }
 
-        private void UpdatePersonelInfo()
+        private void UpdatePersonelInfo(DTOCustomer dTOCustomer)
         {
             try
             {
@@ -77,7 +77,17 @@ namespace FabrieBank
                     email = Console.ReadLine();
                 }
 
-                bool updated = customerInfoDB.UpdatePersonelInfo(musteriId, telNo, email);
+                DTOCustomer customer = new DTOCustomer()
+                {
+                    MusteriId = musteriId,
+                    Ad = dTOCustomer.Ad,
+                    Soyad = dTOCustomer.Soyad,
+                    Sifre = dTOCustomer.Sifre,
+                    TelNo = telNo,
+                    Email = email
+                };
+
+                bool updated = customerInfoDB.UpdatePersonelInfo(customer);
 
                 if (updated)
                 {

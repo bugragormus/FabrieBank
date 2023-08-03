@@ -19,9 +19,9 @@ namespace FabrieBank.DAL.Entity
             return eCustomer.LogIn(tckn, sifre);
         }
 
-        public bool UpdatePersonelInfo(int musteriId, long telNo, string email)
+        public bool UpdatePersonelInfo(DTOCustomer customer)
         {
-            return dataAccessLayer.UpdatePersonelInfo(musteriId, telNo, email);
+            return eCustomer.UpdatePersonelInfo(customer);
         }
 
         public bool IsCredentialsValid(long tckn, int sifre)

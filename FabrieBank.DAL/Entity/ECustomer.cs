@@ -4,6 +4,7 @@ using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL;
 using Npgsql;
 using NpgsqlTypes;
+using System.Security.Principal;
 
 namespace FabrieBank.DAL.Entity
 {
@@ -18,6 +19,10 @@ namespace FabrieBank.DAL.Entity
             database = dataAccessLayer.CallDB();
         }
 
+        /// <summary>
+        /// Müşteri Oluşturur
+        /// </summary>
+        /// <param name="customer"></param>
         public void CreateCustomer(DTOCustomer customer)
         {
 
@@ -34,6 +39,12 @@ namespace FabrieBank.DAL.Entity
             }
         }
 
+        /// <summary>
+        /// Giriş işlemi yapar
+        /// </summary>
+        /// <param name="tckn"></param>
+        /// <param name="sifre"></param>
+        /// <returns></returns>
         public DTOCustomer LogIn(long tckn, int sifre)
         {
             DTOCustomer customer = ReadCustomer(new DTOCustomer { Tckn = tckn });
@@ -47,6 +58,68 @@ namespace FabrieBank.DAL.Entity
                 return null;
             }
         }
+
+        /// <summary>
+        /// İletişim bilgileri güncelleme
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns></returns>
+        public bool UpdatePersonelInfo(DTOCustomer customer)
+        {
+            UpdateCustomer(customer);
+            return true;
+        }
+
+        /*
+        public bool ForgotPassword(long tckn, string email, int temporaryPassword)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+            {
+                connection.Open();
+
+                // Check if the user with the given TCKN and email exists
+                string sqlSelect = "SELECT MusteriId FROM Musteri_Bilgi WHERE Tckn = @tckn AND Email = @email";
+
+                using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
+                {
+                    commandSelect.Parameters.AddWithValue("@tckn", tckn);
+                    commandSelect.Parameters.AddWithValue("@email", email);
+
+                    object result = commandSelect.ExecuteScalar();
+
+                    if (result == null)
+                    {
+                        Console.WriteLine("\nHatalı TCKN veya e-posta adresi. Şifre sıfırlama işlemi başarısız.");
+                        return false;
+                    }
+
+                    int musteriId = Convert.ToInt32(result);
+
+                    // Update the password in the database
+                    string sqlUpdatePassword = "UPDATE Musteri_Bilgi SET Sifre = @temporaryPassword WHERE MusteriId = @musteriId";
+
+                    using (NpgsqlCommand commandUpdatePassword = new NpgsqlCommand(sqlUpdatePassword, connection))
+                    {
+                        commandUpdatePassword.Parameters.AddWithValue("@temporaryPassword", temporaryPassword);
+                        commandUpdatePassword.Parameters.AddWithValue("@musteriId", musteriId);
+
+                        int rowsAffected = commandUpdatePassword.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine($"\nGeçici şifreniz başarıyla oluşturuldu. Şifreniz: {temporaryPassword}");
+                            return true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nŞifre sıfırlama işlemi başarısız. Lütfen tekrar deneyin.");
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        */ //Forgot Password
 
         /// <summary>
         /// Müşteri Tablosundan Tek Veri Döndürür
@@ -227,11 +300,12 @@ namespace FabrieBank.DAL.Entity
                     connection.Open();
 
                     string functionName = "usp_UpdateCustomer";
-
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_ad, @p_soyad, @p_sifre ,@p_tel_no, @p_email)";
+                    
+                    string sqlQuery = $"CALL {functionName}(@p_musteri_id, @p_ad, @p_soyad, @p_sifre ,@p_tel_no, @p_email)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
+                        command.Parameters.AddWithValue("@p_musteri_id", NpgsqlDbType.Integer, customer.MusteriId);
                         command.Parameters.AddWithValue("@p_ad", NpgsqlDbType.Varchar, (object)customer.Ad ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_soyad", NpgsqlDbType.Varchar, (object)customer.Soyad ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_sifre", NpgsqlDbType.Integer, customer.Sifre);

@@ -72,39 +72,6 @@ namespace FabrieBank.DAL
         /// <param name="telNo"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public bool UpdatePersonelInfo(int musteriId, long telNo, string email)
-        {
-            try
-            {
-                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
-                {
-                    connection.Open();
-
-                    string sql = "UPDATE public.Musteri_Bilgi SET TelNo = @telNo, Email = @email WHERE MusteriId = @musteriId";
-
-                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
-                    {
-                        command.Parameters.AddWithValue("@telNo", telNo);
-                        command.Parameters.AddWithValue("@email", email);
-                        command.Parameters.AddWithValue("@musteriId", musteriId);
-
-                        int rowsAffected = command.ExecuteNonQuery();
-
-                        return rowsAffected > 0;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-                return false;
-            }
-        }
 
         public bool IsCredentialsValid(long tckn, int sifre)
         {

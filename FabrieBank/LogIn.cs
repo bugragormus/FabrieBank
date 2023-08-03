@@ -101,7 +101,7 @@ namespace FabrieBank
             Console.Write("Email: ");
             string email = Console.ReadLine();
 
-            bool forgotPasswordResult = loginDB.ForgotPassword(tckn, email);
+            loginDB.ForgotPassword(tckn, email);
         }
     }
 }

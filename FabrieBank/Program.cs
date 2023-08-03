@@ -56,7 +56,6 @@ namespace FabrieBank
         {
             String? ch;
 
-            //Main menu for loged in users
             for (; ; )
             {
                 Console.WriteLine("===============================================================================================");
