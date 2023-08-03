@@ -43,7 +43,7 @@ namespace FabrieBank
                         UpdatePersonelInfo(customer);
                         break;
                     case "3":
-                        ChangePassword();
+                        ChangePassword(customer);
                         break;
                     case "4":
                         Console.WriteLine("\nKullanıcı menüsünden çıkış yapıldı.\n");
@@ -110,11 +110,29 @@ namespace FabrieBank
             }
         }
 
-        public void ChangePassword()
+        public void ChangePassword(DTOCustomer dTOCustomer)
         {
             try
             {
-                Console.WriteLine("Lütfen yeni şifrenizi girin: ");
+                Console.WriteLine("Güncel şifrenizi giriniz: ");
+                Console.Write(">>> ");
+                int currentPassword;
+                while (!int.TryParse(GetMaskedInput(), out currentPassword) || currentPassword.ToString().Length != 4)
+                {
+                    Console.WriteLine("Invalid password. Please enter a 4-digit password:");
+                }
+
+                while (dTOCustomer.Sifre != currentPassword)
+                {
+                    Console.WriteLine("\nGüncel şifre ile girilen şifre uyuşmuyor yeniden deneyin:");
+                    Console.Write(">>> ");
+                    while (!int.TryParse(GetMaskedInput(), out currentPassword) || currentPassword.ToString().Length != 4)
+                    {
+                        Console.WriteLine("Invalid password. Please enter a 4-digit password:");
+                    }
+                }
+
+                Console.WriteLine("\nLütfen yeni şifrenizi girin: ");
                 Console.Write(">>> ");
                 int newPassword;
                 while (!int.TryParse(GetMaskedInput(), out newPassword) || newPassword.ToString().Length != 4)
@@ -122,11 +140,49 @@ namespace FabrieBank
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
 
-                bool updated = customerInfoDB.ChangePassword(musteriId, newPassword);
+                while (newPassword == currentPassword)
+                {
+                    Console.WriteLine("Yeni şifre eskisi ile aynı olamaz. Lütfen yeniden deneyin:");
+                    Console.Write(">>> ");
+                    while (!int.TryParse(GetMaskedInput(), out newPassword) || newPassword.ToString().Length != 4)
+                    {
+                        Console.WriteLine("Geçersiz şifre. Lütfen 4 basamaklı bir şifre girin:");
+                    }
+                }
+
+                Console.WriteLine("\nLütfen yeni şifrenizi tekrar girin: ");
+                Console.Write(">>> ");
+                int newPassword2;
+                while (!int.TryParse(GetMaskedInput(), out newPassword2) || newPassword2.ToString().Length != 4)
+                {
+                    Console.WriteLine("Invalid password. Please enter a 4-digit password:");
+                }
+
+                while (newPassword != newPassword2)
+                {
+                    Console.WriteLine("Şifreler eşleşmiyor. Lütfen aynı şifreyi tekrar girin:");
+                    Console.Write(">>> ");
+                    while (!int.TryParse(GetMaskedInput(), out newPassword2) || newPassword2.ToString().Length != 4)
+                    {
+                        Console.WriteLine("Geçersiz şifre. Lütfen 4 basamaklı bir şifre girin:");
+                    }
+                }
+
+                DTOCustomer customer = new DTOCustomer()
+                {
+                    MusteriId = musteriId,
+                    Ad = dTOCustomer.Ad,
+                    Soyad = dTOCustomer.Soyad,
+                    Sifre = newPassword2,
+                    TelNo = dTOCustomer.TelNo,
+                    Email = dTOCustomer.Email
+                };
+
+                bool updated = customerInfoDB.ChangePassword(customer);
 
                 if (updated)
                 {
-                    Console.WriteLine("\nKullanıcı bilgileri güncellendi.\n");
+                    Console.WriteLine("\n\nKullanıcı bilgileri güncellendi.\n");
                 }
                 else
                 {

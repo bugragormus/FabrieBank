@@ -41,9 +41,9 @@ namespace FabrieBank.DAL.Entity
             return random.Next(1000, 9999);
         }
 
-        public bool ChangePassword(int musteriId, int newPassword)
+        public bool ChangePassword(DTOCustomer customer)
         {
-            return dataAccessLayer.ChangePassword(musteriId, newPassword);
+            return eCustomer.ChangePassword(customer);
         }
     }
 }

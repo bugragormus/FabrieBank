@@ -70,6 +70,17 @@ namespace FabrieBank.DAL.Entity
             return true;
         }
 
+        /// <summary>
+        /// Şifre değiştirir
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns></returns>
+        public bool ChangePassword(DTOCustomer customer)
+        {
+            UpdateCustomer(customer);
+            return true;
+        }
+
         /*
         public bool ForgotPassword(long tckn, string email, int temporaryPassword)
         {
@@ -300,7 +311,7 @@ namespace FabrieBank.DAL.Entity
                     connection.Open();
 
                     string functionName = "usp_UpdateCustomer";
-                    
+
                     string sqlQuery = $"CALL {functionName}(@p_musteri_id, @p_ad, @p_soyad, @p_sifre ,@p_tel_no, @p_email)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
