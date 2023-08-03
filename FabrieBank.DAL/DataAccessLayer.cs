@@ -168,47 +168,6 @@ namespace FabrieBank.DAL
             }
         }
 
-        public bool ChangePassword(int musteriId, int newPassword)
-        {
-            try
-            {
-                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
-                {
-                    connection.Open();
-
-                    string sql = "UPDATE Musteri_Bilgi SET Sifre = @newPassword WHERE MusteriId = @musteriId";
-
-                    using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
-                    {
-                        command.Parameters.AddWithValue("@newPassword", newPassword);
-                        command.Parameters.AddWithValue("@musteriId", musteriId);
-
-                        int rowsAffected = command.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
-                        {
-                            Console.WriteLine("Şifreniz başarıyla değiştirildi.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Şifre değiştirme işlemi başarısız. Lütfen tekrar deneyin.");
-                        }
-                        return rowsAffected > 0;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-                return false;
-            }
-        }
-
         /// <summary>
         /// TransferDB.cs
         /// </summary>
