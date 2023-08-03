@@ -12,11 +12,6 @@ namespace FabrieBank.DAL.Entity
             dataAccessLayer = new DataAccessLayer();
         }
 
-        public bool HesaplarArasiTransfer(DTODovizHareket dovizHareket)
-        {
-            return dataAccessLayer.HesaplarArasiTransfer(dovizHareket);
-        }
-
         public bool Havale(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
         {
             return dataAccessLayer.Havale(kaynakHesapNo, hedefHesapNo, miktar);

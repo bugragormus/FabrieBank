@@ -1,10 +1,7 @@
-﻿using System.Reflection;
-using FabrieBank.DAL.Common.DTOs;
+﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Entity;
-using Npgsql;
-
 namespace FabrieBank.BLL.Logic
 {
     public class BAccount
@@ -105,6 +102,7 @@ namespace FabrieBank.BLL.Logic
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
                     AccountNumber = accountInfo.HesapNo,
+                    TargetAccountNumber = accountInfo.HesapNo,
                     TransactionType = EnumTransactionType.Deposit,
                     TransactionStatus = EnumTransactionStatus.Success,
                     Amount = yeniBakiye - eskiBakiye,
@@ -165,6 +163,7 @@ namespace FabrieBank.BLL.Logic
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
                     AccountNumber = accountInfo.HesapNo,
+                    TargetAccountNumber = accountInfo.HesapNo,
                     TransactionType = EnumTransactionType.Deposit,
                     TransactionStatus = EnumTransactionStatus.Success,
                     Amount = eskiBakiye - yeniBakiye,
