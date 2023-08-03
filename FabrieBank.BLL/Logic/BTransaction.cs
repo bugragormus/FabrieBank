@@ -204,6 +204,7 @@ namespace FabrieBank.BLL.Logic
             {
                 Console.WriteLine($"[{i}] Hesap No: {accountInfos[i].HesapNo}");
                 Console.WriteLine($"Bakiye: {accountInfos[i].Bakiye}");
+                Console.WriteLine($"Doviz Cinsi: {accountInfos[i].DovizCins}");
                 Console.WriteLine("==============================");
             }
         }

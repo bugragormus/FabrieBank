@@ -19,7 +19,10 @@ namespace FabrieBank
 
         public void ShowMenu()
         {
-            DTOAccountInfo dTOAccount = new DTOAccountInfo();
+            DTOAccountInfo dTOAccount = new DTOAccountInfo()
+            {
+                MusteriId = musteriId
+            };
             List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
             string choice;
