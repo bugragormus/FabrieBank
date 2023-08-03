@@ -189,14 +189,12 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_UpdateAccountInfo";
 
-                    string sqlQuery = $"CALL {functionName}(@p_hesapno, @p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
+                    string sqlQuery = $"CALL {functionName}(@p_hesapno, @p_bakiye, @p_hesap_adi)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
                         command.Parameters.AddWithValue("@p_hesapno", NpgsqlDbType.Bigint, dTOAccount.HesapNo);
                         command.Parameters.AddWithValue("@p_bakiye", NpgsqlDbType.Numeric, dTOAccount.Bakiye);
-                        command.Parameters.AddWithValue("@p_musteriid", NpgsqlDbType.Integer, dTOAccount.MusteriId);
-                        command.Parameters.AddWithValue("@p_doviz_cins", NpgsqlDbType.Integer, dTOAccount.DovizCins);
                         command.Parameters.AddWithValue("@p_hesap_adi", NpgsqlDbType.Varchar, (object)dTOAccount.HesapAdi ?? DBNull.Value);
 
                         if (command.ExecuteNonQuery() > 0)
