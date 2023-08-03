@@ -11,14 +11,12 @@ namespace FabrieBank.BLL.Logic
     {
 
         private DataAccessLayer dataAccessLayer;
-        private NpgsqlConnectionStringBuilder database;
         private EAccountInfo eAccount;
 
         public BAccount()
         {
             eAccount = new EAccountInfo();
             dataAccessLayer = new DataAccessLayer();
-            database = dataAccessLayer.CallDB();
         }
 
         public string GetDovizCinsi(int dovizCins)
