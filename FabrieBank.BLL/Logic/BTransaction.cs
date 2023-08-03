@@ -8,38 +8,50 @@ namespace FabrieBank.BLL.Logic
     {
         private EAccountInfo eAccount;
         private TransferDB transferDB;
+        private BAccount account;
 
         public BTransaction()
         {
             eAccount = new EAccountInfo();
             transferDB = new TransferDB();
+            account = new BAccount();
         }
 
-        public void HesaplarArasiTransfer(int musteriId, int kaynakHesapIndex, int hedefHesapIndex, decimal transferMiktar)
+        public void HesaplarArasiTransfer(int musteriId, DTOTransfer transfer)
         {
             try
             {
-                DTOAccountInfo dTOAccount = new DTOAccountInfo();
+                DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                {
+                    MusteriId = musteriId
+                };
                 List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
-                if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count && hedefHesapIndex >= 0 && hedefHesapIndex < accountInfos.Count)
+                if (transfer.KaynakHesapIndex >= 0 && transfer.KaynakHesapIndex < accountInfos.Count && transfer.HedefHesapIndex >= 0 && transfer.HedefHesapIndex < accountInfos.Count)
                 {
-                    long kaynakHesapNo = accountInfos[kaynakHesapIndex].HesapNo;
-                    long hedefHesapNo = accountInfos[hedefHesapIndex].HesapNo;
-                    int kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
-                    int hedefDovizCinsi = accountInfos[hedefHesapIndex].DovizCins;
+                    long kaynakHesapNo = accountInfos[transfer.KaynakHesapIndex].HesapNo;
+                    long hedefHesapNo = accountInfos[transfer.HedefHesapIndex].HesapNo;
+                    int kaynakDovizCinsi = accountInfos[transfer.KaynakHesapIndex].DovizCins;
+                    int hedefDovizCinsi = accountInfos[transfer.HedefHesapIndex].DovizCins;
 
-                    if (KaynakVeHedefDovizCinsleriUyusuyorMu(kaynakHesapNo, hedefHesapNo, kaynakDovizCinsi, hedefDovizCinsi))
+                    DTODovizHareket dovizHareket = new DTODovizHareket
                     {
-                        DTODovizHareket dovizHareket = new DTODovizHareket
+                        KaynakHesapNo = kaynakHesapNo,
+                        HedefHesapNo = hedefHesapNo,
+                        KaynakDovizCinsi = kaynakDovizCinsi,
+                        HedefDovizCinsi = hedefDovizCinsi,
+                        Miktar = transfer.Miktar
+                    };
+
+                    if (dovizHareket.KaynakDovizCinsi == dovizHareket.HedefDovizCinsi)
+                    {
+
+                        DTOAccountInfo accountInfo = new DTOAccountInfo()
                         {
-                            KaynakHesapNo = kaynakHesapNo,
-                            HedefHesapNo = hedefHesapNo,
-                            DovizCinsi = kaynakDovizCinsi,
-                            Miktar = transferMiktar
+                            HesapNo = kaynakHesapNo
                         };
 
-                        bool transferBasarili = transferDB.HesaplarArasiTransfer(dovizHareket.KaynakHesapNo, dovizHareket.HedefHesapNo, dovizHareket.Miktar);
+                        bool transferBasarili = account.HesaplarArasiTransfer(dovizHareket, accountInfo);
                         if (transferBasarili)
                         {
                             Console.WriteLine("HesaplarArasiTransfer işlemi başarıyla gerçekleştirildi.");
@@ -155,14 +167,6 @@ namespace FabrieBank.BLL.Logic
                 }
             }
             return false;
-        }
-
-        private bool KaynakVeHedefDovizCinsleriUyusuyorMu(long kaynakHesapNo, long hedefHesapNo, int kaynakDovizCinsi, int hedefDovizCinsi)
-        {
-            string kaynakDovizKod = kaynakHesapNo.ToString().Substring(0, 1);
-            string hedefDovizKod = hedefHesapNo.ToString().Substring(0, 1);
-
-            return kaynakDovizKod == hedefDovizKod;
         }
 
         private int GetDovizCinsiFromHesapNo(long hesapNo)

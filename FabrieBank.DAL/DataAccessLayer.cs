@@ -175,7 +175,7 @@ namespace FabrieBank.DAL
         /// <param name="hedefHesapNo"></param>
         /// <param name="miktar"></param>
         /// <returns></returns>
-        public bool HesaplarArasiTransfer(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
+        public bool HesaplarArasiTransfer(DTODovizHareket hareket)
         {
             try
             {
@@ -189,14 +189,14 @@ namespace FabrieBank.DAL
 
                     using (NpgsqlCommand commandSelect = new NpgsqlCommand(sqlSelect, connection))
                     {
-                        commandSelect.Parameters.AddWithValue("@hesapNo", kaynakHesapNo);
+                        commandSelect.Parameters.AddWithValue("@hesapNo", hareket.KaynakHesapNo);
 
                         decimal eskiBakiye = Convert.ToDecimal(commandSelect.ExecuteScalar());
-                        decimal yeniBakiye = eskiBakiye - miktar;
+                        decimal yeniBakiye = eskiBakiye - hareket.Miktar;
 
                         using (NpgsqlCommand commandSelectKaynak = new NpgsqlCommand(sqlSelectKaynak, connection))
                         {
-                            commandSelectKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
+                            commandSelectKaynak.Parameters.AddWithValue("@kaynakHesapNo", hareket.KaynakHesapNo);
 
                             object result = commandSelectKaynak.ExecuteScalar();
                             if (result == null)
@@ -205,11 +205,11 @@ namespace FabrieBank.DAL
                                 // Log the failed transfer
                                 DTOTransactionLog transactionLog = new DTOTransactionLog
                                 {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
+                                    AccountNumber = hareket.KaynakHesapNo,
+                                    TargetAccountNumber = hareket.HedefHesapNo,
                                     TransactionType = EnumTransactionType.BOATransfer,
                                     TransactionStatus = EnumTransactionStatus.Failed,
-                                    Amount = miktar,
+                                    Amount = hareket.Miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = yeniBakiye,
                                     Timestamp = DateTime.Now
@@ -222,17 +222,17 @@ namespace FabrieBank.DAL
                             }
 
                             decimal kaynakBakiye = (decimal)result;
-                            if (kaynakBakiye < miktar)
+                            if (kaynakBakiye < hareket.Miktar)
                             {
 
                                 // Log the failed transfer
                                 DTOTransactionLog transactionLog = new DTOTransactionLog
                                 {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
+                                    AccountNumber = hareket.KaynakHesapNo,
+                                    TargetAccountNumber = hareket.HedefHesapNo,
                                     TransactionType = EnumTransactionType.BOATransfer,
                                     TransactionStatus = EnumTransactionStatus.Failed,
-                                    Amount = miktar,
+                                    Amount = hareket.Miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = eskiBakiye,
                                     Timestamp = DateTime.Now
@@ -249,7 +249,7 @@ namespace FabrieBank.DAL
                         string sqlSelectHedef = "SELECT Bakiye FROM public.Hesap WHERE HesapNo = @hedefHesapNo";
                         using (NpgsqlCommand commandSelectHedef = new NpgsqlCommand(sqlSelectHedef, connection))
                         {
-                            commandSelectHedef.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
+                            commandSelectHedef.Parameters.AddWithValue("@hedefHesapNo", hareket.HedefHesapNo);
 
                             object result = commandSelectHedef.ExecuteScalar();
                             if (result == null)
@@ -258,11 +258,11 @@ namespace FabrieBank.DAL
                                 // Log the failed transfer
                                 DTOTransactionLog transactionLog = new DTOTransactionLog
                                 {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
+                                    AccountNumber = hareket.KaynakHesapNo,
+                                    TargetAccountNumber = hareket.HedefHesapNo,
                                     TransactionType = EnumTransactionType.BOATransfer,
                                     TransactionStatus = EnumTransactionStatus.Failed,
-                                    Amount = miktar,
+                                    Amount = hareket.Miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = eskiBakiye,
                                     Timestamp = DateTime.Now
@@ -285,16 +285,16 @@ namespace FabrieBank.DAL
                             {
                                 using (NpgsqlCommand commandUpdateKaynak = new NpgsqlCommand(sqlUpdateKaynak, connection, transaction))
                                 {
-                                    commandUpdateKaynak.Parameters.AddWithValue("@miktar", miktar);
-                                    commandUpdateKaynak.Parameters.AddWithValue("@kaynakHesapNo", kaynakHesapNo);
+                                    commandUpdateKaynak.Parameters.AddWithValue("@miktar", hareket.Miktar);
+                                    commandUpdateKaynak.Parameters.AddWithValue("@kaynakHesapNo", hareket.KaynakHesapNo);
 
                                     commandUpdateKaynak.ExecuteNonQuery();
                                 }
 
                                 using (NpgsqlCommand commandUpdateHedef = new NpgsqlCommand(sqlUpdateHedef, connection, transaction))
                                 {
-                                    commandUpdateHedef.Parameters.AddWithValue("@miktar", miktar);
-                                    commandUpdateHedef.Parameters.AddWithValue("@hedefHesapNo", hedefHesapNo);
+                                    commandUpdateHedef.Parameters.AddWithValue("@miktar", hareket.Miktar);
+                                    commandUpdateHedef.Parameters.AddWithValue("@hedefHesapNo", hareket.HedefHesapNo);
 
                                     commandUpdateHedef.ExecuteNonQuery();
                                 }
@@ -305,11 +305,11 @@ namespace FabrieBank.DAL
                                 // Log the successful transfer
                                 DTOTransactionLog transactionLog = new DTOTransactionLog
                                 {
-                                    AccountNumber = kaynakHesapNo,
-                                    TargetAccountNumber = hedefHesapNo,
+                                    AccountNumber = hareket.KaynakHesapNo,
+                                    TargetAccountNumber = hareket.HedefHesapNo,
                                     TransactionType = EnumTransactionType.BOATransfer,
                                     TransactionStatus = EnumTransactionStatus.Success,
-                                    Amount = miktar,
+                                    Amount = hareket.Miktar,
                                     OldBalance = eskiBakiye,
                                     NewBalance = yeniBakiye,
                                     Timestamp = DateTime.Now
@@ -620,7 +620,7 @@ namespace FabrieBank.DAL
                         command.Parameters.AddWithValue("@oldBalance", transactionLog.OldBalance);
                         command.Parameters.AddWithValue("@newBalance", transactionLog.NewBalance);
                         command.Parameters.AddWithValue("@transactionFee", transactionLog.TransactionFee);
-                        command.Parameters.AddWithValue("@timestamp", transactionLog.Timestamp);
+                        command.Parameters.AddWithValue("@timestamp", DateTime.Now);
 
                         command.ExecuteNonQuery();
                     }

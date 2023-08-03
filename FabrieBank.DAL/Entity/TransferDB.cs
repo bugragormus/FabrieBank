@@ -1,4 +1,5 @@
 ﻿using FabrieBank.DAL;
+using FabrieBank.DAL.Common.DTOs;
 
 namespace FabrieBank.DAL.Entity
 {
@@ -11,9 +12,9 @@ namespace FabrieBank.DAL.Entity
             dataAccessLayer = new DataAccessLayer();
         }
 
-        public bool HesaplarArasiTransfer(long kaynakHesapNo, long hedefHesapNo, decimal miktar)
+        public bool HesaplarArasiTransfer(DTODovizHareket dovizHareket)
         {
-            return dataAccessLayer.HesaplarArasiTransfer(kaynakHesapNo, hedefHesapNo, miktar);
+            return dataAccessLayer.HesaplarArasiTransfer(dovizHareket);
         }
 
         public bool Havale(long kaynakHesapNo, long hedefHesapNo, decimal miktar)

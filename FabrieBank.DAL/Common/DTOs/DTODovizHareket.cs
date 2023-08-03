@@ -4,7 +4,8 @@
     {
         public long KaynakHesapNo { get; set; }
         public long HedefHesapNo { get; set; }
-        public int DovizCinsi { get; set; }
+        public int KaynakDovizCinsi { get; set; }
+        public int HedefDovizCinsi { get; set; }
         public decimal Miktar { get; set; }
     }
 }

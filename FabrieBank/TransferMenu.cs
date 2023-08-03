@@ -113,7 +113,14 @@ namespace FabrieBank
             Console.WriteLine("\nTransfer etmek istediğiniz miktarı girin: ");
             decimal transferMiktar = decimal.Parse(Console.ReadLine());
 
-            transactionLogic.HesaplarArasiTransfer(musteriId, kaynakHesapIndex, hedefHesapIndex, transferMiktar);
+            DTOTransfer transfer = new DTOTransfer()
+            {
+                KaynakHesapIndex = kaynakHesapIndex,
+                HedefHesapIndex = hedefHesapIndex,
+                Miktar = transferMiktar
+            };
+
+            transactionLogic.HesaplarArasiTransfer(musteriId, transfer);
         }
     }
 }
