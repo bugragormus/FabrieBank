@@ -370,7 +370,9 @@ namespace FabrieBank.DAL
                 {
                     connection.Open();
 
-                    string sql = "SELECT FeeAmount FROM Transaction_Fee WHERE TransactionType = @transactionType";
+                    string functionName = "func_readtransactionfee";
+
+                    string sql = $"SELECT * FROM {functionName}(@transactionType)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                     {
