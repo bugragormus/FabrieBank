@@ -68,13 +68,38 @@ namespace FabrieBank.BLL.Logic
         /// <summary>
         /// Hesap Silme
         /// </summary>
-        public void HesapSil()
+        public void HesapSil(DTOCustomer customer)
         {
-            DTOAccountInfo dTOAccount = new DTOAccountInfo();
-            Console.WriteLine("\nSilmek istediğiniz hesap numarasını girin: ");
-            Console.Write(">>> ");
-            dTOAccount.HesapNo = long.Parse(Console.ReadLine());
-            _ = eAccount.DeleteAccountInfo(dTOAccount);
+            DTOAccountInfo dTOAccounts = new DTOAccountInfo()
+            {
+                MusteriId = customer.MusteriId
+            };
+            List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccounts);
+
+            BTransaction transactionLogic = new BTransaction();
+
+            Console.WriteLine("\nHangi hesabı silmek istersiniz?");
+            transactionLogic.PrintAccountList(accountInfos);
+
+            Console.Write("Hesap Indexi: ");
+            int deletedAccIndex = int.Parse(Console.ReadLine());
+
+            if (deletedAccIndex >= 0 && deletedAccIndex < accountInfos.Count)
+            {
+                long deletedAccNo = accountInfos[deletedAccIndex].HesapNo;
+
+                foreach (DTOAccountInfo accountInf in accountInfos)
+                {
+                    if (accountInf.HesapNo == deletedAccNo)
+                    {
+                        DTOAccountInfo dTOAccountInfo = new DTOAccountInfo()
+                        {
+                            HesapNo = deletedAccNo
+                        };
+                        _ = eAccount.DeleteAccountInfo(dTOAccountInfo);
+                    }
+                }
+            }
         }
 
         /// <summary>

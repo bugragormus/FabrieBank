@@ -140,7 +140,7 @@ namespace FabrieBank
                     case "3":
 
                         BAccount accountLogic = new BAccount();
-                        accountLogic.HesapSil();
+                        accountLogic.HesapSil(customer);
                         break;
 
                     case "4":
