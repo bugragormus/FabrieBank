@@ -334,7 +334,7 @@ namespace FabrieBank.BLL.Logic
         /// <param name="hedefHesapNo"></param>
         /// <param name="miktar"></param>
         /// <returns></returns>
-        public bool Havale(DTODovizHareket hareket, DTOAccountInfo accountInfo)
+        public bool HavaleEFT(DTODovizHareket hareket, DTOAccountInfo accountInfo)
         {
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
             if (accountInfo != null)

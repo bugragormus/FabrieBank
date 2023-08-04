@@ -32,11 +32,10 @@ namespace FabrieBank
                 Console.WriteLine("PARA TRANSFERİ");
                 Console.WriteLine("==============================");
                 Console.WriteLine("1. Hesaplarım Arası Transfer");
-                Console.WriteLine("2. Başka Hesaba Havale");
-                Console.WriteLine("3. Başka Hesaba EFT");
-                Console.WriteLine("4. Üst Menü");
+                Console.WriteLine("2. Başka Hesaba Havale/EFT");
+                Console.WriteLine("3. Üst Menü");
                 Console.WriteLine("==============================");
-                Console.Write("Seçiminizi yapın (1-4): ");
+                Console.Write("Seçiminizi yapın (1-3): ");
                 choice = Console.ReadLine();
 
                 switch (choice)
@@ -45,22 +44,19 @@ namespace FabrieBank
                         HesaplarArasiTransfer(accountInfos);
                         break;
                     case "2":
-                        Havale(accountInfos);
+                        HavaleEFT(accountInfos);
                         break;
                     case "3":
-                        EFT(accountInfos);
-                        break;
-                    case "4":
                         Console.WriteLine("Para transferinden çıkış yapıldı.");
                         break;
                     default:
                         Console.WriteLine("Geçersiz seçim. Tekrar deneyin.");
                         break;
                 }
-            } while (choice != "4");
+            } while (choice != "3");
         }
 
-        private void Havale(List<DTOAccountInfo> accountInfos)
+        private void HavaleEFT(List<DTOAccountInfo> accountInfos)
         {
             Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
             transactionLogic.PrintAccountList(accountInfos);
@@ -68,7 +64,7 @@ namespace FabrieBank
             Console.Write("Kaynak Hesap Indexi: ");
             int kaynakHesapIndex = int.Parse(Console.ReadLine());
 
-            Console.WriteLine("\nHavale yapmak istediğiniz hesap numarasını girin: ");
+            Console.WriteLine("\nPara transferi yapmak istediğiniz hesap numarasını girin: ");
             Console.Write("Hedef Hesap Numarası: ");
             long hedefHesapNo = long.Parse(Console.ReadLine());
 
@@ -82,25 +78,7 @@ namespace FabrieBank
                 Miktar = transferMiktar
             };
 
-            transactionLogic.Havale(musteriId, transfer);
-        }
-
-        private void EFT(List<DTOAccountInfo> accountInfos)
-        {
-            Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
-            transactionLogic.PrintAccountList(accountInfos);
-
-            Console.Write("Kaynak Hesap Indexi: ");
-            int kaynakHesapIndex = int.Parse(Console.ReadLine());
-
-            Console.WriteLine("\nEFT yapmak istediğiniz hesap numarasını girin: ");
-            Console.Write("Hedef Hesap Numarası: ");
-            long hedefHesapNo = long.Parse(Console.ReadLine());
-
-            Console.WriteLine("\nTransfer etmek istediğiniz miktarı girin: ");
-            decimal transferMiktar = decimal.Parse(Console.ReadLine());
-
-            transactionLogic.EFT(musteriId, kaynakHesapIndex, hedefHesapNo, transferMiktar);
+            transactionLogic.HavaleEFT(musteriId, transfer);
         }
 
         private void HesaplarArasiTransfer(List<DTOAccountInfo> accountInfos)

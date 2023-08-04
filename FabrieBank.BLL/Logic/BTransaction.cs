@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
 
@@ -7,14 +7,14 @@ namespace FabrieBank.BLL.Logic
     public class BTransaction
     {
         private EAccountInfo eAccount;
-        private TransferDB transferDB;
         private BAccount account;
+        private ErrorLoggerDB errorLogger;
 
         public BTransaction()
         {
             eAccount = new EAccountInfo();
-            transferDB = new TransferDB();
             account = new BAccount();
+            errorLogger = new ErrorLoggerDB();
         }
 
         public void HesaplarArasiTransfer(int musteriId, DTOTransfer transfer)
@@ -73,11 +73,11 @@ namespace FabrieBank.BLL.Logic
             }
             catch (Exception ex)
             {
-                LogAndHandleError(ex);
+                errorLogger.LogAndHandleError(ex);
             }
         }
 
-        public void Havale(int musteriId, DTOTransfer transfer)
+        public void HavaleEFT(int musteriId, DTOTransfer transfer)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace FabrieBank.BLL.Logic
                                     HesapNo = kaynakHesapNo
                                 };
 
-                                bool transferBasarili = account.Havale(dovizHareket, accountInfo);
+                                bool transferBasarili = account.HavaleEFT(dovizHareket, accountInfo);
                             }
                         }
                         else
@@ -140,52 +140,48 @@ namespace FabrieBank.BLL.Logic
                 }
                 else
                 {
-                    Console.WriteLine("Hedef hesap numarası bankamıza ait değil lütfen EFT işlemi gerçekleştiriniz.");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogAndHandleError(ex);
-            }
-        }
-
-        public void EFT(int musteriId, int kaynakHesapIndex, long hedefHesapNo, decimal transferMiktar)
-        {
-            try
-            {
-                DTOAccountInfo dTOAccount = new DTOAccountInfo();
-                List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
-
-                if (kaynakHesapIndex >= 0 && kaynakHesapIndex < accountInfos.Count)
-                {
-                    long kaynakHesapNo = accountInfos[kaynakHesapIndex].HesapNo;
-                    int kaynakDovizCinsi = accountInfos[kaynakHesapIndex].DovizCins;
-
-                    if (kaynakDovizCinsi == (hedefHesapNo))
+                    DTOAccountInfo dTOAccount = new DTOAccountInfo()
                     {
-                        bool isOwnAccount = IsOwnAccount(accountInfos, hedefHesapNo);
+                        MusteriId = musteriId
+                    };
+                    List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
+
+                    if (transfer.KaynakHesapIndex >= 0 && transfer.KaynakHesapIndex < accountInfos.Count)
+                    {
+                        long kaynakHesapNo = accountInfos[transfer.KaynakHesapIndex].HesapNo;
+                        int kaynakDovizCinsi = accountInfos[transfer.KaynakHesapIndex].DovizCins;
+
+                        DTODovizHareket dovizHareket = new DTODovizHareket
+                        {
+                            KaynakHesapNo = kaynakHesapNo,
+                            HedefHesapNo = transfer.HedefHesapNo,
+                            Miktar = transfer.Miktar
+                        };
+
+                        bool isOwnAccount = IsOwnAccount(accountInfos, transfer.HedefHesapNo);
                         if (isOwnAccount)
                         {
-                            Console.WriteLine("Hedef hesap kendi hesabınız. EFT işlemi gerçekleştirilemez.");
+                            Console.WriteLine("Hedef hesap kendi hesabınız. Havale işlemi gerçekleştirilemez.");
                         }
                         else
                         {
-                            bool transferBasarili = transferDB.EFT(kaynakHesapNo, hedefHesapNo, transferMiktar);
+                            DTOAccountInfo accountInfo = new DTOAccountInfo()
+                            {
+                                HesapNo = kaynakHesapNo
+                            };
+
+                            bool transferBasarili = account.HavaleEFT(dovizHareket, accountInfo);
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Kaynak hesap ve hedef hesap döviz cinsleri uyuşmuyor. EFT işlemi gerçekleştirilemedi.");
+                        Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
                     }
-                }
-                else
-                {
-                    Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
                 }
             }
             catch (Exception ex)
             {
-                LogAndHandleError(ex);
+                errorLogger.LogAndHandleError(ex);
             }
         }
 
@@ -201,47 +197,22 @@ namespace FabrieBank.BLL.Logic
             return false;
         }
 
-        private int GetDovizCinsiFromHesapNo(long hesapNo)
-        {
-            string dovizKod = hesapNo.ToString().Substring(0, 1);
-
-            switch (dovizKod)
-            {
-                case "1":
-                    return 1;
-                case "2":
-                    return 2;
-                case "3":
-                    return 3;
-                case "4":
-                    return 4;
-                case "5":
-                    return 5;
-                default:
-                    throw new Exception("Geçersiz döviz kodu");
-            }
-        }
-
-        private void LogAndHandleError(Exception ex)
-        {
-            // Log the error to the database using the ErrorLoggerDB
-            MethodBase method = MethodBase.GetCurrentMethod();
-            FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-            dataAccessLayer.LogError(ex, method.ToString());
-
-            // Handle the error (display a user-friendly message, rollback transactions, etc.)
-            Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-        }
-
         public void PrintAccountList(List<DTOAccountInfo> accountInfos)
         {
-            Console.WriteLine("Hesaplarınız:");
-            for (int i = 0; i < accountInfos.Count; i++)
+            try
             {
-                Console.WriteLine($"[{i}] Hesap No: {accountInfos[i].HesapNo}");
-                Console.WriteLine($"Bakiye: {accountInfos[i].Bakiye}");
-                Console.WriteLine($"Doviz Cinsi: {accountInfos[i].DovizCins}");
-                Console.WriteLine("==============================");
+                Console.WriteLine("Hesaplarınız:");
+                for (int i = 0; i < accountInfos.Count; i++)
+                {
+                    Console.WriteLine($"[{i}] Hesap No: {accountInfos[i].HesapNo}");
+                    Console.WriteLine($"Bakiye: {accountInfos[i].Bakiye}");
+                    Console.WriteLine($"Doviz Cinsi: {accountInfos[i].DovizCins}");
+                    Console.WriteLine("==============================");
+                }
+            }
+            catch (Exception ex)
+            {
+                errorLogger.LogAndHandleError(ex);
             }
         }
     }
