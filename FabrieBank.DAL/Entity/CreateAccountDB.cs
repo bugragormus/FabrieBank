@@ -1,4 +1,5 @@
 ﻿using FabrieBank.DAL.Common.DTOs;
+using FabrieBank.DAL.Common.Enums;
 
 namespace FabrieBank.DAL.Entity
 {
@@ -13,10 +14,19 @@ namespace FabrieBank.DAL.Entity
 
         public void CreateAccount(DTOAccountInfo accountInfo)
         {
-
             _ = eAccount.InsertAccountInfo(accountInfo);
 
-            Console.WriteLine($"\n'{accountInfo.HesapNo}' Numaralı yeni hesap oluşturuldu.\n");
+            int numericValue = accountInfo.DovizCins;
+            string currencyName = Enum.GetName(typeof(EnumDovizCinsleri.DovizCinsleri), numericValue);
+
+            if (accountInfo.HesapAdi != "")
+            {
+                Console.WriteLine($"\n'{accountInfo.HesapAdi}' isimli yeni '{currencyName}' hesabı oluşturuldu.\n");
+            }
+            else
+            {
+                Console.WriteLine($"\nYeni '{currencyName}' hesabı oluşturuldu.\n");
+            }
         }
     }
 }
