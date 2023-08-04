@@ -5,14 +5,8 @@ namespace FabrieBank
 {
     public class LogIn
     {
-        private ErrorLoggerDB errorLogger;
         LogInDB loginDB = new LogInDB();
         bool loggedIn = false;
-
-        public LogIn()
-        {
-            errorLogger = new ErrorLoggerDB();
-        }
 
         public void LogInM()
         {
@@ -87,6 +81,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }

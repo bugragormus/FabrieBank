@@ -6,13 +6,6 @@ namespace FabrieBank
 {
     public class CurrencyTable
     {
-        private ErrorLoggerDB errorLogger;
-
-        public CurrencyTable()
-        {
-            errorLogger = new ErrorLoggerDB();
-        }
-
         public void DisplayCurrencyRatesTable(EnumDovizCinsleri.DovizCinsleri baseCurrency, Dictionary<string, DTOCurrencyRate> currencyRates)
         {
             try
@@ -30,6 +23,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }

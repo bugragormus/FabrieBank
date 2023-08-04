@@ -7,13 +7,11 @@ namespace FabrieBank.BLL.Logic
     {
         private EAccountInfo eAccount;
         private BAccount account;
-        private ErrorLoggerDB errorLogger;
 
         public BTransaction()
         {
             eAccount = new EAccountInfo();
             account = new BAccount();
-            errorLogger = new ErrorLoggerDB();
         }
 
         public void HesaplarArasiTransfer(int musteriId, DTOTransfer transfer)
@@ -72,6 +70,7 @@ namespace FabrieBank.BLL.Logic
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }
@@ -180,6 +179,7 @@ namespace FabrieBank.BLL.Logic
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }
@@ -211,6 +211,7 @@ namespace FabrieBank.BLL.Logic
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }

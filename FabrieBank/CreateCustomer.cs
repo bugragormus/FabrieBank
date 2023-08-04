@@ -6,13 +6,6 @@ namespace FabrieBank
 {
     public class CreateMusteri
     {
-        private ErrorLoggerDB errorLogger;
-
-        public CreateMusteri()
-        {
-            errorLogger = new ErrorLoggerDB();
-        }
-
         public void CreateMusteriM()
         {
             try
@@ -114,6 +107,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }

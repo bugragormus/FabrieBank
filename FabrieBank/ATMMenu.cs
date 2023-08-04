@@ -7,12 +7,10 @@ namespace FabrieBank
     public class ATMMenu
     {
         private BAccount atm;
-        private ErrorLoggerDB errorLogger;
 
         public ATMMenu()
         {
             atm = new BAccount();
-            errorLogger = new ErrorLoggerDB();
         }
 
         public void ShowMenu()
@@ -87,6 +85,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }
@@ -129,6 +128,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }

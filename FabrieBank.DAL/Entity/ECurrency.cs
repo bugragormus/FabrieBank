@@ -7,13 +7,11 @@ namespace FabrieBank.DAL.Entity
 {
     public class ECurrency
     {
-        private ErrorLoggerDB errorLogger;
         private DataAccessLayer dataAccessLayer;
         private NpgsqlConnectionStringBuilder database;
 
         public ECurrency()
         {
-            errorLogger = new ErrorLoggerDB();
             dataAccessLayer = new DataAccessLayer();
             database = dataAccessLayer.CallDB();
         }
@@ -60,6 +58,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
             return currency;
@@ -106,6 +105,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
             return currenciesList;
@@ -142,6 +142,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
             return false;
@@ -178,6 +179,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
             return false;
@@ -230,6 +232,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
             return false;

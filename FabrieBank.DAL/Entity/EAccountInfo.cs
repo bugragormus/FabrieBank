@@ -7,13 +7,11 @@ namespace FabrieBank.DAL.Entity
 {
     public class EAccountInfo
     {
-        private ErrorLoggerDB errorLogger;
         private DataAccessLayer dataAccessLayer;
         private NpgsqlConnectionStringBuilder database;
 
         public EAccountInfo()
         {
-            errorLogger = new ErrorLoggerDB();
             dataAccessLayer = new DataAccessLayer();
             database = dataAccessLayer.CallDB();
         }
@@ -66,6 +64,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
 
@@ -119,6 +118,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
             return accountsList;
@@ -157,6 +157,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
             return false;
@@ -194,6 +195,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
             return false;
@@ -250,6 +252,7 @@ namespace FabrieBank.DAL.Entity
                 }
                 catch (Exception ex)
                 {
+                    ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                     errorLogger.LogAndHandleError(ex);
                 }
             }

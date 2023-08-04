@@ -5,13 +5,6 @@ namespace FabrieBank
 {
     public class CreateAccount
     {
-        private ErrorLoggerDB errorLogger;
-
-        public CreateAccount()
-        {
-            errorLogger = new ErrorLoggerDB();
-        }
-
         public void CreateAccountM(DTOCustomer customer)
         {
             try
@@ -37,6 +30,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }

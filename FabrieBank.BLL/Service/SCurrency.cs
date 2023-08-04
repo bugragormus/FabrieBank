@@ -10,12 +10,10 @@ namespace FabrieBank.Services
     {
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml";
-        private ErrorLoggerDB errorLogger;
 
         public SCurrency()
         {
             _httpClient = new HttpClient();
-            errorLogger = new ErrorLoggerDB();
         }
 
         public async Task<Dictionary<string, DTOCurrencyRate>> GetTodaysCurrencyRates(EnumDovizCinsleri.DovizCinsleri baseCurrency)
@@ -78,6 +76,7 @@ namespace FabrieBank.Services
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
 
@@ -145,6 +144,7 @@ namespace FabrieBank.Services
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
 

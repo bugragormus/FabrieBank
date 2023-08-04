@@ -8,11 +8,9 @@ namespace FabrieBank.DAL
     public class DataAccessLayer
     {
         private NpgsqlConnectionStringBuilder database;
-        private ErrorLoggerDB errorLogger;
 
         public DataAccessLayer()
         {
-            errorLogger = new ErrorLoggerDB();
             database = CallDB();
         }
 
@@ -35,8 +33,8 @@ namespace FabrieBank.DAL
             }
             catch (Exception ex)
             {
-
-                return new NpgsqlConnectionStringBuilder();
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
+                errorLogger.LogAndHandleError(ex);
             }
         }
 
@@ -196,6 +194,7 @@ namespace FabrieBank.DAL
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
                 return false;
             }
@@ -313,6 +312,7 @@ namespace FabrieBank.DAL
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
                 return false;
             }
@@ -351,6 +351,7 @@ namespace FabrieBank.DAL
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }
@@ -387,6 +388,7 @@ namespace FabrieBank.DAL
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
 

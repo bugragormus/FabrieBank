@@ -78,7 +78,7 @@ namespace FabrieBank
 
                     case "2":
 
-                        ATMMenu atmMenu = new ATMMenu(customer.MusteriId);
+                        ATMMenu atmMenu = new ATMMenu();
                         atmMenu.ShowMenu();
                         break;
 

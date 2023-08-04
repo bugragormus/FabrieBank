@@ -9,11 +9,9 @@ namespace FabrieBank
     {
         private readonly SCurrency currency;
         private readonly CurrencyTable currencyTable;
-        private ErrorLoggerDB errorLogger;
 
         public CurrencyMenu()
         {
-            errorLogger = new ErrorLoggerDB();
             currency = new SCurrency();
             currencyTable = new CurrencyTable();
         }
@@ -61,6 +59,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }
@@ -93,6 +92,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
+                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
             }
         }
