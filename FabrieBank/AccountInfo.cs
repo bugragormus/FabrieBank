@@ -17,7 +17,7 @@ namespace FabrieBank
             Console.Clear();
             Console.WriteLine("******************************************************");
             Console.WriteLine("*            |                         |             *");
-            Console.WriteLine("*            |     Hesap Bilgileri     |             *");
+            Console.WriteLine("*            |      Your Accounts      |             *");
             Console.WriteLine("*            V                         V             *");
             Console.WriteLine("******************************************************\n");
 

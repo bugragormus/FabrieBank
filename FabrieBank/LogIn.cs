@@ -6,7 +6,6 @@ namespace FabrieBank
     public class LogIn
     {
         LogInDB loginDB = new LogInDB();
-        bool loggedIn = false;
 
         public void LogInM()
         {
@@ -14,7 +13,7 @@ namespace FabrieBank
             {
                 LogInDB logInDB = new LogInDB();
 
-                Console.WriteLine("TCKN girin:");
+                Console.WriteLine("TCKN:");
                 Console.Write(">>> ");
                 long tckn;
                 while (!long.TryParse(Console.ReadLine(), out tckn) || tckn.ToString().Length != 11)
@@ -22,10 +21,10 @@ namespace FabrieBank
                     Console.WriteLine("Invalid TCKN. Please enter a 11-digit TCKN:");
                 }
 
-                Console.WriteLine("Şifre girin:");
+                Console.WriteLine("Password:");
                 Console.Write(">>> ");
-                int sifre;
-                while (!int.TryParse(GetMaskedInput(), out sifre) || sifre.ToString().Length != 4)
+                int password;
+                while (!int.TryParse(GetMaskedInput(), out password) || password.ToString().Length != 4)
                 {
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
@@ -55,7 +54,7 @@ namespace FabrieBank
                     return input;
                 }
 
-                DTOCustomer customer = logInDB.LogIn(tckn, sifre);
+                DTOCustomer customer = logInDB.LogIn(tckn, password);
 
                 if (customer != null)
                 {
@@ -67,7 +66,7 @@ namespace FabrieBank
                     Console.WriteLine("******************************************************\n");
 
                     Program program = new Program();
-                    program.Menu(customer);
+                    program.MainMenu(customer);
                 }
                 else
                 {

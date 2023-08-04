@@ -5,9 +5,9 @@ namespace FabrieBank
 {
     class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
-            String? ch;
+            string? ch;
 
             for (; ; )
             {
@@ -59,7 +59,7 @@ namespace FabrieBank
             }
         }
 
-        public void Menu(DTOCustomer customer)
+        public void MainMenu(DTOCustomer customer)
         {
             String? ch;
 
@@ -145,7 +145,7 @@ namespace FabrieBank
 
                     case "4":
 
-                        Menu(customer);
+                        MainMenu(customer);
                         break;
 
                     default:

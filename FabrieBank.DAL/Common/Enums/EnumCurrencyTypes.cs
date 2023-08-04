@@ -1,8 +1,8 @@
 ﻿namespace FabrieBank.DAL.Common.Enums
 {
-    public class EnumDovizCinsleri
+    public class EnumCurrencyTypes
     {
-        public enum DovizCinsleri
+        public enum CurrencyTypes
         {
             TRY = 1,
             USD = 2,

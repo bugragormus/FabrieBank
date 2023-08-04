@@ -12,30 +12,30 @@ namespace FabrieBank
             {
                 Console.WriteLine("\n==============================================");
                 Console.Write("Customer Name: ");
-                string? musteriAd = Console.ReadLine();
-                musteriAd = char.ToUpper(musteriAd[0]) + musteriAd.Substring(1);
-                while (string.IsNullOrEmpty(musteriAd) || musteriAd.Length <= 2)
+                string? customerName = Console.ReadLine();
+                customerName = char.ToUpper(customerName[0]) + customerName.Substring(1);
+                while (string.IsNullOrEmpty(customerName) || customerName.Length <= 2)
                 {
                     Console.WriteLine("Name must be a string and longer than 2 characters.");
                     Console.Write("Customer Name: ");
-                    musteriAd = Console.ReadLine();
+                    customerName = Console.ReadLine();
                 }
 
                 Console.WriteLine("\n==============================================");
                 Console.Write("Customer Lastname: ");
-                string? musteriSoyad = Console.ReadLine();
-                musteriSoyad = char.ToUpper(musteriSoyad[0]) + musteriSoyad.Substring(1);
-                while (string.IsNullOrEmpty(musteriSoyad) || musteriSoyad.Length <= 2)
+                string? customerLastname = Console.ReadLine();
+                customerLastname = char.ToUpper(customerLastname[0]) + customerLastname.Substring(1);
+                while (string.IsNullOrEmpty(customerLastname) || customerLastname.Length <= 2)
                 {
                     Console.WriteLine("Lastname must be a string and longer than 2 characters.");
                     Console.Write("Customer Lastname: ");
-                    musteriSoyad = Console.ReadLine();
+                    customerLastname = Console.ReadLine();
                 }
 
                 Console.WriteLine("\n==============================================");
                 Console.Write("Customer TCKN: ");
-                long musteriTckn;
-                while (!long.TryParse(Console.ReadLine(), out musteriTckn) || musteriTckn.ToString().Length != 11)
+                long customerTckn;
+                while (!long.TryParse(Console.ReadLine(), out customerTckn) || customerTckn.ToString().Length != 11)
                 {
                     Console.WriteLine("Invalid TCKN. Please enter a 11-digit TCKN:");
                 }
@@ -43,8 +43,8 @@ namespace FabrieBank
 
                 Console.WriteLine("\n==============================================");
                 Console.Write("Customer Password: ");
-                int musteriSifre;
-                while (!int.TryParse(GetMaskedInput(), out musteriSifre) || musteriSifre.ToString().Length != 4)
+                int customerPassword;
+                while (!int.TryParse(GetMaskedInput(), out customerPassword) || customerPassword.ToString().Length != 4)
                 {
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
@@ -76,30 +76,30 @@ namespace FabrieBank
 
                 Console.WriteLine("\n\n==============================================");
                 Console.Write("Customer Cell Number: ");
-                long musteriTelNo;
-                while (!long.TryParse(Console.ReadLine(), out musteriTelNo) || musteriTelNo.ToString().Length != 10)
+                long customerCellNo;
+                while (!long.TryParse(Console.ReadLine(), out customerCellNo) || customerCellNo.ToString().Length != 10)
                 {
                     Console.WriteLine("Invalid phone number. Please enter a 10-digit phone number:");
                 }
 
                 Console.WriteLine("\n==============================================");
                 Console.Write("Customer Email: ");
-                string musteriEmail = Console.ReadLine();
+                string customerEmail = Console.ReadLine();
 
-                while (!IsValidEmail(musteriEmail))
+                while (!IsValidEmail(customerEmail))
                 {
                     Console.WriteLine("Invalid email address. Please enter a valid email address:");
-                    musteriEmail = Console.ReadLine();
+                    customerEmail = Console.ReadLine();
                 }
 
                 DTOCustomer customer = new DTOCustomer
                 {
-                    Ad = musteriAd,
-                    Soyad = musteriSoyad,
-                    Tckn = musteriTckn,
-                    Sifre = musteriSifre,
-                    TelNo = musteriTelNo,
-                    Email = musteriEmail
+                    Name = customerName,
+                    Lastname = customerLastname,
+                    Tckn = customerTckn,
+                    Password = customerPassword,
+                    CellNo = customerCellNo,
+                    Email = customerEmail
                 };
 
                 ECustomer createCustomerDB = new ECustomer();

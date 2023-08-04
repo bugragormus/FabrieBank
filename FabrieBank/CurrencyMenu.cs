@@ -40,10 +40,10 @@ namespace FabrieBank
                         CustomDateRates();
                         break;
                     case "3":
-                        Console.WriteLine("\nPara transferinden çıkış yapıldı.\n");
+                        Console.WriteLine("\nExited from Currency Rates.\n");
                         break;
                     default:
-                        Console.WriteLine("\nGeçersiz seçim. Tekrar deneyin.\n");
+                        Console.WriteLine("\nInvalid selection. Try again.\n");
                         break;
                 }
             } while (choice != "3");
@@ -53,7 +53,7 @@ namespace FabrieBank
         {
             try
             {
-                var baseCurrency = EnumDovizCinsleri.DovizCinsleri.TRY;//TRY
+                var baseCurrency = EnumCurrencyTypes.CurrencyTypes.TRY;//TRY
                 var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency).Result;
                 currencyTable.DisplayCurrencyRatesTable(baseCurrency, currencyRates);
             }
@@ -74,7 +74,7 @@ namespace FabrieBank
 
                 if (IsValidDate(input, out int day, out int month, out int year))
                 {
-                    var baseCurrency = EnumDovizCinsleri.DovizCinsleri.TRY;//TRY
+                    var baseCurrency = EnumCurrencyTypes.CurrencyTypes.TRY;//TRY
 
                     // Fetch the currency rates for the custom date
                     var currencyRates = currency.GetCustomDateCurrencyRates(baseCurrency, year, month, day).Result;

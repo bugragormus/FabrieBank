@@ -20,66 +20,66 @@ namespace FabrieBank
             do
             {
                 Console.WriteLine("\n==============================");
-                Console.WriteLine("ATM İŞLEMLERİ");
+                Console.WriteLine("ATM TRANSACTIONS");
                 Console.WriteLine("==============================");
-                Console.WriteLine("1. Para Yatırma");
-                Console.WriteLine("2. Para Çekme");
-                Console.WriteLine("3. Üst Menü");
+                Console.WriteLine("1. Deposit");
+                Console.WriteLine("2. Withdraw");
+                Console.WriteLine("3. Back to Main Menu");
                 Console.WriteLine("==============================");
-                Console.Write("Seçiminizi yapın (1-3): ");
+                Console.Write("Make your choice (1-3): ");
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        ParaYatirma();
+                        Deposit();
                         break;
                     case "2":
-                        ParaCekme();
+                        Withdraw();
                         break;
                     case "3":
-                        Console.WriteLine("ATM'den çıkış yapıldı.");
+                        Console.WriteLine("Checked out from ATM.");
                         break;
                     default:
-                        Console.WriteLine("Geçersiz seçim. Tekrar deneyin.");
+                        Console.WriteLine("Invalid selection. Try again.");
                         break;
                 }
             } while (choice != "3");
         }
 
-        private void ParaYatirma()
+        private void Deposit()
         {
             try
             {
-                Console.WriteLine("\nPara yatırmak istediğiniz hesap numarasını girin: ");
+                Console.WriteLine("\nAccount Number: ");
                 Console.Write(">>> ");
-                string hesapNoInput = Console.ReadLine();
-                long hesapNo;
+                string accountNoInput = Console.ReadLine();
+                long accountNo;
 
-                if (long.TryParse(hesapNoInput, out hesapNo))
+                if (long.TryParse(accountNoInput, out accountNo))
                 {
-                    Console.WriteLine("\nYatırmak istediğiniz miktarı girin: ");
+                    Console.WriteLine("\nAmount: ");
                     Console.Write(">>> ");
-                    string bakiyeInput = Console.ReadLine();
-                    decimal bakiye;
+                    string amountInput = Console.ReadLine();
+                    decimal amount;
 
-                    if (decimal.TryParse(bakiyeInput, out bakiye))
+                    if (decimal.TryParse(amountInput, out amount))
                     {
                         DTOAccountInfo accountInfo = new DTOAccountInfo()
                         {
-                            HesapNo = hesapNo
+                            AccountNo = accountNo
                         };
 
-                        atm.Deposit(accountInfo, bakiye);
+                        atm.Deposit(accountInfo, amount);
                     }
                     else
                     {
-                        Console.WriteLine("Hatalı giriş! Lütfen geçerli bir miktar girin.");
+                        Console.WriteLine("Incorrect input! Please enter a valid amount.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Hatalı giriş! Lütfen geçerli bir hesap numarası girin.");
+                    Console.WriteLine("Incorrect input! Please enter a valid account number.");
                 }
 
             }
@@ -90,40 +90,40 @@ namespace FabrieBank
             }
         }
 
-        private void ParaCekme()
+        private void Withdraw()
         {
             try
             {
-                Console.WriteLine("\nPara çekmek istediğiniz hesap numarasını girin: ");
+                Console.WriteLine("\nAccount Number: ");
                 Console.Write(">>> ");
-                string hesapNoInput = Console.ReadLine();
-                long hesapNo;
+                string accountNoInput = Console.ReadLine();
+                long accountNo;
 
-                if (long.TryParse(hesapNoInput, out hesapNo))
+                if (long.TryParse(accountNoInput, out accountNo))
                 {
-                    Console.WriteLine("\nÇekmek istediğiniz miktarı girin: ");
+                    Console.WriteLine("\nAmount: ");
                     Console.Write(">>> ");
-                    string bakiyeInput = Console.ReadLine();
-                    decimal bakiye;
+                    string amountInput = Console.ReadLine();
+                    decimal amount;
 
-                    if (decimal.TryParse(bakiyeInput, out bakiye))
+                    if (decimal.TryParse(amountInput, out amount))
                     {
                         DTOAccountInfo accountInfo = new DTOAccountInfo()
                         {
-                            HesapNo = hesapNo,
-                            Bakiye = bakiye
+                            AccountNo = accountNo,
+                            Balance = amount
                         };
 
-                        atm.Withdraw(accountInfo, bakiye);
+                        atm.Withdraw(accountInfo, amount);
                     }
                     else
                     {
-                        Console.WriteLine("Hatalı giriş! Lütfen geçerli bir miktar girin.");
+                        Console.WriteLine("Incorrect input! Please enter a valid amount.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Hatalı giriş! Lütfen geçerli bir hesap numarası girin.");
+                    Console.WriteLine("Incorrect input! Please enter a valid account number.");
                 }
             }
             catch (Exception ex)

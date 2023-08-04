@@ -6,12 +6,12 @@ namespace FabrieBank
 {
     public class CustomerMenu
     {
-        private int musteriId;
+        private int customerId;
         private LogInDB customerInfoDB;
 
-        public CustomerMenu(int musteriId)
+        public CustomerMenu(int customerId)
         {
-            this.musteriId = musteriId;
+            this.customerId = customerId;
             customerInfoDB = new LogInDB();
         }
 
@@ -24,12 +24,12 @@ namespace FabrieBank
                 Console.WriteLine("==============================");
                 Console.WriteLine("USER OPERATIONS");
                 Console.WriteLine("==============================");
-                Console.WriteLine("1. Kişisel Bilgileri Görüntüle");
-                Console.WriteLine("2. Kişisel Bilgileri Güncelle");
-                Console.WriteLine("3. Şifre Değiştir");
-                Console.WriteLine("4. Üst Menü");
+                Console.WriteLine("1. View Personal Information");
+                Console.WriteLine("2. Update Personal Information");
+                Console.WriteLine("3. Change Password");
+                Console.WriteLine("4. Back to Main Menu");
                 Console.WriteLine("==============================");
-                Console.Write("Seçiminizi yapın (1-4): ");
+                Console.Write("Make your pick (1-4): ");
                 choice = Console.ReadLine();
 
                 switch (choice)
@@ -45,10 +45,10 @@ namespace FabrieBank
                         ChangePassword(customer);
                         break;
                     case "4":
-                        Console.WriteLine("\nKullanıcı menüsünden çıkış yapıldı.\n");
+                        Console.WriteLine("\nExited from User Operations.\n");
                         break;
                     default:
-                        Console.WriteLine("\nGeçersiz seçim. Tekrar deneyin.\n");
+                        Console.WriteLine("\nInvalid selection. Try again.\n");
                         break;
                 }
             } while (choice != "4");
@@ -58,15 +58,15 @@ namespace FabrieBank
         {
             try
             {
-                Console.WriteLine("\nYeni Telefon Numarasını Girin: ");
+                Console.WriteLine("\nEnter New Phone Number: ");
                 Console.Write(">>> ");
-                long telNo;
-                while (!long.TryParse(Console.ReadLine(), out telNo) || telNo.ToString().Length != 10)
+                long cellNo;
+                while (!long.TryParse(Console.ReadLine(), out cellNo) || cellNo.ToString().Length != 10)
                 {
                     Console.WriteLine("Invalid phone number. Please enter a 10-digit phone number:");
                 }
 
-                Console.WriteLine("\nYeni Email Adresini Girin: ");
+                Console.WriteLine("\nEnter New Email: ");
                 Console.Write(">>> ");
                 string email = Console.ReadLine();
 

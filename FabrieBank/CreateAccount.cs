@@ -9,20 +9,20 @@ namespace FabrieBank
         {
             try
             {
-                int musteriId = customer.MusteriId;
+                int customerId = customer.CustomerId;
 
-                Console.WriteLine("Hangi para birimi için hesap oluşturmak istiyorsunuz? (1-TRY, 2-USD, 3-EUR, 4-GBP, 5-CHF)");
+                Console.WriteLine("Select currency type for account (1-TRY, 2-USD, 3-EUR, 4-GBP, 5-CHF)");
                 Console.Write(">>> ");
-                int dovizCinsi = int.Parse(Console.ReadLine());
-                Console.WriteLine("\nHesaba bir isim verin.");
+                int currencyType = int.Parse(Console.ReadLine());
+                Console.WriteLine("\nAccount Name: .");
                 Console.Write(">>> ");
-                string? hesapAdi = Console.ReadLine();
+                string? accountName = Console.ReadLine();
 
                 DTOAccountInfo accountInfo = new DTOAccountInfo()
                 {
-                    MusteriId = musteriId,
-                    DovizCins = dovizCinsi,
-                    HesapAdi = hesapAdi
+                    CustomerId = customerId,
+                    CurrencyType = currencyType,
+                    AccountName = accountName
                 };
 
                 CreateAccountDB createAccountDB = new CreateAccountDB();
