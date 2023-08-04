@@ -35,6 +35,7 @@ namespace FabrieBank.DAL
             {
                 ErrorLoggerDB errorLogger = new ErrorLoggerDB();
                 errorLogger.LogAndHandleError(ex);
+                return new NpgsqlConnectionStringBuilder();
             }
         }
 
