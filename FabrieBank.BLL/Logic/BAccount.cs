@@ -2,8 +2,6 @@
 using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Entity;
-using Npgsql;
-using System.Reflection;
 
 namespace FabrieBank.BLL.Logic
 {

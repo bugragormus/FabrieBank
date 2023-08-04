@@ -1,13 +1,18 @@
-﻿using System.Reflection;
-using FabrieBank.DAL.Common.DTOs;
+﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank
 {
     public class LogIn
     {
+        private ErrorLoggerDB errorLogger;
         LogInDB loginDB = new LogInDB();
         bool loggedIn = false;
+
+        public LogIn()
+        {
+            errorLogger = new ErrorLoggerDB();
+        }
 
         public void LogInM()
         {
@@ -82,13 +87,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
         }
 
@@ -109,17 +108,6 @@ namespace FabrieBank
                 Console.WriteLine("Invalid email address. Please enter a valid email address:");
                 email = Console.ReadLine();
             }
-
-            //while (customer.Email != email)
-            //{
-            //    Console.WriteLine("\nGüncel şifre ile girilen şifre uyuşmuyor yeniden deneyin:");
-            //    Console.Write(">>> ");
-            //    while (!CreateMusteri.IsValidEmail(email))
-            //    {
-            //        Console.WriteLine("Invalid email address. Please enter a valid email address:");
-            //        email = Console.ReadLine();
-            //    }
-            //}
 
             customer.Tckn = tckn;
 

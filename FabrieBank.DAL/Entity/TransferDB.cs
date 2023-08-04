@@ -1,7 +1,4 @@
-﻿using FabrieBank.DAL;
-using FabrieBank.DAL.Common.DTOs;
-
-namespace FabrieBank.DAL.Entity
+﻿namespace FabrieBank.DAL.Entity
 {
     public class TransferDB
     {

@@ -1,11 +1,17 @@
-﻿using System.Reflection;
-using FabrieBank.DAL.Common.DTOs;
+﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank
 {
     public class CreateAccount
     {
+        private ErrorLoggerDB errorLogger;
+
+        public CreateAccount()
+        {
+            errorLogger = new ErrorLoggerDB();
+        }
+
         public void CreateAccountM(DTOCustomer customer)
         {
             try
@@ -31,13 +37,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
         }
     }

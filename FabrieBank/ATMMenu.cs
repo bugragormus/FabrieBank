@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using FabrieBank.DAL.Entity;
+﻿using FabrieBank.DAL.Entity;
 using FabrieBank.BLL.Logic;
 using FabrieBank.DAL.Common.DTOs;
 
@@ -7,13 +6,13 @@ namespace FabrieBank
 {
     public class ATMMenu
     {
-        private int musteriId;
         private BAccount atm;
+        private ErrorLoggerDB errorLogger;
 
-        public ATMMenu(int musteriId)
+        public ATMMenu()
         {
-            this.musteriId = musteriId;
             atm = new BAccount();
+            errorLogger = new ErrorLoggerDB();
         }
 
         public void ShowMenu()
@@ -88,13 +87,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
         }
 
@@ -136,13 +129,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
         }
     }

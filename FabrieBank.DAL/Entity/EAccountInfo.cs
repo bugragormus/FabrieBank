@@ -1,7 +1,5 @@
 ﻿using System.Data;
-using System.Reflection;
 using FabrieBank.DAL.Common.DTOs;
-using FabrieBank.DAL.Common.Enums;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -9,11 +7,13 @@ namespace FabrieBank.DAL.Entity
 {
     public class EAccountInfo
     {
+        private ErrorLoggerDB errorLogger;
         private DataAccessLayer dataAccessLayer;
         private NpgsqlConnectionStringBuilder database;
 
         public EAccountInfo()
         {
+            errorLogger = new ErrorLoggerDB();
             dataAccessLayer = new DataAccessLayer();
             database = dataAccessLayer.CallDB();
         }
@@ -66,12 +66,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
 
             return accountInfo;
@@ -124,12 +119,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
             return accountsList;
         }
@@ -167,12 +157,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
             return false;
         }
@@ -209,12 +194,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
             return false;
         }
@@ -270,12 +250,7 @@ namespace FabrieBank.DAL.Entity
                 }
                 catch (Exception ex)
                 {
-                    // Log the error to the database using the ErrorLoggerDB
-                    MethodBase method = MethodBase.GetCurrentMethod();
-                    dataAccessLayer.LogError(ex, method.ToString());
-
-                    // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                    Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                    errorLogger.LogAndHandleError(ex);
                 }
             }
             else

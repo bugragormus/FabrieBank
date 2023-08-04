@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Reflection;
 using System.Xml;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
@@ -10,11 +9,13 @@ namespace FabrieBank.Services
     public class SCurrency : IDisposable
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml"; 
+        private readonly string _baseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml";
+        private ErrorLoggerDB errorLogger;
 
         public SCurrency()
         {
             _httpClient = new HttpClient();
+            errorLogger = new ErrorLoggerDB();
         }
 
         public async Task<Dictionary<string, DTOCurrencyRate>> GetTodaysCurrencyRates(EnumDovizCinsleri.DovizCinsleri baseCurrency)
@@ -77,13 +78,7 @@ namespace FabrieBank.Services
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
 
             return currencyRates;
@@ -150,13 +145,7 @@ namespace FabrieBank.Services
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
 
             return currencyRates;

@@ -1,6 +1,6 @@
-﻿using System.Reflection;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using FabrieBank.DAL.Common.Enums;
+using FabrieBank.DAL.Entity;
 using FabrieBank.Services;
 
 namespace FabrieBank
@@ -9,9 +9,11 @@ namespace FabrieBank
     {
         private readonly SCurrency currency;
         private readonly CurrencyTable currencyTable;
+        private ErrorLoggerDB errorLogger;
 
         public CurrencyMenu()
         {
+            errorLogger = new ErrorLoggerDB();
             currency = new SCurrency();
             currencyTable = new CurrencyTable();
         }
@@ -59,13 +61,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
         }
 
@@ -97,13 +93,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                // Log the error to the database using the ErrorLoggerDB
-                MethodBase method = MethodBase.GetCurrentMethod();
-                FabrieBank.DAL.DataAccessLayer dataAccessLayer = new DAL.DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                // Handle the error (display a user-friendly message, rollback transactions, etc.)
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+                errorLogger.LogAndHandleError(ex);
             }
         }
 
