@@ -11,11 +11,11 @@ namespace FabrieBank
 
             for (; ; )
             {
-                Console.WriteLine("======================================================================");
-                Console.WriteLine("                          Welcome To FabrieBank!                      ");
-                Console.WriteLine("======================================================================");
-                Console.WriteLine("1.Login           2.New Customer        3.Forgot Password       4.Exit");
-                Console.WriteLine("======================================================================");
+                Console.WriteLine("=====================================================================================");
+                Console.WriteLine("                                  Welcome To FabrieBank!                             ");
+                Console.WriteLine("=====================================================================================");
+                Console.WriteLine("1.Login           2.New Customer         3.ATM         4.Forgot Password       5.Exit");
+                Console.WriteLine("=====================================================================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
 
@@ -35,12 +35,18 @@ namespace FabrieBank
 
                     case "3":
 
+                        ATMMenu atmMenu = new ATMMenu();
+                        atmMenu.ShowMenu();
+                        break;
+
+                    case "4":
+
                         DTOCustomer customer = new DTOCustomer();
                         LogIn forgot = new LogIn();
                         forgot.ForgotPassword(customer);
                         break;
 
-                    case "4":
+                    case "5":
 
                         Environment.Exit(0);
                         break;
@@ -59,11 +65,11 @@ namespace FabrieBank
 
             for (; ; )
             {
-                Console.WriteLine("===============================================================================================");
-                Console.WriteLine("                                           MAIN MENU                                           ");
-                Console.WriteLine("===============================================================================================");
-                Console.WriteLine("1.User Operations   2.ATM    3.Bank Accounts    4.Money Transfers    5. Currency Rates   6.Exit");
-                Console.WriteLine("===============================================================================================");
+                Console.WriteLine("=============================================================================================");
+                Console.WriteLine("                                         MAIN MENU                                           ");
+                Console.WriteLine("=============================================================================================");
+                Console.WriteLine("1.User Operations    2.Bank Accounts     3.Money Transfers     4. Currency Rates     5.Exit  ");
+                Console.WriteLine("=============================================================================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
                 Console.Clear();
@@ -78,28 +84,22 @@ namespace FabrieBank
 
                     case "2":
 
-                        ATMMenu atmMenu = new ATMMenu();
-                        atmMenu.ShowMenu();
-                        break;
-
-                    case "3":
-
                         AccountMenu(customer);
                         break;
 
-                    case "4":
+                    case "3":
 
                         TransferMenu transferMenu = new TransferMenu(customer.MusteriId);
                         transferMenu.ShowMenu();
                         break;
 
-                    case "5":
+                    case "4":
 
                         CurrencyMenu currencyMenu = new CurrencyMenu();
                         currencyMenu.ShowMenu();
                         break;
 
-                    case "6":
+                    case "5":
 
                         Environment.Exit(0);
                         break;
