@@ -10,4 +10,3 @@ namespace FabrieBank.DAL.Common.DTOs
         public decimal Miktar { get; set; }
     }
 }
-

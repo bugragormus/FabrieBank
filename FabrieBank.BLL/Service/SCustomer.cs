@@ -41,4 +41,3 @@ namespace FabrieBank.BLL.Service
         }
     }
 }
-
