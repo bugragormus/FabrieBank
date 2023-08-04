@@ -49,7 +49,7 @@ namespace FabrieBank.DAL.Entity
                         };
                         if (dataTable.Rows.Count == 0)
                         {
-                            Console.WriteLine("\nHesap bulunamadı.");
+                            //Console.WriteLine("\nHesap bulunamadı.");
                             return dTOCurrency;
                         }
                     }

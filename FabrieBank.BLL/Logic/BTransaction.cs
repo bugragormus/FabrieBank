@@ -1,10 +1,13 @@
-﻿using FabrieBank.DAL.Common.DTOs;
+﻿using FabrieBank.DAL;
+using FabrieBank.DAL.Common.DTOs;
+using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank.BLL.Logic
 {
     public class BTransaction
     {
+        private DataAccessLayer dataAccessLayer;
         private EAccountInfo eAccount;
         private BAccount account;
 
@@ -12,6 +15,7 @@ namespace FabrieBank.BLL.Logic
         {
             eAccount = new EAccountInfo();
             account = new BAccount();
+            dataAccessLayer = new DataAccessLayer();
         }
 
         public void HesaplarArasiTransfer(int musteriId, DTOTransfer transfer)
@@ -87,6 +91,8 @@ namespace FabrieBank.BLL.Logic
                 DTOAccountInfo hedefAccountInfo = eAccount.ReadAccountInfo(dTOAccount1);
                 if (hedefAccountInfo.MusteriId != 0)
                 {
+                    decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.Havale);
+
                     int hedefDovizCinsi = hedefAccountInfo.DovizCins;
 
                     DTOAccountInfo dTOAccount = new DTOAccountInfo()
@@ -106,7 +112,9 @@ namespace FabrieBank.BLL.Logic
                             HedefHesapNo = transfer.HedefHesapNo,
                             KaynakDovizCinsi = kaynakDovizCinsi,
                             HedefDovizCinsi = hedefDovizCinsi,
-                            Miktar = transfer.Miktar
+                            Miktar = transfer.Miktar,
+                            Fee = transactionFee,
+                            Type = EnumTransactionType.Havale,
                         };
 
                         if (kaynakDovizCinsi == hedefDovizCinsi)
@@ -136,8 +144,10 @@ namespace FabrieBank.BLL.Logic
                         Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
                     }
                 }
-                else
+                else //EFT
                 {
+                    decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.EFT);
+
                     DTOAccountInfo dTOAccount = new DTOAccountInfo()
                     {
                         MusteriId = musteriId
@@ -153,7 +163,9 @@ namespace FabrieBank.BLL.Logic
                         {
                             KaynakHesapNo = kaynakHesapNo,
                             HedefHesapNo = transfer.HedefHesapNo,
-                            Miktar = transfer.Miktar
+                            Miktar = transfer.Miktar,
+                            Fee = transactionFee,
+                            Type = EnumTransactionType.EFT
                         };
 
                         bool isOwnAccount = IsOwnAccount(accountInfos, transfer.HedefHesapNo);
