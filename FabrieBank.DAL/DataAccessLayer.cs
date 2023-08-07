@@ -33,14 +33,14 @@ namespace FabrieBank.DAL
             }
             catch (Exception ex)
             {
-                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
+                EErrorLogger errorLogger = new EErrorLogger();
                 errorLogger.LogAndHandleError(ex);
                 return new NpgsqlConnectionStringBuilder();
             }
         }
 
         /// <summary>
-        /// ErrorLoggerDB.cs
+        /// EErrorLogger.cs
         /// </summary>
         /// <param name="ex"></param>
         /// <param name="methodName"></param>
@@ -102,7 +102,7 @@ namespace FabrieBank.DAL
             }
             catch (Exception ex)
             {
-                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
+                EErrorLogger errorLogger = new EErrorLogger();
                 errorLogger.LogAndHandleError(ex);
             }
         }
@@ -141,7 +141,7 @@ namespace FabrieBank.DAL
             }
             catch (Exception ex)
             {
-                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
+                EErrorLogger errorLogger = new EErrorLogger();
                 errorLogger.LogAndHandleError(ex);
             }
 

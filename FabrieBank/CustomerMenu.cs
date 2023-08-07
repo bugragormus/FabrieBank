@@ -99,7 +99,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
+                EErrorLogger errorLogger = new EErrorLogger();
                 errorLogger.LogAndHandleError(ex);
             }
         }
@@ -210,7 +210,7 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
+                EErrorLogger errorLogger = new EErrorLogger();
                 errorLogger.LogAndHandleError(ex);
             }
         }

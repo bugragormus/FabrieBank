@@ -163,7 +163,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
-                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
+                EErrorLogger errorLogger = new EErrorLogger();
                 errorLogger.LogAndHandleError(ex);
             }
             return customer;
@@ -218,7 +218,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
-                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
+                EErrorLogger errorLogger = new EErrorLogger();
                 errorLogger.LogAndHandleError(ex);
             }
             return accountsList;
@@ -259,7 +259,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
-                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
+                EErrorLogger errorLogger = new EErrorLogger();
                 errorLogger.LogAndHandleError(ex);
             }
             return false;
@@ -300,7 +300,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
-                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
+                EErrorLogger errorLogger = new EErrorLogger();
                 errorLogger.LogAndHandleError(ex);
             }
             return false;
@@ -353,7 +353,7 @@ namespace FabrieBank.DAL.Entity
             }
             catch (Exception ex)
             {
-                ErrorLoggerDB errorLogger = new ErrorLoggerDB();
+                EErrorLogger errorLogger = new EErrorLogger();
                 errorLogger.LogAndHandleError(ex);
             }
             return false;

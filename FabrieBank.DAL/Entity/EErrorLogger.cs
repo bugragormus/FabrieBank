@@ -2,11 +2,11 @@
 
 namespace FabrieBank.DAL.Entity
 {
-    public class ErrorLoggerDB : IErrorLogger
+    public class EErrorLogger : IErrorLogger
     {
         private DataAccessLayer dataAccessLayer;
 
-        public ErrorLoggerDB()
+        public EErrorLogger()
         {
             dataAccessLayer = new DataAccessLayer();
         }

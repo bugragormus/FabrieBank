@@ -17,25 +17,6 @@ namespace FabrieBank.BLL.Logic
             dataAccessLayer = new DataAccessLayer();
         }
 
-        //public string GetCurrencyType(int currencyType)
-        //{
-        //    switch (currencyType)
-        //    {
-        //        case 1:
-        //            return "Turkish Lira (TRY)";
-        //        case 2:
-        //            return "American Dollar (USD)";
-        //        case 3:
-        //            return "Euro (EUR)";
-        //        case 4:
-        //            return "Gram Altın (GBP)";
-        //        case 5:
-        //            return "Gram Gümüş (CHF)";
-        //        default:
-        //            return string.Empty;
-        //    }
-        //}
-
         public void AccountLogicM(DTOCustomer customer)
         {
             EAccountInfo eAccount1 = new EAccountInfo();
@@ -47,8 +28,6 @@ namespace FabrieBank.BLL.Logic
 
             foreach (DTOAccountInfo accountInfo in accountInfos)
             {
-                //string dovizCinsi = GetCurrencyType(accountInfo.DovizCins);
-
                 Console.WriteLine($"Account No: {accountInfo.AccountNo}");
                 Console.WriteLine($"Balance: {accountInfo.Balance}");
                 Console.WriteLine($"Currency Type: {accountInfo.CurrencyType}");
@@ -103,7 +82,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Para Yatırma
+        /// Deposit B.L.
         /// </summary>
         /// <param name="accountInfo"></param>
         /// <param name="balance"></param>
@@ -164,7 +143,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Para Çekme
+        /// Withdraw B.L.
         /// </summary>
         /// <param name="accountInfo"></param>
         /// <param name="balance"></param>
@@ -225,7 +204,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// BOA Transfer
+        /// BOA B.L.
         /// </summary>
         /// <param name="movement"></param>
         /// <param name="accountInfo"></param>
@@ -351,7 +330,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Havale/EFT
+        /// Havale/EFT B.L.
         /// </summary>
         /// <param name="movement"></param>
         /// <param name="accountInfo"></param>
