@@ -61,11 +61,11 @@ namespace FabrieBank
             Console.WriteLine("\nWhich account do you want to withdraw money from?");
             transactionLogic.PrintAccountList(accountInfos);
 
-            Console.Write("Source Account Index:");
+            Console.Write("Source Account Index: ");
             int sourceAccountIndex = int.Parse(Console.ReadLine());
 
-            Console.WriteLine("\nEnter the account number you want to transfer money to:");
-            Console.Write("Target Account Number:");
+            Console.WriteLine("\nEnter the account number you want to transfer money to: ");
+            Console.Write("Target Account Number: ");
             long targetAccountNo = long.Parse(Console.ReadLine());
 
             Console.WriteLine("\nEnter the amount you want to transfer: ");

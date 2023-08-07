@@ -13,7 +13,7 @@ namespace FabrieBank
             {
                 LogInDB logInDB = new LogInDB();
 
-                Console.WriteLine("TCKN:");
+                Console.WriteLine("TCKN: ");
                 Console.Write(">>> ");
                 long tckn;
                 while (!long.TryParse(Console.ReadLine(), out tckn) || tckn.ToString().Length != 11)
@@ -21,7 +21,7 @@ namespace FabrieBank
                     Console.WriteLine("Invalid TCKN. Please enter a 11-digit TCKN:");
                 }
 
-                Console.WriteLine("Password:");
+                Console.WriteLine("Password: ");
                 Console.Write(">>> ");
                 int password;
                 while (!int.TryParse(GetMaskedInput(), out password) || password.ToString().Length != 4)
