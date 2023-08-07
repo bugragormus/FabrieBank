@@ -21,11 +21,6 @@ namespace FabrieBank.DAL.Entity
             return eCustomer.UpdatePersonelInfo(customer);
         }
 
-        //public bool IsCredentialsValid(long tckn, int sifre)
-        //{
-        //    return dataAccessLayer.IsCredentialsValid(tckn, sifre);
-        //}
-
         public bool ForgotPassword(DTOCustomer customer, string email)
         {
             int temporaryPassword = GenerateTemporaryPassword();
