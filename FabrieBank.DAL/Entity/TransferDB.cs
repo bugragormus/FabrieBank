@@ -9,9 +9,9 @@
             dataAccessLayer = new DataAccessLayer();
         }
 
-        public bool EFT(long sourceAccountNo, long targetAccountNo, decimal amount)
-        {
-            return dataAccessLayer.EFT(sourceAccountNo, targetAccountNo, amount);
-        }
+        //public bool EFT(long sourceAccountNo, long targetAccountNo, decimal amount)
+        //{
+        //    return dataAccessLayer.EFT(sourceAccountNo, targetAccountNo, amount);
+        //}
     }
 }

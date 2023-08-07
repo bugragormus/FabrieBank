@@ -55,7 +55,7 @@ namespace FabrieBank.DAL.Entity
                                 AccountNo = (long)dataTable.Rows[0]["account_no"],
                                 Balance = (decimal)dataTable.Rows[0]["balance"],
                                 CustomerId = (int)dataTable.Rows[0]["cutomer_id"],
-                                CurrencyType = (int)dataTable.Rows[0]["currency_id"],
+                                CurrencyType = (int)dataTable.Rows[0]["currency_type"],
                                 AccountName = dataTable.Rows[0]["account_name"].ToString(),
                             };
                         }
@@ -88,11 +88,11 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "func_ReadListAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_amount, @p_customer_id, @p_currency_type, @p_account_name)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_balance, @p_customer_id, @p_currency_type, @p_account_name)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_amount", NpgsqlDbType.Numeric, dTOAccount.Balance);
+                        command.Parameters.AddWithValue("@p_balance", NpgsqlDbType.Numeric, dTOAccount.Balance);
                         command.Parameters.AddWithValue("@p_customer_id", NpgsqlDbType.Integer, dTOAccount.CustomerId);
                         command.Parameters.AddWithValue("@p_currency_type", NpgsqlDbType.Integer, dTOAccount.CurrencyType);
                         command.Parameters.AddWithValue("@p_account_name", NpgsqlDbType.Varchar, (object)dTOAccount.AccountName ?? DBNull.Value);
@@ -108,7 +108,7 @@ namespace FabrieBank.DAL.Entity
                                 AccountNo = (long)item["account_no"],
                                 Balance = (decimal)item["balance"],
                                 CustomerId = (int)item["customer_id"],
-                                CurrencyType = (int)item["currency_id"],
+                                CurrencyType = (int)item["currency_type"],
                                 AccountName = item["account_name"].ToString() //!= DBNull.Value ? item["hesap_adi"].ToString() : null
                             };
                             accountsList.Add(dTOAccountInfo);
@@ -210,7 +210,7 @@ namespace FabrieBank.DAL.Entity
         {
             dTOAccount = ReadAccountInfo(dTOAccount);
 
-            if (dTOAccount != null && dTOAccount.Bakiye == 0)
+            if (dTOAccount != null && dTOAccount.Balance == 0)
             {
                 try
                 {

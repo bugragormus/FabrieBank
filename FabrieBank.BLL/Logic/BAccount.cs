@@ -310,7 +310,7 @@ namespace FabrieBank.BLL.Logic
                         TargetAccountNumber = movement.TargetAccountNo,
                         TransactionType = EnumTransactionType.BOATransfer,
                         TransactionStatus = EnumTransactionStatus.Failed,
-                        Amount = movement.Miktar,
+                        Amount = movement.Amount,
                         OldBalance = oldBalance,
                         NewBalance = oldBalance,
                         Timestamp = DateTime.Now
