@@ -11,9 +11,9 @@ namespace FabrieBank.DAL.Entity
             eCustomer = new ECustomer();
         }
 
-        public DTOCustomer LogIn(long tckn, int sifre)
+        public DTOCustomer LogIn(long tckn, int password)
         {
-            return eCustomer.LogIn(tckn, sifre);
+            return eCustomer.LogIn(tckn, password);
         }
 
         public bool UpdatePersonelInfo(DTOCustomer customer)

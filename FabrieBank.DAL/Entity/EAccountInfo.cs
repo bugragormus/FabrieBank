@@ -31,13 +31,13 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "func_ReadAccountInfo";
 
-                    string sqlSelectBakiye = $"SELECT * FROM {functionName}(@hesapNo)";
+                    string sqlSelectBalance = $"SELECT * FROM {functionName}(@accountNo)";
 
-                    using (NpgsqlCommand commandSelectBakiye = new NpgsqlCommand(sqlSelectBakiye, connection))
+                    using (NpgsqlCommand commandSelectBalance = new NpgsqlCommand(sqlSelectBalance, connection))
                     {
-                        commandSelectBakiye.Parameters.AddWithValue("@hesapNo", accountInfo.HesapNo);
+                        commandSelectBalance.Parameters.AddWithValue("@accountNo", accountInfo.AccountNo);
 
-                        NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandSelectBakiye);
+                        NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandSelectBalance);
                         DataTable dataTable = new DataTable();
 
                         npgsqlDataAdapter.Fill(dataTable);
@@ -52,11 +52,11 @@ namespace FabrieBank.DAL.Entity
                         {
                             accountInfo = new DTOAccountInfo
                             {
-                                HesapNo = (long)dataTable.Rows[0]["hesap_no"],
-                                Bakiye = (decimal)dataTable.Rows[0]["bakiye"],
-                                MusteriId = (int)dataTable.Rows[0]["musteri_id"],
-                                DovizCins = (int)dataTable.Rows[0]["doviz_cins"],
-                                HesapAdi = dataTable.Rows[0]["hesap_adi"].ToString(),
+                                AccountNo = (long)dataTable.Rows[0]["account_no"],
+                                Balance = (decimal)dataTable.Rows[0]["balance"],
+                                CustomerId = (int)dataTable.Rows[0]["cutomer_id"],
+                                CurrencyType = (int)dataTable.Rows[0]["currency_id"],
+                                AccountName = dataTable.Rows[0]["account_name"].ToString(),
                             };
                         }
                     }
@@ -88,14 +88,14 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "func_ReadListAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_bakiye, @p_musteri_id, @p_doviz_cins, @p_hesap_adi)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_amount, @p_customer_id, @p_currency_type, @p_account_name)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_bakiye", NpgsqlDbType.Numeric, dTOAccount.Bakiye);
-                        command.Parameters.AddWithValue("@p_musteri_id", NpgsqlDbType.Integer, dTOAccount.MusteriId);
-                        command.Parameters.AddWithValue("@p_doviz_cins", NpgsqlDbType.Integer, dTOAccount.DovizCins);
-                        command.Parameters.AddWithValue("@p_hesap_adi", NpgsqlDbType.Varchar, (object)dTOAccount.HesapAdi ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_amount", NpgsqlDbType.Numeric, dTOAccount.Balance);
+                        command.Parameters.AddWithValue("@p_customer_id", NpgsqlDbType.Integer, dTOAccount.CustomerId);
+                        command.Parameters.AddWithValue("@p_currency_type", NpgsqlDbType.Integer, dTOAccount.CurrencyType);
+                        command.Parameters.AddWithValue("@p_account_name", NpgsqlDbType.Varchar, (object)dTOAccount.AccountName ?? DBNull.Value);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
                         DataTable dataTable = new DataTable();
@@ -105,11 +105,11 @@ namespace FabrieBank.DAL.Entity
                         {
                             DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
                             {
-                                HesapNo = (long)item["hesap_no"],
-                                Bakiye = (decimal)item["bakiye"],
-                                MusteriId = (int)item["musteri_id"],
-                                DovizCins = (int)item["doviz_cins"],
-                                HesapAdi = item["hesap_adi"].ToString() //!= DBNull.Value ? item["hesap_adi"].ToString() : null
+                                AccountNo = (long)item["account_no"],
+                                Balance = (decimal)item["balance"],
+                                CustomerId = (int)item["customer_id"],
+                                CurrencyType = (int)item["currency_id"],
+                                AccountName = item["account_name"].ToString() //!= DBNull.Value ? item["hesap_adi"].ToString() : null
                             };
                             accountsList.Add(dTOAccountInfo);
                         }
@@ -139,14 +139,14 @@ namespace FabrieBank.DAL.Entity
 
                     string procedureName = "usp_InsertAccountInfo";
 
-                    string sqlQuery = $"CALL {procedureName}(@p_bakiye, @p_musteriid, @p_doviz_cins, @p_hesap_adi)";
+                    string sqlQuery = $"CALL {procedureName}(@p_amount, @p_customer_id, @p_currency_type, @p_account_name)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_bakiye", dTOAccount.Bakiye);
-                        command.Parameters.AddWithValue("@p_musteriid", dTOAccount.MusteriId);
-                        command.Parameters.AddWithValue("@p_doviz_cins", dTOAccount.DovizCins);
-                        command.Parameters.AddWithValue("@p_hesap_adi", dTOAccount.HesapAdi);
+                        command.Parameters.AddWithValue("@p_amount", dTOAccount.Balance);
+                        command.Parameters.AddWithValue("@p_customer_id", dTOAccount.CustomerId);
+                        command.Parameters.AddWithValue("@p_currency_type", dTOAccount.CurrencyType);
+                        command.Parameters.AddWithValue("@p_account_name", dTOAccount.AccountName);
 
                         if (command.ExecuteNonQuery() > 0)
                         {
@@ -178,13 +178,13 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_UpdateAccountInfo";
 
-                    string sqlQuery = $"CALL {functionName}(@p_hesapno, @p_bakiye, @p_hesap_adi)";
+                    string sqlQuery = $"CALL {functionName}(@p_account_no, @p_amount, @p_account_name)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_hesapno", NpgsqlDbType.Bigint, dTOAccount.HesapNo);
-                        command.Parameters.AddWithValue("@p_bakiye", NpgsqlDbType.Numeric, dTOAccount.Bakiye);
-                        command.Parameters.AddWithValue("@p_hesap_adi", NpgsqlDbType.Varchar, (object)dTOAccount.HesapAdi ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_account_no", NpgsqlDbType.Bigint, dTOAccount.AccountNo);
+                        command.Parameters.AddWithValue("@p_amount", NpgsqlDbType.Numeric, dTOAccount.Balance);
+                        command.Parameters.AddWithValue("@p_account_name", NpgsqlDbType.Varchar, (object)dTOAccount.AccountName ?? DBNull.Value);
 
                         if (command.ExecuteNonQuery() > 0)
                         {
@@ -221,13 +221,13 @@ namespace FabrieBank.DAL.Entity
                         // Delete the account using func_DeleteAccountInfo function
                         string functionName = "func_DeleteAccountInfo";
 
-                        string sqlQuery = $"SELECT * FROM {functionName}(@hesap_no)";
+                        string sqlQuery = $"SELECT * FROM {functionName}(@p_account_no)";
 
-                        using (NpgsqlCommand commandDeleteHesap = new NpgsqlCommand(sqlQuery, connection))
+                        using (NpgsqlCommand commandDeleteAccount = new NpgsqlCommand(sqlQuery, connection))
                         {
-                            commandDeleteHesap.Parameters.AddWithValue("@hesap_no", dTOAccount.HesapNo);
+                            commandDeleteAccount.Parameters.AddWithValue("@p_account_no", dTOAccount.AccountNo);
 
-                            NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandDeleteHesap);
+                            NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandDeleteAccount);
                             DataTable dataTable = new DataTable();
 
                             npgsqlDataAdapter.Fill(dataTable);
@@ -239,12 +239,12 @@ namespace FabrieBank.DAL.Entity
 
                                 if (success)
                                 {
-                                    Console.WriteLine("\nHesap başarıyla silindi.");
+                                    Console.WriteLine("\nAccount has been deleted succesfully");
                                     return true;
                                 }
                                 else
                                 {
-                                    Console.WriteLine("\nHesap silinemedi. Lütfen tekrar deneyin.");
+                                    Console.WriteLine("\nThe account could not be deleted. Please try again.");
                                 }
                             }
                         }
@@ -258,7 +258,7 @@ namespace FabrieBank.DAL.Entity
             }
             else
             {
-                Console.WriteLine("\nHesap bakiyesi 0 değil. Lütfen bakiyeyi başka bir hesaba aktarın.");
+                Console.WriteLine("\nAccount balance is not 0. Please transfer the balance to another account.");
             }
             return false;
         }

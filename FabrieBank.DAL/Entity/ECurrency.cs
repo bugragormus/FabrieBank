@@ -45,7 +45,7 @@ namespace FabrieBank.DAL.Entity
                         DTOCurrency dTOCurrency = new DTOCurrency
                         {
                             Id = (int)dataTable.Rows[0]["id"],
-                            DovizCins = dataTable.Rows[0]["cins"].ToString(),
+                            CurrencyType = dataTable.Rows[0]["currency_type"].ToString(),
                         };
                         if (dataTable.Rows.Count == 0)
                         {
@@ -81,11 +81,11 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "func_ReadListCurrency";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_cins)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_type)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_cins", NpgsqlDbType.Varchar, (object)currency.DovizCins ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_type", NpgsqlDbType.Varchar, (object)currency.CurrencyType ?? DBNull.Value);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
                         DataTable dataTable = new DataTable();
@@ -96,7 +96,7 @@ namespace FabrieBank.DAL.Entity
                             DTOCurrency dTOCurrency = new DTOCurrency
                             {
                                 Id = (int)item["id"],
-                                DovizCins = item["cins"].ToString(),
+                                CurrencyType = item["currency_type"].ToString(),
                             };
                             currenciesList.Add(dTOCurrency);
                         }
@@ -126,12 +126,12 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_InsertCurrency";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_id, @p_cins)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_id, @p_type)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
                         command.Parameters.AddWithValue("@p_id", NpgsqlDbType.Integer, currency.Id);
-                        command.Parameters.AddWithValue("@p_cins", NpgsqlDbType.Varchar, currency.DovizCins);
+                        command.Parameters.AddWithValue("@p_type", NpgsqlDbType.Varchar, currency.CurrencyType);
 
                         if (command.ExecuteNonQuery() > 0)
                         {
@@ -163,12 +163,12 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_UpdateCurrency";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_id, @p_cins)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_id, @p_type)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
                         command.Parameters.AddWithValue("@p_id", NpgsqlDbType.Integer, currency.Id);
-                        command.Parameters.AddWithValue("@p_cins", NpgsqlDbType.Varchar, currency.DovizCins);
+                        command.Parameters.AddWithValue("@p_type", NpgsqlDbType.Varchar, currency.CurrencyType);
 
                         if (command.ExecuteNonQuery() > 0)
                         {
@@ -219,12 +219,12 @@ namespace FabrieBank.DAL.Entity
 
                             if (success)
                             {
-                                Console.WriteLine("\nMüşteri başarıyla silindi.");
+                                Console.WriteLine("\nThe customer has been successfully deleted.");
                                 return true;
                             }
                             else
                             {
-                                Console.WriteLine("\nMüşteri silinemedi. Lütfen tekrar deneyin.");
+                                Console.WriteLine("\nThe customer could not be deleted. Please try again.");
                             }
                         }
                     }

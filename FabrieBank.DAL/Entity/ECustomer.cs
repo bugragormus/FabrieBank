@@ -40,13 +40,13 @@ namespace FabrieBank.DAL.Entity
         /// Giriş işlemi yapar
         /// </summary>
         /// <param name="tckn"></param>
-        /// <param name="sifre"></param>
+        /// <param name="password"></param>
         /// <returns></returns>
-        public DTOCustomer LogIn(long tckn, int sifre)
+        public DTOCustomer LogIn(long tckn, int password)
         {
             DTOCustomer customer = ReadCustomer(new DTOCustomer { Tckn = tckn });
 
-            if (customer != null && customer.Sifre == sifre)
+            if (customer != null && customer.Password == password)
             {
                 return customer;
             }
@@ -91,23 +91,23 @@ namespace FabrieBank.DAL.Entity
 
             if (customer.Email != email)
             {
-                Console.WriteLine("Girmiş olduğunuz bilgiler uyuşmuyor. Lütfen tekrar deneyiniz.");
+                Console.WriteLine("GThe information you have provided does not match. Please try again.");
                 return false;
             }
             else
             {
                 DTOCustomer dTOCustomer = new DTOCustomer()
                 {
-                    MusteriId = customer.MusteriId,
-                    Ad = customer.Ad,
-                    Soyad = customer.Soyad,
-                    Sifre = temporaryPassword,
-                    TelNo = customer.TelNo,
+                    CustomerId = customer.CustomerId,
+                    Name = customer.Name,
+                    Lastname = customer.Lastname,
+                    Password = temporaryPassword,
+                    CellNo = customer.CellNo,
                     Email = customer.Email
                 };
 
                 UpdateCustomer(dTOCustomer);
-                Console.WriteLine($"\nGeçici şifreniz başarıyla oluşturuldu. Şifreniz: {temporaryPassword}");
+                Console.WriteLine($"\nYour temporary password has been successfully created. Your password: {temporaryPassword}");
                 return true;
             }
         }
@@ -142,12 +142,12 @@ namespace FabrieBank.DAL.Entity
                         {
                             DTOCustomer dTOCustomer = new DTOCustomer
                             {
-                                MusteriId = (int)dataTable.Rows[0]["musteri_id"],
-                                Ad = dataTable.Rows[0]["ad"].ToString(),
-                                Soyad = dataTable.Rows[0]["soyad"].ToString(),
+                                CustomerId = (int)dataTable.Rows[0]["customer_id"],
+                                Name = dataTable.Rows[0]["name"].ToString(),
+                                Lastname = dataTable.Rows[0]["lastname"].ToString(),
                                 Tckn = (long)dataTable.Rows[0]["tckn"],
-                                Sifre = (int)dataTable.Rows[0]["sifre"],
-                                TelNo = (long)dataTable.Rows[0]["tel_no"],
+                                Password = (int)dataTable.Rows[0]["password"],
+                                CellNo = (long)dataTable.Rows[0]["cell_no"],
                                 Email = dataTable.Rows[0]["email"].ToString(),
                             };
 
@@ -186,13 +186,13 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "func_ReadListCustomer";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_ad, @p_soyad, @p_tel_no, @p_email)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_name, @p_lastname, @p_cell_no, @p_email)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_ad", NpgsqlDbType.Varchar, (object)customer.Ad ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@p_soyad", NpgsqlDbType.Varchar, (object)customer.Soyad ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@p_tel_no", NpgsqlDbType.Bigint, customer.TelNo);
+                        command.Parameters.AddWithValue("@p_name", NpgsqlDbType.Varchar, (object)customer.Name ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_lastname", NpgsqlDbType.Varchar, (object)customer.Lastname ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_cell_no", NpgsqlDbType.Bigint, customer.CellNo);
                         command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
@@ -203,13 +203,13 @@ namespace FabrieBank.DAL.Entity
                         {
                             DTOCustomer dTOCustomer = new DTOCustomer
                             {
-                                MusteriId = (int)item["musteri_id"],
-                                Ad = item["ad"].ToString(),
-                                Soyad = item["soyad"].ToString(),
-                                Tckn = (long)item["tckn"],
-                                Sifre = (int)item["sifre"],
-                                TelNo = (long)item["tel_no"],
-                                Email = item["email"].ToString(),
+                                CustomerId = (int)dataTable.Rows[0]["customer_id"],
+                                Name = dataTable.Rows[0]["name"].ToString(),
+                                Lastname = dataTable.Rows[0]["lastname"].ToString(),
+                                Tckn = (long)dataTable.Rows[0]["tckn"],
+                                Password = (int)dataTable.Rows[0]["password"],
+                                CellNo = (long)dataTable.Rows[0]["cell_no"],
+                                Email = dataTable.Rows[0]["email"].ToString(),
                             };
                             accountsList.Add(dTOCustomer);
                         }
@@ -239,15 +239,15 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_InsertCustomer";
 
-                    string sqlQuery = $"CALL {functionName}(@p_ad, @p_soyad, @p_tckn, @p_sifre ,@p_tel_no, @p_email)";
+                    string sqlQuery = $"CALL {functionName}(@p_name, @p_lastname, @p_tckn, @p_password ,@p_cell_no, @p_email)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_ad", NpgsqlDbType.Varchar, (object)customer.Ad ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@p_soyad", NpgsqlDbType.Varchar, (object)customer.Soyad ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_name", NpgsqlDbType.Varchar, (object)customer.Name ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_lastname", NpgsqlDbType.Varchar, (object)customer.Lastname ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_tckn", NpgsqlDbType.Bigint, customer.Tckn);
-                        command.Parameters.AddWithValue("@p_sifre", NpgsqlDbType.Integer, customer.Sifre);
-                        command.Parameters.AddWithValue("@p_tel_no", NpgsqlDbType.Bigint, customer.TelNo);
+                        command.Parameters.AddWithValue("@p_password", NpgsqlDbType.Integer, customer.Password);
+                        command.Parameters.AddWithValue("@p_cell_no", NpgsqlDbType.Bigint, customer.CellNo);
                         command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
 
                         if (command.ExecuteNonQuery() > 0)
@@ -280,15 +280,15 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_UpdateCustomer";
 
-                    string sqlQuery = $"CALL {functionName}(@p_musteri_id, @p_ad, @p_soyad, @p_sifre ,@p_tel_no, @p_email)";
+                    string sqlQuery = $"CALL {functionName}(@p_customer_id, @p_name, @p_lastname, @p_password ,@p_cell_no, @p_email)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_musteri_id", NpgsqlDbType.Integer, customer.MusteriId);
-                        command.Parameters.AddWithValue("@p_ad", NpgsqlDbType.Varchar, (object)customer.Ad ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@p_soyad", NpgsqlDbType.Varchar, (object)customer.Soyad ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@p_sifre", NpgsqlDbType.Integer, customer.Sifre);
-                        command.Parameters.AddWithValue("@p_tel_no", NpgsqlDbType.Bigint, customer.TelNo);
+                        command.Parameters.AddWithValue("@p_customer_id", NpgsqlDbType.Integer, customer.CustomerId);
+                        command.Parameters.AddWithValue("@p_name", NpgsqlDbType.Varchar, (object)customer.Name ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_lastname", NpgsqlDbType.Varchar, (object)customer.Lastname ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_password", NpgsqlDbType.Integer, customer.Password);
+                        command.Parameters.AddWithValue("@p_cell_no", NpgsqlDbType.Bigint, customer.CellNo);
                         command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
 
                         if (command.ExecuteNonQuery() > 0)
@@ -340,12 +340,12 @@ namespace FabrieBank.DAL.Entity
 
                             if (success)
                             {
-                                Console.WriteLine("\nMüşteri başarıyla silindi.");
+                                Console.WriteLine("\nThe customer has been successfully deleted.");
                                 return true;
                             }
                             else
                             {
-                                Console.WriteLine("\nMüşteri silinemedi. Lütfen tekrar deneyin.");
+                                Console.WriteLine("\nThe customer could not be deleted. Please try again.");
                             }
                         }
                     }

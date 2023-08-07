@@ -3,10 +3,10 @@ namespace FabrieBank.DAL.Common.DTOs
 {
     public class DTOTransfer
     {
-        public int KaynakHesapIndex { get; set; }
-        public int HedefHesapIndex { get; set; }
-        public long KaynakHesapNo{ get; set; }
-        public long HedefHesapNo { get; set; }
-        public decimal Miktar { get; set; }
+        public int SourceAccountIndex { get; set; }
+        public int TargetAccountIndex { get; set; }
+        public long SourceAccountNo { get; set; }
+        public long TargetAccountNo { get; set; }
+        public decimal Amount { get; set; }
     }
 }

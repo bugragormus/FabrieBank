@@ -6,13 +6,13 @@ namespace FabrieBank
 {
     public class TransferMenu
     {
-        private int musteriId;
+        private int customerId;
         private BTransaction transactionLogic;
         private EAccountInfo eAccount;
 
-        public TransferMenu(int musteriId)
+        public TransferMenu(int customerId)
         {
-            this.musteriId = musteriId;
+            this.customerId = customerId;
             transactionLogic = new BTransaction();
             eAccount = new EAccountInfo();
         }
@@ -21,7 +21,7 @@ namespace FabrieBank
         {
             DTOAccountInfo dTOAccount = new DTOAccountInfo()
             {
-                MusteriId = musteriId
+                CustomerId = customerId
             };
             List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
@@ -29,28 +29,28 @@ namespace FabrieBank
             do
             {
                 Console.WriteLine("\n==============================");
-                Console.WriteLine("PARA TRANSFERİ");
+                Console.WriteLine("MONEY TRANSFERS");
                 Console.WriteLine("==============================");
-                Console.WriteLine("1. Hesaplarım Arası Transfer");
-                Console.WriteLine("2. Başka Hesaba Havale/EFT");
-                Console.WriteLine("3. Üst Menü");
+                Console.WriteLine("1. Transfer Between Accounts");
+                Console.WriteLine("2. To Another Account Havale/EFT");
+                Console.WriteLine("3. Back to Main Menu");
                 Console.WriteLine("==============================");
-                Console.Write("Seçiminizi yapın (1-3): ");
+                Console.Write("Make your choice (1-3): ");
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        HesaplarArasiTransfer(accountInfos);
+                        TransferBetweenAccounts(accountInfos);
                         break;
                     case "2":
                         HavaleEFT(accountInfos);
                         break;
                     case "3":
-                        Console.WriteLine("Para transferinden çıkış yapıldı.");
+                        Console.WriteLine("Exited from money transfers");
                         break;
                     default:
-                        Console.WriteLine("Geçersiz seçim. Tekrar deneyin.");
+                        Console.WriteLine("Invalid selection. Try again.");
                         break;
                 }
             } while (choice != "3");
@@ -58,54 +58,54 @@ namespace FabrieBank
 
         private void HavaleEFT(List<DTOAccountInfo> accountInfos)
         {
-            Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
+            Console.WriteLine("\nWhich account do you want to withdraw money from?");
             transactionLogic.PrintAccountList(accountInfos);
 
-            Console.Write("Kaynak Hesap Indexi: ");
-            int kaynakHesapIndex = int.Parse(Console.ReadLine());
+            Console.Write("Source Account Index:");
+            int sourceAccountIndex = int.Parse(Console.ReadLine());
 
-            Console.WriteLine("\nPara transferi yapmak istediğiniz hesap numarasını girin: ");
-            Console.Write("Hedef Hesap Numarası: ");
-            long hedefHesapNo = long.Parse(Console.ReadLine());
+            Console.WriteLine("\nEnter the account number you want to transfer money to:");
+            Console.Write("Target Account Number:");
+            long targetAccountNo = long.Parse(Console.ReadLine());
 
-            Console.WriteLine("\nTransfer etmek istediğiniz miktarı girin: ");
-            decimal transferMiktar = decimal.Parse(Console.ReadLine());
+            Console.WriteLine("\nEnter the amount you want to transfer: ");
+            decimal transferAmount = decimal.Parse(Console.ReadLine());
 
             DTOTransfer transfer = new DTOTransfer()
             {
-                KaynakHesapIndex = kaynakHesapIndex,
-                HedefHesapNo = hedefHesapNo,
-                Miktar = transferMiktar
+                SourceAccountIndex = sourceAccountIndex,
+                TargetAccountNo = targetAccountNo,
+                Amount = transferAmount
             };
 
-            transactionLogic.HavaleEFT(musteriId, transfer);
+            transactionLogic.HavaleEFT(customerId, transfer);
         }
 
-        private void HesaplarArasiTransfer(List<DTOAccountInfo> accountInfos)
+        private void TransferBetweenAccounts(List<DTOAccountInfo> accountInfos)
         {
-            Console.WriteLine("\nHangi hesaptan para çekmek istiyorsunuz?");
+            Console.WriteLine("\nWhich account do you want to withdraw money from?");
             transactionLogic.PrintAccountList(accountInfos);
 
-            Console.Write("Kaynak Hesap Indexi: ");
-            int kaynakHesapIndex = int.Parse(Console.ReadLine());
+            Console.Write("Source Account Index: ");
+            int sourceAccountIndex = int.Parse(Console.ReadLine());
 
-            Console.WriteLine("\nHangi hesaba para aktarmak istiyorsunuz?");
+            Console.WriteLine("\nWhich account do you want to transfer money to?");
             transactionLogic.PrintAccountList(accountInfos);
 
-            Console.Write("Hedef Hesap Indexi: ");
-            int hedefHesapIndex = int.Parse(Console.ReadLine());
+            Console.Write("Target Account Index: ");
+            int targetAccountIndex = int.Parse(Console.ReadLine());
 
-            Console.WriteLine("\nTransfer etmek istediğiniz miktarı girin: ");
-            decimal transferMiktar = decimal.Parse(Console.ReadLine());
+            Console.WriteLine("\nEnter the amount you want to transfer: ");
+            decimal transferAmount = decimal.Parse(Console.ReadLine());
 
             DTOTransfer transfer = new DTOTransfer()
             {
-                KaynakHesapIndex = kaynakHesapIndex,
-                HedefHesapIndex = hedefHesapIndex,
-                Miktar = transferMiktar
+                SourceAccountIndex = sourceAccountIndex,
+                TargetAccountIndex = targetAccountIndex,
+                Amount = transferAmount
             };
 
-            transactionLogic.HesaplarArasiTransfer(musteriId, transfer);
+            transactionLogic.TransferBetweenAccounts(customerId, transfer);
         }
     }
 }

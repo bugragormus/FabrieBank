@@ -16,16 +16,16 @@ namespace FabrieBank.DAL.Entity
         {
             _ = eAccount.InsertAccountInfo(accountInfo);
 
-            int numericValue = accountInfo.DovizCins;
-            string currencyName = Enum.GetName(typeof(EnumDovizCinsleri.DovizCinsleri), numericValue);
+            int numericValue = accountInfo.CurrencyType;
+            string currencyName = Enum.GetName(typeof(EnumCurrencyTypes.CurrencyTypes), numericValue);
 
-            if (accountInfo.HesapAdi != "")
+            if (accountInfo.AccountName != "")
             {
-                Console.WriteLine($"\n'{accountInfo.HesapAdi}' isimli yeni '{currencyName}' hesabı oluşturuldu.\n");
+                Console.WriteLine($"\n'{accountInfo.AccountName}' named new '{currencyName}' account has been created.\n");
             }
             else
             {
-                Console.WriteLine($"\nYeni '{currencyName}' hesabı oluşturuldu.\n");
+                Console.WriteLine($"\nNew '{currencyName}' account has been created.\n");
             }
         }
     }

@@ -18,58 +18,58 @@ namespace FabrieBank.BLL.Logic
             dataAccessLayer = new DataAccessLayer();
         }
 
-        public void HesaplarArasiTransfer(int musteriId, DTOTransfer transfer)
+        public void TransferBetweenAccounts(int customerId, DTOTransfer transfer)
         {
             try
             {
                 DTOAccountInfo dTOAccount = new DTOAccountInfo()
                 {
-                    MusteriId = musteriId
+                    CustomerId = customerId
                 };
                 List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
-                if (transfer.KaynakHesapIndex >= 0 && transfer.KaynakHesapIndex < accountInfos.Count && transfer.HedefHesapIndex >= 0 && transfer.HedefHesapIndex < accountInfos.Count)
+                if (transfer.SourceAccountIndex >= 0 && transfer.SourceAccountIndex < accountInfos.Count && transfer.TargetAccountIndex >= 0 && transfer.TargetAccountIndex < accountInfos.Count)
                 {
-                    long kaynakHesapNo = accountInfos[transfer.KaynakHesapIndex].HesapNo;
-                    long hedefHesapNo = accountInfos[transfer.HedefHesapIndex].HesapNo;
-                    int kaynakDovizCinsi = accountInfos[transfer.KaynakHesapIndex].DovizCins;
-                    int hedefDovizCinsi = accountInfos[transfer.HedefHesapIndex].DovizCins;
+                    long sourceAccountNo = accountInfos[transfer.SourceAccountIndex].AccountNo;
+                    long targetAccountNo = accountInfos[transfer.TargetAccountIndex].AccountNo;
+                    int sourceCurrencyType = accountInfos[transfer.SourceAccountIndex].CurrencyType;
+                    int targetCurrencyType = accountInfos[transfer.TargetAccountIndex].CurrencyType;
 
-                    DTODovizHareket dovizHareket = new DTODovizHareket
+                    DTOCurrencyMovement currencyMovement = new DTOCurrencyMovement
                     {
-                        KaynakHesapNo = kaynakHesapNo,
-                        HedefHesapNo = hedefHesapNo,
-                        KaynakDovizCinsi = kaynakDovizCinsi,
-                        HedefDovizCinsi = hedefDovizCinsi,
-                        Miktar = transfer.Miktar
+                        SourceAccountNo = sourceAccountNo,
+                        TargetAccountNo = targetAccountNo,
+                        SourceCurrencyType = sourceCurrencyType,
+                        TargetCurrencyType = targetCurrencyType,
+                        Amount = transfer.Amount
                     };
 
-                    if (dovizHareket.KaynakDovizCinsi == dovizHareket.HedefDovizCinsi)
+                    if (currencyMovement.SourceCurrencyType == currencyMovement.TargetCurrencyType)
                     {
 
                         DTOAccountInfo accountInfo = new DTOAccountInfo()
                         {
-                            HesapNo = kaynakHesapNo
+                            AccountNo = sourceAccountNo
                         };
 
-                        bool transferBasarili = account.HesaplarArasiTransfer(dovizHareket, accountInfo);
-                        if (transferBasarili)
+                        bool successfulTransfer = account.TransferBetweenAccounts(currencyMovement, accountInfo);
+                        if (successfulTransfer)
                         {
-                            Console.WriteLine("HesaplarArasiTransfer işlemi başarıyla gerçekleştirildi.");
+                            Console.WriteLine("Transfer Between Accounts transaction has been done successfuly.");
                         }
                         else
                         {
-                            Console.WriteLine("HesaplarArasiTransfer işlemi gerçekleştirilemedi. Lütfen tekrar deneyin.");
+                            Console.WriteLine("Transfer Between Accounts transaction could not be done. Please try again.");
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Kaynak hesap ve hedef hesap döviz cinsleri uyuşmuyor. Transfer işlemi gerçekleştirilemedi.");
+                        Console.WriteLine("Source account and target account currency types do not match. The transfer could not be performed.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
+                    Console.WriteLine("Invalid account index. Try again.");
                 }
             }
             catch (Exception ex)
@@ -79,69 +79,69 @@ namespace FabrieBank.BLL.Logic
             }
         }
 
-        public void HavaleEFT(int musteriId, DTOTransfer transfer)
+        public void HavaleEFT(int customerId, DTOTransfer transfer)
         {
             try
             {
                 DTOAccountInfo dTOAccount1 = new DTOAccountInfo()
                 {
-                    HesapNo = transfer.HedefHesapNo
+                    AccountNo = transfer.TargetAccountNo
                 };
 
-                DTOAccountInfo hedefAccountInfo = eAccount.ReadAccountInfo(dTOAccount1);
-                if (hedefAccountInfo.MusteriId != 0)
+                DTOAccountInfo targetAccountInfo = eAccount.ReadAccountInfo(dTOAccount1);
+                if (targetAccountInfo.CustomerId != 0)
                 {
                     decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.Havale);
 
-                    int hedefDovizCinsi = hedefAccountInfo.DovizCins;
+                    int targetCurrencyType = targetAccountInfo.CurrencyType;
 
                     DTOAccountInfo dTOAccount = new DTOAccountInfo()
                     {
-                        MusteriId = musteriId
+                        CustomerId = customerId
                     };
                     List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
-                    if (transfer.KaynakHesapIndex >= 0 && transfer.KaynakHesapIndex < accountInfos.Count)
+                    if (transfer.SourceAccountIndex >= 0 && transfer.SourceAccountIndex < accountInfos.Count)
                     {
-                        long kaynakHesapNo = accountInfos[transfer.KaynakHesapIndex].HesapNo;
-                        int kaynakDovizCinsi = accountInfos[transfer.KaynakHesapIndex].DovizCins;
+                        long sourceAccountNo = accountInfos[transfer.SourceAccountIndex].AccountNo;
+                        int sourceCurrencyType = accountInfos[transfer.SourceAccountIndex].CurrencyType;
 
-                        DTODovizHareket dovizHareket = new DTODovizHareket
+                        DTOCurrencyMovement currencyMovement = new DTOCurrencyMovement
                         {
-                            KaynakHesapNo = kaynakHesapNo,
-                            HedefHesapNo = transfer.HedefHesapNo,
-                            KaynakDovizCinsi = kaynakDovizCinsi,
-                            HedefDovizCinsi = hedefDovizCinsi,
-                            Miktar = transfer.Miktar,
+                            SourceAccountNo = sourceAccountNo,
+                            TargetAccountNo = transfer.TargetAccountNo,
+                            SourceCurrencyType = sourceCurrencyType,
+                            TargetCurrencyType = targetCurrencyType,
+                            Amount = transfer.Amount,
                             Fee = transactionFee,
                             Type = EnumTransactionType.Havale,
                         };
 
-                        if (kaynakDovizCinsi == hedefDovizCinsi)
+                        if (sourceCurrencyType == targetCurrencyType)
                         {
-                            bool isOwnAccount = IsOwnAccount(accountInfos, transfer.HedefHesapNo);
+                            bool isOwnAccount = IsOwnAccount(accountInfos, transfer.TargetAccountNo);
                             if (isOwnAccount)
                             {
-                                Console.WriteLine("Hedef hesap kendi hesabınız. Havale işlemi gerçekleştirilemez.");
+                                Console.WriteLine("The target account is your own account. Remittance cannot be performed.");
                             }
                             else
                             {
                                 DTOAccountInfo accountInfo = new DTOAccountInfo()
                                 {
-                                    HesapNo = kaynakHesapNo
+                                    AccountNo = sourceAccountNo
                                 };
 
-                                bool transferBasarili = account.HavaleEFT(dovizHareket, accountInfo);
+                                bool successfulTransfer = account.HavaleEFT(currencyMovement, accountInfo);
                             }
                         }
                         else
                         {
-                            Console.WriteLine("Kaynak hesap ve hedef hesap döviz cinsleri uyuşmuyor. Havale işlemi gerçekleştirilemedi.");
+                            Console.WriteLine("Source account and target account currency types do not match. Transfer could not be performed.");
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
+                        Console.WriteLine("Invalid account index. Try again.");
                     }
                 }
                 else //EFT
@@ -150,42 +150,42 @@ namespace FabrieBank.BLL.Logic
 
                     DTOAccountInfo dTOAccount = new DTOAccountInfo()
                     {
-                        MusteriId = musteriId
+                        CustomerId = customerId
                     };
                     List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
-                    if (transfer.KaynakHesapIndex >= 0 && transfer.KaynakHesapIndex < accountInfos.Count)
+                    if (transfer.SourceAccountIndex >= 0 && transfer.SourceAccountIndex< accountInfos.Count)
                     {
-                        long kaynakHesapNo = accountInfos[transfer.KaynakHesapIndex].HesapNo;
-                        int kaynakDovizCinsi = accountInfos[transfer.KaynakHesapIndex].DovizCins;
+                        long sourceAccountNo = accountInfos[transfer.SourceAccountIndex].AccountNo;
+                        int sourceCurrencyType = accountInfos[transfer.SourceAccountIndex].CurrencyType;
 
-                        DTODovizHareket dovizHareket = new DTODovizHareket
+                        DTOCurrencyMovement currencyMovement = new DTOCurrencyMovement
                         {
-                            KaynakHesapNo = kaynakHesapNo,
-                            HedefHesapNo = transfer.HedefHesapNo,
-                            Miktar = transfer.Miktar,
+                            SourceAccountNo = sourceAccountNo,
+                            TargetAccountNo = transfer.TargetAccountNo,
+                            Amount = transfer.Amount,
                             Fee = transactionFee,
                             Type = EnumTransactionType.EFT
                         };
 
-                        bool isOwnAccount = IsOwnAccount(accountInfos, transfer.HedefHesapNo);
+                        bool isOwnAccount = IsOwnAccount(accountInfos, transfer.TargetAccountNo);
                         if (isOwnAccount)
                         {
-                            Console.WriteLine("Hedef hesap kendi hesabınız. Havale işlemi gerçekleştirilemez.");
+                            Console.WriteLine("The target account is your own account. Remittance cannot be performed.");
                         }
                         else
                         {
                             DTOAccountInfo accountInfo = new DTOAccountInfo()
                             {
-                                HesapNo = kaynakHesapNo
+                                AccountNo = sourceAccountNo
                             };
 
-                            bool transferBasarili = account.HavaleEFT(dovizHareket, accountInfo);
+                            bool successfulTransfer = account.HavaleEFT(currencyMovement, accountInfo);
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Geçersiz hesap indexi. Tekrar deneyin.");
+                        Console.WriteLine("Invalid account index. Try again.");
                     }
                 }
             }
@@ -196,11 +196,11 @@ namespace FabrieBank.BLL.Logic
             }
         }
 
-        private bool IsOwnAccount(List<DTOAccountInfo> accountInfos, long hesapNo)
+        private bool IsOwnAccount(List<DTOAccountInfo> accountInfos, long accountNo)
         {
             foreach (DTOAccountInfo accountInfo in accountInfos)
             {
-                if (accountInfo.HesapNo == hesapNo)
+                if (accountInfo.AccountNo == accountNo)
                 {
                     return true;
                 }
@@ -212,12 +212,12 @@ namespace FabrieBank.BLL.Logic
         {
             try
             {
-                Console.WriteLine("Hesaplarınız:");
+                Console.WriteLine("Your Accounts:");
                 for (int i = 0; i < accountInfos.Count; i++)
                 {
-                    Console.WriteLine($"[{i}] Hesap No: {accountInfos[i].HesapNo}");
-                    Console.WriteLine($"Bakiye: {accountInfos[i].Bakiye}");
-                    Console.WriteLine($"Doviz Cinsi: {accountInfos[i].DovizCins}");
+                    Console.WriteLine($"[{i}] Account No: {accountInfos[i].AccountNo}");
+                    Console.WriteLine($"Balance: {accountInfos[i].Balance}");
+                    Console.WriteLine($"Currency Type: {accountInfos[i].CurrencyType}");
                     Console.WriteLine("==============================");
                 }
             }

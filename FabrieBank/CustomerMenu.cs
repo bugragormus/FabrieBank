@@ -78,11 +78,11 @@ namespace FabrieBank
 
                 DTOCustomer customer = new DTOCustomer()
                 {
-                    MusteriId = musteriId,
-                    Ad = dTOCustomer.Ad,
-                    Soyad = dTOCustomer.Soyad,
-                    Sifre = dTOCustomer.Sifre,
-                    TelNo = telNo,
+                    CustomerId = customerId,
+                    Name = dTOCustomer.Name,
+                    Lastname = dTOCustomer.Lastname,
+                    Password = dTOCustomer.Password,
+                    CellNo = cellNo,
                     Email = email
                 };
 
@@ -90,11 +90,11 @@ namespace FabrieBank
 
                 if (updated)
                 {
-                    Console.WriteLine("\nKullanıcı bilgileri güncellendi.\n");
+                    Console.WriteLine("\nPersonal information has been updated.\n");
                 }
                 else
                 {
-                    Console.WriteLine("\nKullanıcı bilgileri güncellenirken bir hata oluştu.\n");
+                    Console.WriteLine("\nAn error occurred while updating personal information.\n");
                 }
             }
             catch (Exception ex)
@@ -108,7 +108,7 @@ namespace FabrieBank
         {
             try
             {
-                Console.WriteLine("Güncel şifrenizi giriniz: ");
+                Console.WriteLine("Enter your current password:");
                 Console.Write(">>> ");
                 int currentPassword;
                 while (!int.TryParse(GetMaskedInput(), out currentPassword) || currentPassword.ToString().Length != 4)
@@ -116,9 +116,9 @@ namespace FabrieBank
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
 
-                while (dTOCustomer.Sifre != currentPassword)
+                while (dTOCustomer.Password != currentPassword)
                 {
-                    Console.WriteLine("\nGüncel şifre ile girilen şifre uyuşmuyor yeniden deneyin:");
+                    Console.WriteLine("\nThe current password and the entered password do not match, try again:");
                     Console.Write(">>> ");
                     while (!int.TryParse(GetMaskedInput(), out currentPassword) || currentPassword.ToString().Length != 4)
                     {
@@ -126,7 +126,7 @@ namespace FabrieBank
                     }
                 }
 
-                Console.WriteLine("\nLütfen yeni şifrenizi girin: ");
+                Console.WriteLine("\nPlease enter your new password:");
                 Console.Write(">>> ");
                 int newPassword;
                 while (!int.TryParse(GetMaskedInput(), out newPassword) || newPassword.ToString().Length != 4)
@@ -136,15 +136,15 @@ namespace FabrieBank
 
                 while (newPassword == currentPassword)
                 {
-                    Console.WriteLine("Yeni şifre eskisi ile aynı olamaz. Lütfen yeniden deneyin:");
+                    Console.WriteLine("The new password cannot be the same as the old one. Please try again:");
                     Console.Write(">>> ");
                     while (!int.TryParse(GetMaskedInput(), out newPassword) || newPassword.ToString().Length != 4)
                     {
-                        Console.WriteLine("Geçersiz şifre. Lütfen 4 basamaklı bir şifre girin:");
+                        Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                     }
                 }
 
-                Console.WriteLine("\nLütfen yeni şifrenizi tekrar girin: ");
+                Console.WriteLine("\nPlease re-enter your new password:");
                 Console.Write(">>> ");
                 int newPassword2;
                 while (!int.TryParse(GetMaskedInput(), out newPassword2) || newPassword2.ToString().Length != 4)
@@ -154,21 +154,21 @@ namespace FabrieBank
 
                 while (newPassword != newPassword2)
                 {
-                    Console.WriteLine("Şifreler eşleşmiyor. Lütfen aynı şifreyi tekrar girin:");
+                    Console.WriteLine("Passwords do not match. Please re-enter the same password:");
                     Console.Write(">>> ");
                     while (!int.TryParse(GetMaskedInput(), out newPassword2) || newPassword2.ToString().Length != 4)
                     {
-                        Console.WriteLine("Geçersiz şifre. Lütfen 4 basamaklı bir şifre girin:");
+                        Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                     }
                 }
 
                 DTOCustomer customer = new DTOCustomer()
                 {
-                    MusteriId = musteriId,
-                    Ad = dTOCustomer.Ad,
-                    Soyad = dTOCustomer.Soyad,
-                    Sifre = newPassword2,
-                    TelNo = dTOCustomer.TelNo,
+                    CustomerId = customerId,
+                    Name = dTOCustomer.Name,
+                    Lastname = dTOCustomer.Lastname,
+                    Password = newPassword2,
+                    CellNo = dTOCustomer.CellNo,
                     Email = dTOCustomer.Email
                 };
 
@@ -176,11 +176,11 @@ namespace FabrieBank
 
                 if (updated)
                 {
-                    Console.WriteLine("\n\nKullanıcı bilgileri güncellendi.\n");
+                    Console.WriteLine("\n\nPassword has been updated.\n");
                 }
                 else
                 {
-                    Console.WriteLine("\nKullanıcı bilgileri güncellenirken bir hata oluştu.\n");
+                    Console.WriteLine("\nAn error occurred while updating password.\n");
                 }
 
                 static string GetMaskedInput()

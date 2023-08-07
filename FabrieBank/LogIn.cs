@@ -74,7 +74,7 @@ namespace FabrieBank
                     Console.WriteLine("**********************************************");
                     Console.WriteLine("*            !!! Login Failed !!!            *");
                     Console.WriteLine("*                                            *");
-                    Console.WriteLine("*         !Wrong TCKN or Password!           *");
+                    Console.WriteLine("*          !Wrong TCKN or Password!          *");
                     Console.WriteLine("**********************************************\n");
                 }
             }

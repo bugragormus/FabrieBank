@@ -78,7 +78,7 @@ namespace FabrieBank
                 {
                     case "1":
 
-                        CustomerMenu customerMenu = new CustomerMenu(customer.MusteriId);
+                        CustomerMenu customerMenu = new CustomerMenu(customer.CustomerId);
                         customerMenu.ShowMenu(customer);
                         break;
 
@@ -89,7 +89,7 @@ namespace FabrieBank
 
                     case "3":
 
-                        TransferMenu transferMenu = new TransferMenu(customer.MusteriId);
+                        TransferMenu transferMenu = new TransferMenu(customer.CustomerId);
                         transferMenu.ShowMenu();
                         break;
 
@@ -140,7 +140,7 @@ namespace FabrieBank
                     case "3":
 
                         BAccount accountLogic = new BAccount();
-                        accountLogic.HesapSil(customer);
+                        accountLogic.DeleteAccount(customer);
                         break;
 
                     case "4":

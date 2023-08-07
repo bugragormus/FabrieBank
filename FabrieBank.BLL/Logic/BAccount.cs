@@ -17,42 +17,42 @@ namespace FabrieBank.BLL.Logic
             dataAccessLayer = new DataAccessLayer();
         }
 
-        public string GetDovizCinsi(int dovizCins)
-        {
-            switch (dovizCins)
-            {
-                case 1:
-                    return "Türk Lirası (TRY)";
-                case 2:
-                    return "Amerikan Doları (USD)";
-                case 3:
-                    return "Euro (EUR)";
-                case 4:
-                    return "Gram Altın (GBP)";
-                case 5:
-                    return "Gram Gümüş (CHF)";
-                default:
-                    return string.Empty;
-            }
-        }
+        //public string GetCurrencyType(int currencyType)
+        //{
+        //    switch (currencyType)
+        //    {
+        //        case 1:
+        //            return "Turkish Lira (TRY)";
+        //        case 2:
+        //            return "American Dollar (USD)";
+        //        case 3:
+        //            return "Euro (EUR)";
+        //        case 4:
+        //            return "Gram Altın (GBP)";
+        //        case 5:
+        //            return "Gram Gümüş (CHF)";
+        //        default:
+        //            return string.Empty;
+        //    }
+        //}
 
         public void AccountLogicM(DTOCustomer customer)
         {
             EAccountInfo eAccount1 = new EAccountInfo();
             DTOAccountInfo dTOAccount = new DTOAccountInfo()
             {
-                MusteriId = customer.MusteriId,
+                CustomerId = customer.CustomerId,
             };
             List<DTOAccountInfo> accountInfos = eAccount1.ReadListAccountInfo(dTOAccount);
 
             foreach (DTOAccountInfo accountInfo in accountInfos)
             {
-                string dovizCinsi = GetDovizCinsi(accountInfo.DovizCins);
+                //string dovizCinsi = GetCurrencyType(accountInfo.DovizCins);
 
-                Console.WriteLine($"Hesap No: {accountInfo.HesapNo}");
-                Console.WriteLine($"Bakiye: {accountInfo.Bakiye}");
-                Console.WriteLine($"DovizCins: {accountInfo.DovizCins}");
-                Console.WriteLine($"HesapAdi: {accountInfo.HesapAdi}");
+                Console.WriteLine($"Account No: {accountInfo.AccountNo}");
+                Console.WriteLine($"Balance: {accountInfo.Balance}");
+                Console.WriteLine($"Currency Type: {accountInfo.CurrencyType}");
+                Console.WriteLine($"Account Name: {accountInfo.AccountName}");
                 Console.WriteLine("==============================\n");
             }
 
@@ -68,33 +68,33 @@ namespace FabrieBank.BLL.Logic
         /// <summary>
         /// Hesap Silme
         /// </summary>
-        public void HesapSil(DTOCustomer customer)
+        public void DeleteAccount(DTOCustomer customer)
         {
             DTOAccountInfo dTOAccounts = new DTOAccountInfo()
             {
-                MusteriId = customer.MusteriId
+                CustomerId = customer.CustomerId
             };
             List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccounts);
 
             BTransaction transactionLogic = new BTransaction();
 
-            Console.WriteLine("\nHangi hesabı silmek istersiniz?");
+            Console.WriteLine("\nWhich account would you like to delete?");
             transactionLogic.PrintAccountList(accountInfos);
 
-            Console.Write("Hesap Indexi: ");
+            Console.Write("Account Indexi: ");
             int deletedAccIndex = int.Parse(Console.ReadLine());
 
             if (deletedAccIndex >= 0 && deletedAccIndex < accountInfos.Count)
             {
-                long deletedAccNo = accountInfos[deletedAccIndex].HesapNo;
+                long deletedAccNo = accountInfos[deletedAccIndex].AccountNo;
 
                 foreach (DTOAccountInfo accountInf in accountInfos)
                 {
-                    if (accountInf.HesapNo == deletedAccNo)
+                    if (accountInf.AccountNo == deletedAccNo)
                     {
                         DTOAccountInfo dTOAccountInfo = new DTOAccountInfo()
                         {
-                            HesapNo = deletedAccNo
+                            AccountNo = deletedAccNo
                         };
                         _ = eAccount.DeleteAccountInfo(dTOAccountInfo);
                     }
@@ -106,20 +106,20 @@ namespace FabrieBank.BLL.Logic
         /// Para Yatırma
         /// </summary>
         /// <param name="accountInfo"></param>
-        /// <param name="bakiye"></param>
-        public void Deposit(DTOAccountInfo accountInfo, decimal bakiye)
+        /// <param name="balance"></param>
+        public void Deposit(DTOAccountInfo accountInfo, decimal balance)
         {
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
             if (accountInfo != null)
             {
-                decimal eskiBakiye = Convert.ToDecimal(accountInfo.Bakiye);
-                decimal yeniBakiye = eskiBakiye + bakiye;
+                decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                decimal newBalance = oldBalance + balance;
 
                 DTOAccountInfo dTOAccount = new DTOAccountInfo()
                 {
-                    HesapNo = accountInfo.HesapNo,
-                    Bakiye = yeniBakiye,
-                    HesapAdi = accountInfo.HesapAdi
+                    AccountNo = accountInfo.AccountNo,
+                    Balance = newBalance,
+                    AccountName = accountInfo.AccountName
                 };
 
                 eAccount.UpdateAccountInfo(dTOAccount);
@@ -127,39 +127,39 @@ namespace FabrieBank.BLL.Logic
                 // Log the successful deposit
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
-                    AccountNumber = accountInfo.HesapNo,
-                    TargetAccountNumber = accountInfo.HesapNo,
+                    AccountNumber = accountInfo.AccountNo,
+                    TargetAccountNumber = accountInfo.AccountNo,
                     TransactionType = EnumTransactionType.Deposit,
                     TransactionStatus = EnumTransactionStatus.Success,
-                    Amount = yeniBakiye - eskiBakiye,
-                    OldBalance = eskiBakiye,
-                    NewBalance = yeniBakiye,
+                    Amount = newBalance - oldBalance,
+                    OldBalance = oldBalance,
+                    NewBalance = newBalance,
                     Timestamp = DateTime.Now
                 };
 
                 dataAccessLayer.LogTransaction(transactionLog);
 
-                Console.WriteLine("\nPara yatırma işlemi başarılı.");
-                Console.WriteLine($"Eski bakiye: {eskiBakiye}");
-                Console.WriteLine($"Yeni bakiye: {yeniBakiye}");
+                Console.WriteLine("\nDeposit successful.");
+                Console.WriteLine($"Old balance: {oldBalance}");
+                Console.WriteLine($"New balance: {newBalance}");
             }
             else
             {
                 // Log the failed deposit
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
-                    AccountNumber = accountInfo.HesapNo,
+                    AccountNumber = accountInfo.AccountNo,
                     TransactionType = EnumTransactionType.Deposit,
                     TransactionStatus = EnumTransactionStatus.Failed,
-                    Amount = bakiye,
-                    OldBalance = accountInfo.Bakiye,
-                    NewBalance = accountInfo.Bakiye,
+                    Amount = balance,
+                    OldBalance = accountInfo.Balance,
+                    NewBalance = accountInfo.Balance,
                     Timestamp = DateTime.Now
                 };
 
                 dataAccessLayer.LogTransaction(transactionLog);
 
-                Console.WriteLine("\nPara yatırma işlemi başarısız.");
+                Console.WriteLine("\nDeposit unsuccessful.");
             }
         }
 
@@ -167,20 +167,20 @@ namespace FabrieBank.BLL.Logic
         /// Para Çekme
         /// </summary>
         /// <param name="accountInfo"></param>
-        /// <param name="bakiye"></param>
-        public void Withdraw(DTOAccountInfo accountInfo, decimal bakiye)
+        /// <param name="balance"></param>
+        public void Withdraw(DTOAccountInfo accountInfo, decimal balance)
         {
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
             if (accountInfo != null)
             {
-                decimal eskiBakiye = Convert.ToDecimal(accountInfo.Bakiye);
-                decimal yeniBakiye = eskiBakiye - bakiye;
+                decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                decimal newBalance = oldBalance - balance;
 
                 DTOAccountInfo dTOAccount = new DTOAccountInfo()
                 {
-                    HesapNo = accountInfo.HesapNo,
-                    Bakiye = yeniBakiye,
-                    HesapAdi = accountInfo.HesapAdi
+                    AccountNo = accountInfo.AccountNo,
+                    Balance = newBalance,
+                    AccountName = accountInfo.AccountName
                 };
 
                 eAccount.UpdateAccountInfo(dTOAccount);
@@ -188,112 +188,112 @@ namespace FabrieBank.BLL.Logic
                 // Log the successful deposit
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
-                    AccountNumber = accountInfo.HesapNo,
-                    TargetAccountNumber = accountInfo.HesapNo,
+                    AccountNumber = accountInfo.AccountNo,
+                    TargetAccountNumber = accountInfo.AccountNo,
                     TransactionType = EnumTransactionType.Deposit,
                     TransactionStatus = EnumTransactionStatus.Success,
-                    Amount = eskiBakiye - yeniBakiye,
-                    OldBalance = eskiBakiye,
-                    NewBalance = yeniBakiye,
+                    Amount = oldBalance - newBalance,
+                    OldBalance = oldBalance,
+                    NewBalance = newBalance,
                     Timestamp = DateTime.Now
                 };
 
                 dataAccessLayer.LogTransaction(transactionLog);
 
-                Console.WriteLine("\nPara yatırma işlemi başarılı.");
-                Console.WriteLine($"Eski bakiye: {eskiBakiye}");
-                Console.WriteLine($"Yeni bakiye: {yeniBakiye}");
+                Console.WriteLine("\nWithdraw successful");
+                Console.WriteLine($"Old balance: {oldBalance}");
+                Console.WriteLine($"New Balance: {newBalance}");
             }
             else
             {
                 // Log the failed deposit
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
-                    AccountNumber = accountInfo.HesapNo,
+                    AccountNumber = accountInfo.AccountNo,
                     TransactionType = EnumTransactionType.Deposit,
                     TransactionStatus = EnumTransactionStatus.Failed,
-                    Amount = bakiye,
-                    OldBalance = accountInfo.Bakiye,
-                    NewBalance = accountInfo.Bakiye,
+                    Amount = balance,
+                    OldBalance = accountInfo.Balance,
+                    NewBalance = accountInfo.Balance,
                     Timestamp = DateTime.Now
                 };
 
                 dataAccessLayer.LogTransaction(transactionLog);
 
-                Console.WriteLine("\nPara yatırma işlemi başarısız.");
+                Console.WriteLine("\nWithdraw unsuccessful.");
             }
         }
 
         /// <summary>
         /// BOA Transfer
         /// </summary>
-        /// <param name="hareket"></param>
+        /// <param name="movement"></param>
         /// <param name="accountInfo"></param>
         /// <returns></returns>
-        public bool HesaplarArasiTransfer(DTODovizHareket hareket, DTOAccountInfo accountInfo)
+        public bool TransferBetweenAccounts(DTOCurrencyMovement movement, DTOAccountInfo accountInfo)
         {
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
             if (accountInfo != null)
             {
-                decimal eskiBakiye = accountInfo.Bakiye;
-                decimal yeniBakiye = eskiBakiye - hareket.Miktar;
+                decimal oldBalance = accountInfo.Balance;
+                decimal newBalance = oldBalance - movement.Amount;
 
-                if (eskiBakiye < hareket.Miktar)
+                if (oldBalance < movement.Amount)
                 {
                     // Log the failed transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = hareket.KaynakHesapNo,
-                        TargetAccountNumber = hareket.HedefHesapNo,
+                        AccountNumber = movement.SourceAccountNo,
+                        TargetAccountNumber = movement.TargetAccountNo,
                         TransactionType = EnumTransactionType.BOATransfer,
                         TransactionStatus = EnumTransactionStatus.Failed,
-                        Amount = hareket.Miktar,
-                        OldBalance = eskiBakiye,
-                        NewBalance = eskiBakiye,
+                        Amount = movement.Amount,
+                        OldBalance = oldBalance,
+                        NewBalance = oldBalance,
                         Timestamp = DateTime.Now
                     };
                     dataAccessLayer.LogTransaction(transactionLog);
-                    Console.WriteLine("\nYetersiz bakiye. Transfer gerçekleştirilemedi.");
+                    Console.WriteLine("\nInsufficient balance. The transfer could not be performed.");
                     return false;
                 }
                 else
                 {
-                    DTOAccountInfo updateKaynak = new DTOAccountInfo()
+                    DTOAccountInfo updateSource = new DTOAccountInfo()
                     {
-                        HesapNo = hareket.KaynakHesapNo,
-                        Bakiye = yeniBakiye,
-                        HesapAdi = accountInfo.HesapAdi
+                        AccountNo = movement.SourceAccountNo,
+                        Balance = newBalance,
+                        AccountName = accountInfo.AccountName
                     };
-                    eAccount.UpdateAccountInfo(updateKaynak);
+                    eAccount.UpdateAccountInfo(updateSource);
                 }
 
                 DTOAccountInfo dTOAccount = new DTOAccountInfo()
                 {
-                    HesapNo = hareket.HedefHesapNo
+                    AccountNo = movement.TargetAccountNo
                 };
 
                 accountInfo = eAccount.ReadAccountInfo(dTOAccount);
                 if (dTOAccount != null)
                 {
-                    DTOAccountInfo updateHedef = new DTOAccountInfo()
+                    DTOAccountInfo updateTarget = new DTOAccountInfo()
                     {
-                        HesapNo = hareket.HedefHesapNo,
-                        Bakiye = accountInfo.Bakiye + hareket.Miktar,
-                        HesapAdi = accountInfo.HesapAdi
+                        AccountNo = movement.TargetAccountNo,
+                        Balance = accountInfo.Balance + movement.Amount,
+                        AccountName = accountInfo.AccountName
                     };
 
-                    eAccount.UpdateAccountInfo(updateHedef);
+                    eAccount.UpdateAccountInfo(updateTarget);
 
                     // Log the successful transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = hareket.KaynakHesapNo,
-                        TargetAccountNumber = hareket.HedefHesapNo,
+                        AccountNumber = movement.SourceAccountNo,
+                        TargetAccountNumber = movement.TargetAccountNo,
                         TransactionType = EnumTransactionType.BOATransfer,
                         TransactionStatus = EnumTransactionStatus.Success,
-                        Amount = hareket.Miktar,
-                        OldBalance = eskiBakiye,
-                        NewBalance = yeniBakiye,
+                        Amount = movement.Amount,
+                        OldBalance = oldBalance,
+                        NewBalance = newBalance,
                         Timestamp = DateTime.Now
                     };
 
@@ -306,27 +306,27 @@ namespace FabrieBank.BLL.Logic
                     // Log the failed transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = hareket.KaynakHesapNo,
-                        TargetAccountNumber = hareket.HedefHesapNo,
+                        AccountNumber = movement.SourceAccountNo,
+                        TargetAccountNumber = movement.TargetAccountNo,
                         TransactionType = EnumTransactionType.BOATransfer,
                         TransactionStatus = EnumTransactionStatus.Failed,
-                        Amount = hareket.Miktar,
-                        OldBalance = eskiBakiye,
-                        NewBalance = eskiBakiye,
+                        Amount = movement.Miktar,
+                        OldBalance = oldBalance,
+                        NewBalance = oldBalance,
                         Timestamp = DateTime.Now
                     };
 
-                    DTOAccountInfo updateKaynak = new DTOAccountInfo()
+                    DTOAccountInfo updateSource = new DTOAccountInfo()
                     {
-                        HesapNo = hareket.KaynakHesapNo,
-                        Bakiye = eskiBakiye,
-                        HesapAdi = accountInfo.HesapAdi
+                        AccountNo = movement.SourceAccountNo,
+                        Balance = oldBalance,
+                        AccountName = accountInfo.AccountName
                     };
 
                     dataAccessLayer.LogTransaction(transactionLog);
-                    eAccount.UpdateAccountInfo(updateKaynak);
+                    eAccount.UpdateAccountInfo(updateSource);
 
-                    Console.WriteLine("\nHedef hesap bulunamadı.");
+                    Console.WriteLine("\nThe target account was not found.");
                     return false;
                 }
             }
@@ -335,117 +335,116 @@ namespace FabrieBank.BLL.Logic
                 // Log the failed transfer
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
-                    AccountNumber = hareket.KaynakHesapNo,
-                    TargetAccountNumber = hareket.HedefHesapNo,
+                    AccountNumber = movement.SourceAccountNo,
+                    TargetAccountNumber = movement.TargetAccountNo,
                     TransactionType = EnumTransactionType.BOATransfer,
                     TransactionStatus = EnumTransactionStatus.Failed,
-                    Amount = hareket.Miktar,
-                    OldBalance = accountInfo.Bakiye,
-                    NewBalance = accountInfo.Bakiye,
+                    Amount = movement.Amount,
+                    OldBalance = accountInfo.Balance,
+                    NewBalance = accountInfo.Balance,
                     Timestamp = DateTime.Now
                 };
                 dataAccessLayer.LogTransaction(transactionLog);
-                Console.WriteLine("\nKaynak hesap bulunamadı.");
+                Console.WriteLine("\nThe source account was not found.");
                 return false;
             }
         }
 
         /// <summary>
-        /// Havale İşlemi
+        /// Havale/EFT
         /// </summary>
-        /// <param name="kaynakHesapNo"></param>
-        /// <param name="hedefHesapNo"></param>
-        /// <param name="miktar"></param>
+        /// <param name="movement"></param>
+        /// <param name="accountInfo"></param>
         /// <returns></returns>
-        public bool HavaleEFT(DTODovizHareket hareket, DTOAccountInfo accountInfo)
+        public bool HavaleEFT(DTOCurrencyMovement movement, DTOAccountInfo accountInfo)
         {
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
             if (accountInfo != null)
             {
-                decimal eskiBakiye = accountInfo.Bakiye;
-                decimal yeniBakiye = eskiBakiye - hareket.Miktar - hareket.Fee;
+                decimal oldBalance = accountInfo.Balance;
+                decimal newBalance = oldBalance - movement.Amount - movement.Fee;
 
-                if (eskiBakiye < hareket.Miktar)
+                if (oldBalance < movement.Amount)
                 {
-                    Console.WriteLine("\nYetersiz bakiye. Transfer gerçekleştirilemedi.");
+                    Console.WriteLine("\nInsufficient balance. Transfer failed.");
 
                     // Log the failed transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = hareket.KaynakHesapNo,
-                        TargetAccountNumber = hareket.HedefHesapNo,
-                        TransactionType = hareket.Type,
+                        AccountNumber = movement.SourceAccountNo,
+                        TargetAccountNumber = movement.TargetAccountNo,
+                        TransactionType = movement.Type,
                         TransactionStatus = EnumTransactionStatus.Failed,
-                        Amount = hareket.Miktar,
-                        OldBalance = eskiBakiye,
-                        NewBalance = eskiBakiye,
+                        Amount = movement.Amount,
+                        OldBalance = oldBalance,
+                        NewBalance = oldBalance,
                         Timestamp = DateTime.Now
                     };
                     dataAccessLayer.LogTransaction(transactionLog);
                 }
                 else
                 {
-                    DTOAccountInfo updateKaynak = new DTOAccountInfo()
+                    DTOAccountInfo updateSource = new DTOAccountInfo()
                     {
-                        HesapNo = hareket.KaynakHesapNo,
-                        Bakiye = yeniBakiye,
-                        HesapAdi = accountInfo.HesapAdi
+                        AccountNo = movement.SourceAccountNo,
+                        Balance = newBalance,
+                        AccountName = accountInfo.AccountName
                     };
-                    eAccount.UpdateAccountInfo(updateKaynak);
+                    eAccount.UpdateAccountInfo(updateSource);
                 }
 
                 DTOAccountInfo dTOAccount = new DTOAccountInfo()
                 {
-                    HesapNo = hareket.HedefHesapNo
+                    AccountNo = movement.TargetAccountNo
                 };
 
                 accountInfo = eAccount.ReadAccountInfo(dTOAccount);
-                if (accountInfo.MusteriId != 0)
+                if (accountInfo.CustomerId != 0)
                 {
-                    DTOAccountInfo updateHedef = new DTOAccountInfo()
+                    DTOAccountInfo updateTarget = new DTOAccountInfo()
                     {
-                        HesapNo = hareket.HedefHesapNo,
-                        Bakiye = accountInfo.Bakiye + hareket.Miktar,
-                        HesapAdi = accountInfo.HesapAdi
+                        AccountNo = movement.TargetAccountNo,
+                        Balance = accountInfo.Balance + movement.Amount,
+                        AccountName = accountInfo.AccountName
                     };
 
-                    eAccount.UpdateAccountInfo(updateHedef);
+                    eAccount.UpdateAccountInfo(updateTarget);
 
                     // Log the successful transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = hareket.KaynakHesapNo,
-                        TargetAccountNumber = hareket.HedefHesapNo,
-                        TransactionType = hareket.Type,
+                        AccountNumber = movement.SourceAccountNo,
+                        TargetAccountNumber = movement.TargetAccountNo,
+                        TransactionType = movement.Type,
                         TransactionStatus = EnumTransactionStatus.Success,
-                        Amount = hareket.Miktar,
-                        OldBalance = eskiBakiye,
-                        NewBalance = yeniBakiye,
+                        Amount = movement.Amount,
+                        OldBalance = oldBalance,
+                        NewBalance = newBalance,
                         Timestamp = DateTime.Now,
-                        TransactionFee = hareket.Fee
+                        TransactionFee = movement.Fee
                     };
 
                     dataAccessLayer.LogTransaction(transactionLog);
-                    Console.WriteLine("Havale İşlemi Başarılı Bir Şekilde Gerçekleştirildi.");
+                    Console.WriteLine("Havale Transaction Successfully Performed.");
 
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine("EFT İşlemi Başarılı Bir Şekilde Gerçekleştirildi.");
+                    Console.WriteLine("EFT Transaction Successfully Performed.");
 
                     // Log the successful transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = hareket.KaynakHesapNo,
-                        TargetAccountNumber = hareket.HedefHesapNo,
-                        TransactionType = hareket.Type,
+                        AccountNumber = movement.SourceAccountNo,
+                        TargetAccountNumber = movement.TargetAccountNo,
+                        TransactionType = movement.Type,
                         TransactionStatus = EnumTransactionStatus.Success,
-                        Amount = hareket.Miktar,
-                        OldBalance = eskiBakiye,
-                        NewBalance = yeniBakiye,
+                        Amount = movement.Amount,
+                        OldBalance = oldBalance,
+                        NewBalance = newBalance,
                         Timestamp = DateTime.Now,
-                        TransactionFee = hareket.Fee
+                        TransactionFee = movement.Fee
                     };
 
                     dataAccessLayer.LogTransaction(transactionLog);
@@ -480,7 +479,7 @@ namespace FabrieBank.BLL.Logic
             }
             else
             {
-                Console.WriteLine("Kaynak hesap numarası bulunamadı.");
+                Console.WriteLine("The source account number could not be found.");
             }
             return true;
         }

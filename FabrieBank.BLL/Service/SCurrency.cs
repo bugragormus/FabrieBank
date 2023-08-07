@@ -16,9 +16,9 @@ namespace FabrieBank.Services
             _httpClient = new HttpClient();
         }
 
-        public async Task<Dictionary<string, DTOCurrencyRate>> GetTodaysCurrencyRates(EnumDovizCinsleri.DovizCinsleri baseCurrency)
+        public async Task<Dictionary<string, DTOCurrencyRate>> GetTodaysCurrencyRates(EnumCurrencyTypes.CurrencyTypes baseCurrency)
         {
-            var currencies = Enum.GetValues(typeof(EnumDovizCinsleri.DovizCinsleri));
+            var currencies = Enum.GetValues(typeof(EnumCurrencyTypes.CurrencyTypes));
             var currencyRates = new Dictionary<string, DTOCurrencyRate>();
 
             try
@@ -31,7 +31,7 @@ namespace FabrieBank.Services
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.LoadXml(content);
 
-                    foreach (EnumDovizCinsleri.DovizCinsleri targetCurrency in currencies)
+                    foreach (EnumCurrencyTypes.CurrencyTypes targetCurrency in currencies)
                     {
                         if (targetCurrency == baseCurrency)
                         {
@@ -83,9 +83,9 @@ namespace FabrieBank.Services
             return currencyRates;
         }
 
-        public async Task<Dictionary<string, DTOCurrencyRate>> GetCustomDateCurrencyRates(EnumDovizCinsleri.DovizCinsleri baseCurrency, int year, int month, int day)
+        public async Task<Dictionary<string, DTOCurrencyRate>> GetCustomDateCurrencyRates(EnumCurrencyTypes.CurrencyTypes baseCurrency, int year, int month, int day)
         {
-            var currencies = Enum.GetValues(typeof(EnumDovizCinsleri.DovizCinsleri));
+            var currencies = Enum.GetValues(typeof(EnumCurrencyTypes.CurrencyTypes));
             var currencyRates = new Dictionary<string, DTOCurrencyRate>();
 
             try
@@ -99,7 +99,7 @@ namespace FabrieBank.Services
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.LoadXml(content);
 
-                    foreach (EnumDovizCinsleri.DovizCinsleri targetCurrency in currencies)
+                    foreach (EnumCurrencyTypes.CurrencyTypes targetCurrency in currencies)
                     {
                         if (targetCurrency == baseCurrency)
                         {

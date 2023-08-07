@@ -12,10 +12,10 @@ namespace FabrieBank
             Console.WriteLine("*            |   Customer Information  |             *");
             Console.WriteLine("*            V                         V             *");
             Console.WriteLine("******************************************************\n");
-            Console.WriteLine("Name         :" + customer.Ad);
-            Console.WriteLine("Last Name    :" + customer.Soyad);
+            Console.WriteLine("Name         :" + customer.Name);
+            Console.WriteLine("Last Name    :" + customer.Lastname);
             Console.WriteLine("TCKN         :" + customer.Tckn);
-            Console.WriteLine("Phone Number :" + customer.TelNo);
+            Console.WriteLine("Phone Number :" + customer.CellNo);
             Console.WriteLine("Email        :" + customer.Email);
         }
     }
