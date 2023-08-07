@@ -54,7 +54,7 @@ namespace FabrieBank.DAL.Entity
                             {
                                 AccountNo = (long)dataTable.Rows[0]["account_no"],
                                 Balance = (decimal)dataTable.Rows[0]["balance"],
-                                CustomerId = (int)dataTable.Rows[0]["cutomer_id"],
+                                CustomerId = (int)dataTable.Rows[0]["customer_id"],
                                 CurrencyType = (int)dataTable.Rows[0]["currency_type"],
                                 AccountName = dataTable.Rows[0]["account_name"].ToString(),
                             };
