@@ -17,46 +17,7 @@ namespace FabrieBank
             eAccount = new EAccountInfo();
         }
 
-        public void ShowMenu()
-        {
-            DTOAccountInfo dTOAccount = new DTOAccountInfo()
-            {
-                CustomerId = customerId
-            };
-            List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
-
-            string choice;
-            do
-            {
-                Console.WriteLine("\n==============================");
-                Console.WriteLine("MONEY TRANSFERS");
-                Console.WriteLine("==============================");
-                Console.WriteLine("1. Transfer Between Accounts");
-                Console.WriteLine("2. To Another Account Havale/EFT");
-                Console.WriteLine("3. Back to Main Menu");
-                Console.WriteLine("==============================");
-                Console.Write("Make your choice (1-3): ");
-                choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1":
-                        TransferBetweenAccounts(accountInfos);
-                        break;
-                    case "2":
-                        HavaleEFT(accountInfos);
-                        break;
-                    case "3":
-                        Console.WriteLine("Exited from money transfers");
-                        break;
-                    default:
-                        Console.WriteLine("Invalid selection. Try again.");
-                        break;
-                }
-            } while (choice != "3");
-        }
-
-        private void HavaleEFT(List<DTOAccountInfo> accountInfos)
+        public void HavaleEFT(List<DTOAccountInfo> accountInfos)
         {
             Console.WriteLine("\nWhich account do you want to withdraw money from?");
             transactionLogic.PrintAccountList(accountInfos);
@@ -81,7 +42,7 @@ namespace FabrieBank
             transactionLogic.HavaleEFT(customerId, transfer);
         }
 
-        private void TransferBetweenAccounts(List<DTOAccountInfo> accountInfos)
+        public void TransferBetweenAccounts(List<DTOAccountInfo> accountInfos)
         {
             Console.WriteLine("\nWhich account do you want to withdraw money from?");
             transactionLogic.PrintAccountList(accountInfos);

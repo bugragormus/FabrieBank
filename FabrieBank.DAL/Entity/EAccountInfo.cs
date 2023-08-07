@@ -1,5 +1,7 @@
 ﻿using System.Data;
+using System.Security.Principal;
 using FabrieBank.DAL.Common.DTOs;
+using FabrieBank.DAL.Common.Enums;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -14,6 +16,23 @@ namespace FabrieBank.DAL.Entity
         {
             dataAccessLayer = new DataAccessLayer();
             database = dataAccessLayer.CallDB();
+        }
+
+        public void CreateAccount(DTOAccountInfo accountInfo)
+        {
+            _ = InsertAccountInfo(accountInfo);
+
+            int numericValue = accountInfo.CurrencyType;
+            string currencyName = Enum.GetName(typeof(EnumCurrencyTypes.CurrencyTypes), numericValue);
+
+            if (accountInfo.AccountName != "")
+            {
+                Console.WriteLine($"\n'{accountInfo.AccountName}' named new '{currencyName}' account has been created.\n");
+            }
+            else
+            {
+                Console.WriteLine($"\nNew '{currencyName}' account has been created.\n");
+            }
         }
 
         /// <summary>

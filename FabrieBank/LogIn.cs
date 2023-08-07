@@ -1,10 +1,12 @@
-﻿using FabrieBank.DAL.Common.DTOs;
+﻿using FabrieBank.BLL.Logic;
+using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank
 {
     public class LogIn
     {
+        BCustomer bCustomer = new BCustomer();
         LogInDB loginDB = new LogInDB();
 
         public void LogInM()
@@ -54,7 +56,7 @@ namespace FabrieBank
                     return input;
                 }
 
-                DTOCustomer customer = logInDB.LogIn(tckn, password);
+                DTOCustomer customer = bCustomer.LogIn(tckn, password);
 
                 if (customer != null)
                 {
@@ -105,7 +107,7 @@ namespace FabrieBank
 
             customer.Tckn = tckn;
 
-            loginDB.ForgotPassword(customer, email);
+            bCustomer.ForgotPassword(customer, email);
         }
     }
 }

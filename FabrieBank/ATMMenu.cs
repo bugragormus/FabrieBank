@@ -13,41 +13,7 @@ namespace FabrieBank
             atm = new BAccount();
         }
 
-        public void ShowMenu()
-        {
-            string choice;
-
-            do
-            {
-                Console.WriteLine("\n==============================");
-                Console.WriteLine("ATM TRANSACTIONS");
-                Console.WriteLine("==============================");
-                Console.WriteLine("1. Deposit");
-                Console.WriteLine("2. Withdraw");
-                Console.WriteLine("3. Back to Main Menu");
-                Console.WriteLine("==============================");
-                Console.Write("Make your choice (1-3): ");
-                choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1":
-                        Deposit();
-                        break;
-                    case "2":
-                        Withdraw();
-                        break;
-                    case "3":
-                        Console.WriteLine("Checked out from ATM.");
-                        break;
-                    default:
-                        Console.WriteLine("Invalid selection. Try again.");
-                        break;
-                }
-            } while (choice != "3");
-        }
-
-        private void Deposit()
+        public void Deposit()
         {
             try
             {
@@ -90,7 +56,7 @@ namespace FabrieBank
             }
         }
 
-        private void Withdraw()
+        public void Withdraw()
         {
             try
             {

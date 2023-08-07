@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using FabrieBank.BLL.Logic;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
 
@@ -6,6 +7,7 @@ namespace FabrieBank
 {
     public class CustomerMenu
     {
+        private BCustomer bCustomer;
         private int customerId;
         private LogInDB customerInfoDB;
 
@@ -13,48 +15,10 @@ namespace FabrieBank
         {
             this.customerId = customerId;
             customerInfoDB = new LogInDB();
+            bCustomer = new BCustomer();
         }
 
-        public void ShowMenu(DTOCustomer customer)
-        {
-            string choice;
-
-            do
-            {
-                Console.WriteLine("==============================");
-                Console.WriteLine("USER OPERATIONS");
-                Console.WriteLine("==============================");
-                Console.WriteLine("1. View Personal Information");
-                Console.WriteLine("2. Update Personal Information");
-                Console.WriteLine("3. Change Password");
-                Console.WriteLine("4. Back to Main Menu");
-                Console.WriteLine("==============================");
-                Console.Write("Make your pick (1-4): ");
-                choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1":
-                        PersonelInfo personelInfo = new PersonelInfo();
-                        personelInfo.PersonelInfoM(customer);
-                        break;
-                    case "2":
-                        UpdatePersonelInfo(customer);
-                        break;
-                    case "3":
-                        ChangePassword(customer);
-                        break;
-                    case "4":
-                        Console.WriteLine("\nExited from User Operations.\n");
-                        break;
-                    default:
-                        Console.WriteLine("\nInvalid selection. Try again.\n");
-                        break;
-                }
-            } while (choice != "4");
-        }
-
-        private void UpdatePersonelInfo(DTOCustomer dTOCustomer)
+        public void UpdatePersonelInfo(DTOCustomer dTOCustomer)
         {
             try
             {
@@ -86,7 +50,7 @@ namespace FabrieBank
                     Email = email
                 };
 
-                bool updated = customerInfoDB.UpdatePersonelInfo(customer);
+                bool updated = bCustomer.UpdatePersonelInfo(customer);
 
                 if (updated)
                 {
@@ -172,7 +136,7 @@ namespace FabrieBank
                     Email = dTOCustomer.Email
                 };
 
-                bool updated = customerInfoDB.ChangePassword(customer);
+                bool updated = bCustomer.ChangePassword(customer);
 
                 if (updated)
                 {

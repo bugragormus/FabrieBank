@@ -16,40 +16,7 @@ namespace FabrieBank
             currencyTable = new CurrencyTable();
         }
 
-        public void ShowMenu()
-        {
-            string choice;
-            do
-            {
-                Console.WriteLine("\n==============================");
-                Console.WriteLine("CURRENCY RATES");
-                Console.WriteLine("==============================");
-                Console.WriteLine("1. Todays Rates");
-                Console.WriteLine("2. Another Days Rates");
-                Console.WriteLine("3. Upper Menu");
-                Console.WriteLine("==============================");
-                Console.Write("Make a choice (1-3): ");
-                choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1":
-                        TodaysRates();
-                        break;
-                    case "2":
-                        CustomDateRates();
-                        break;
-                    case "3":
-                        Console.WriteLine("\nExited from Currency Rates.\n");
-                        break;
-                    default:
-                        Console.WriteLine("\nInvalid selection. Try again.\n");
-                        break;
-                }
-            } while (choice != "3");
-        }
-
-        private void TodaysRates()
+        public void TodaysRates()
         {
             try
             {
@@ -64,7 +31,7 @@ namespace FabrieBank
             }
         }
 
-        private void CustomDateRates()
+        public void CustomDateRates()
         {
             try
             {
