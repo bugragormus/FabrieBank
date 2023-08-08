@@ -58,7 +58,7 @@ namespace FabrieBank.BLL.Logic
             BTransaction transactionLogic = new BTransaction();
 
             Console.WriteLine("\nWhich account would you like to delete?");
-            transactionLogic.PrintAccountList(accountInfos);
+            PrintAccountList(accountInfos);
 
             Console.Write("Account Indexi: ");
             int deletedAccIndex = int.Parse(Console.ReadLine());
@@ -82,124 +82,26 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Deposit B.L.
+        /// Prints customers accounts
         /// </summary>
-        /// <param name="accountInfo"></param>
-        /// <param name="balance"></param>
-        public void Deposit(DTOAccountInfo accountInfo, decimal balance)
+        /// <param name="accountInfos"></param>
+        public void PrintAccountList(List<DTOAccountInfo> accountInfos)
         {
-            accountInfo = eAccount.ReadAccountInfo(accountInfo);
-            if (accountInfo != null)
+            try
             {
-                decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
-                decimal newBalance = oldBalance + balance;
-
-                DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                Console.WriteLine("Your Accounts:");
+                for (int i = 0; i < accountInfos.Count; i++)
                 {
-                    AccountNo = accountInfo.AccountNo,
-                    Balance = newBalance,
-                    AccountName = accountInfo.AccountName
-                };
-
-                eAccount.UpdateAccountInfo(dTOAccount);
-
-                // Log the successful deposit
-                DTOTransactionLog transactionLog = new DTOTransactionLog
-                {
-                    AccountNumber = accountInfo.AccountNo,
-                    TargetAccountNumber = accountInfo.AccountNo,
-                    TransactionType = EnumTransactionType.Deposit,
-                    TransactionStatus = EnumTransactionStatus.Success,
-                    Amount = newBalance - oldBalance,
-                    OldBalance = oldBalance,
-                    NewBalance = newBalance,
-                    Timestamp = DateTime.Now
-                };
-
-                dataAccessLayer.LogTransaction(transactionLog);
-
-                Console.WriteLine("\nDeposit successful.");
-                Console.WriteLine($"Old balance: {oldBalance}");
-                Console.WriteLine($"New balance: {newBalance}");
+                    Console.WriteLine($"[{i}] Account No: {accountInfos[i].AccountNo}");
+                    Console.WriteLine($"Balance: {accountInfos[i].Balance}");
+                    Console.WriteLine($"Currency Type: {accountInfos[i].CurrencyType}");
+                    Console.WriteLine("==============================");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Log the failed deposit
-                DTOTransactionLog transactionLog = new DTOTransactionLog
-                {
-                    AccountNumber = accountInfo.AccountNo,
-                    TransactionType = EnumTransactionType.Deposit,
-                    TransactionStatus = EnumTransactionStatus.Failed,
-                    Amount = balance,
-                    OldBalance = accountInfo.Balance,
-                    NewBalance = accountInfo.Balance,
-                    Timestamp = DateTime.Now
-                };
-
-                dataAccessLayer.LogTransaction(transactionLog);
-
-                Console.WriteLine("\nDeposit unsuccessful.");
-            }
-        }
-
-        /// <summary>
-        /// Withdraw B.L.
-        /// </summary>
-        /// <param name="accountInfo"></param>
-        /// <param name="balance"></param>
-        public void Withdraw(DTOAccountInfo accountInfo, decimal balance)
-        {
-            accountInfo = eAccount.ReadAccountInfo(accountInfo);
-            if (accountInfo != null)
-            {
-                decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
-                decimal newBalance = oldBalance - balance;
-
-                DTOAccountInfo dTOAccount = new DTOAccountInfo()
-                {
-                    AccountNo = accountInfo.AccountNo,
-                    Balance = newBalance,
-                    AccountName = accountInfo.AccountName
-                };
-
-                eAccount.UpdateAccountInfo(dTOAccount);
-
-                // Log the successful deposit
-                DTOTransactionLog transactionLog = new DTOTransactionLog
-                {
-                    AccountNumber = accountInfo.AccountNo,
-                    TargetAccountNumber = accountInfo.AccountNo,
-                    TransactionType = EnumTransactionType.Deposit,
-                    TransactionStatus = EnumTransactionStatus.Success,
-                    Amount = oldBalance - newBalance,
-                    OldBalance = oldBalance,
-                    NewBalance = newBalance,
-                    Timestamp = DateTime.Now
-                };
-
-                dataAccessLayer.LogTransaction(transactionLog);
-
-                Console.WriteLine("\nWithdraw successful");
-                Console.WriteLine($"Old balance: {oldBalance}");
-                Console.WriteLine($"New Balance: {newBalance}");
-            }
-            else
-            {
-                // Log the failed deposit
-                DTOTransactionLog transactionLog = new DTOTransactionLog
-                {
-                    AccountNumber = accountInfo.AccountNo,
-                    TransactionType = EnumTransactionType.Deposit,
-                    TransactionStatus = EnumTransactionStatus.Failed,
-                    Amount = balance,
-                    OldBalance = accountInfo.Balance,
-                    NewBalance = accountInfo.Balance,
-                    Timestamp = DateTime.Now
-                };
-
-                dataAccessLayer.LogTransaction(transactionLog);
-
-                Console.WriteLine("\nWithdraw unsuccessful.");
+                EErrorLogger errorLogger = new EErrorLogger();
+                errorLogger.LogAndHandleError(ex);
             }
         }
 

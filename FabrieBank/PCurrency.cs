@@ -1,16 +1,16 @@
 ﻿using System.Text.RegularExpressions;
+using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
 using FabrieBank.Services;
 
 namespace FabrieBank
 {
-    public class CurrencyMenu
+    public class PCurrency
     {
         private readonly SCurrency currency;
-        private readonly CurrencyTable currencyTable;
 
-        public CurrencyMenu()
+        public PCurrency()
         {
             currency = new SCurrency();
             currencyTable = new CurrencyTable();
@@ -64,6 +64,27 @@ namespace FabrieBank
             }
         }
 
+        public void DisplayCurrencyRatesTable(EnumCurrencyTypes.CurrencyTypes baseCurrency, Dictionary<string, DTOCurrencyRate> currencyRates)
+        {
+            try
+            {
+                Console.WriteLine("\n----------------------------------------------------------------------------------------");
+                Console.WriteLine($"                    Currency Rates Table for {baseCurrency} (Base Currency)");
+                Console.WriteLine("----------------------------------------------------------------------------------------");
+                Console.WriteLine("Currency  |  Forex Buying    |  Forex Selling   |  Banknote Buying   |  Banknote Selling");
+                Console.WriteLine("----------------------------------------------------------------------------------------");
+
+                foreach (var rate in currencyRates)
+                {
+                    Console.WriteLine($"{rate.Key,-8}  |  {rate.Value.ForexBuyingRate,14:N2}  |  {rate.Value.ForexSellingRate,14:N2}  |  {rate.Value.BanknoteBuyingRate,16:N2}  |  {rate.Value.BanknoteSellingRate,16:N2}");
+                }
+            }
+            catch (Exception ex)
+            {
+                EErrorLogger errorLogger = new EErrorLogger();
+                errorLogger.LogAndHandleError(ex);
+            }
+        }
 
         static bool IsValidDate(string input, out int day, out int month, out int year)
         {
