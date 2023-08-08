@@ -27,13 +27,13 @@ namespace FabrieBank
                     case "1":
 
                         PCustomer pCustomer = new PCustomer(customer.CustomerId);
-                        pCustomer.LogInM();
+                        pCustomer.LogIn();
                         break;
 
                     case "2":
 
                         PCustomer pCustomer1 = new PCustomer(customer.CustomerId);
-                        pCustomer1.CreateMusteriM();
+                        pCustomer1.CreateMusteri();
                         break;
 
                     case "3":
@@ -247,7 +247,7 @@ namespace FabrieBank
                 {
                     case "1":
                         PCustomer pCustomer2 = new PCustomer(customer.CustomerId);
-                        pCustomer2.PersonelInfoM(customer);
+                        pCustomer2.PersonelInfo(customer);
                         break;
                     case "2":
                         PCustomer pCustomer1 = new PCustomer(customer.CustomerId);

@@ -16,7 +16,7 @@ namespace FabrieBank
             bCustomer = new BCustomer();
         }
 
-        public void CreateMusteriM()
+        public void CreateMusteri()
         {
             try
             {
@@ -121,7 +121,7 @@ namespace FabrieBank
             }
         }
 
-        public void LogInM()
+        public void LogIn()
         {
             try
             {
@@ -198,7 +198,7 @@ namespace FabrieBank
             }
         }
 
-        public void PersonelInfoM(DTOCustomer customer)
+        public void PersonelInfo(DTOCustomer customer)
         {
             Console.Clear();
             Console.WriteLine("******************************************************");
