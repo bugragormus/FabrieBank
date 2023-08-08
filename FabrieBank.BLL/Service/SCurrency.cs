@@ -48,16 +48,16 @@ namespace FabrieBank.Services
                             currency.CurrencyCode = currencyCode;
 
                             double banknoteBuyingRate = Convert.ToDouble(node["BanknoteBuying"].InnerText, CultureInfo.GetCultureInfo("en-US"));
-                            currency.BanknoteBuyingRate = banknoteBuyingRate;
+                            currency.BanknoteBuyingRate = (decimal)banknoteBuyingRate;
 
                             double banknoteSellingRate = Convert.ToDouble(node["BanknoteSelling"].InnerText, CultureInfo.GetCultureInfo("en-US"));
-                            currency.BanknoteSellingRate = banknoteSellingRate;
+                            currency.BanknoteSellingRate = (decimal)banknoteSellingRate;
 
                             double forexBuyingRate = Convert.ToDouble(node["ForexBuying"].InnerText, CultureInfo.GetCultureInfo("en-US"));
                             currency.ForexBuyingRate = forexBuyingRate;
 
                             double forexSellingRate = Convert.ToDouble(node["ForexSelling"].InnerText, CultureInfo.GetCultureInfo("en-US"));
-                            currency.ForexSellingRate = forexSellingRate;
+                            currency.ForexSellingRate = (decimal)forexSellingRate;
 
                             currencyRates.Add(currencyCode, currency);
                         }
@@ -116,16 +116,16 @@ namespace FabrieBank.Services
                             currency.CurrencyCode = currencyCode;
 
                             double banknoteBuyingRate = Convert.ToDouble(node["BanknoteBuying"].InnerText, CultureInfo.GetCultureInfo("en-US"));
-                            currency.BanknoteBuyingRate = banknoteBuyingRate;
+                            currency.BanknoteBuyingRate = (decimal)banknoteBuyingRate;
 
                             double banknoteSellingRate = Convert.ToDouble(node["BanknoteSelling"].InnerText, CultureInfo.GetCultureInfo("en-US"));
-                            currency.BanknoteSellingRate = banknoteSellingRate;
+                            currency.BanknoteSellingRate = (decimal)banknoteSellingRate;
 
                             double forexBuyingRate = Convert.ToDouble(node["ForexBuying"].InnerText, CultureInfo.GetCultureInfo("en-US"));
                             currency.ForexBuyingRate = forexBuyingRate;
 
                             double forexSellingRate = Convert.ToDouble(node["ForexSelling"].InnerText, CultureInfo.GetCultureInfo("en-US"));
-                            currency.ForexSellingRate = forexSellingRate;
+                            currency.ForexSellingRate = (decimal)forexSellingRate;
 
                             currencyRates.Add(currencyCode, currency);
                         }

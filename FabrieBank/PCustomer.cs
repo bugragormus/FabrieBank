@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using FabrieBank.BLL.Logic;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
+using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank

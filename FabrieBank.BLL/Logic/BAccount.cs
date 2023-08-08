@@ -72,12 +72,10 @@ namespace FabrieBank.BLL.Logic
             };
             List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccounts);
 
-            BTransaction transactionLogic = new BTransaction();
-
             Console.WriteLine("\nWhich account would you like to delete?");
             PrintAccountList(accountInfos);
 
-            Console.Write("Account Indexi: ");
+            Console.Write("Account Index: ");
             int deletedAccIndex = int.Parse(Console.ReadLine());
 
             if (deletedAccIndex >= 0 && deletedAccIndex < accountInfos.Count)
@@ -106,13 +104,13 @@ namespace FabrieBank.BLL.Logic
         {
             try
             {
-                Console.WriteLine("Your Accounts:");
+                Console.WriteLine("Your Accounts:\n");
                 for (int i = 0; i < accountInfos.Count; i++)
                 {
                     Console.WriteLine($"[{i}] Account No: {accountInfos[i].AccountNo}");
                     Console.WriteLine($"Balance: {accountInfos[i].Balance}");
                     Console.WriteLine($"Currency Type: {accountInfos[i].CurrencyType}");
-                    Console.WriteLine("==============================");
+                    Console.WriteLine("==============================\n");
                 }
             }
             catch (Exception ex)

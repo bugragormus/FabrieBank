@@ -8,6 +8,9 @@ namespace FabrieBank
     {
         private static void Main()
         {
+            //PCurrency pCurrency = new PCurrency();
+            //pCurrency.GetRate();
+
             string? ch;
 
             for (; ; )
@@ -69,7 +72,7 @@ namespace FabrieBank
                 Console.WriteLine("=============================================================================================");
                 Console.WriteLine("                                         MAIN MENU                                           ");
                 Console.WriteLine("=============================================================================================");
-                Console.WriteLine("1.User Operations    2.Bank Accounts     3.Money Transfers     4. Currency Rates     5.Exit  ");
+                Console.WriteLine("1.User Operations    2.Bank Accounts     3.Money Transfers      4. Currencies        5.Exit  ");
                 Console.WriteLine("=============================================================================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
@@ -94,7 +97,7 @@ namespace FabrieBank
 
                     case "4":
 
-                        CurrencyMenu();
+                        CurrencyMenu(customer);
                         break;
 
                     case "5":
@@ -191,7 +194,7 @@ namespace FabrieBank
             } while (choice != "3");
         }
 
-        public void CurrencyMenu()
+        public void CurrencyMenu(DTOCustomer customer)
         {
             string choice;
             do
@@ -201,9 +204,11 @@ namespace FabrieBank
                 Console.WriteLine("==============================");
                 Console.WriteLine("1. Todays Rates");
                 Console.WriteLine("2. Another Days Rates");
-                Console.WriteLine("3. Upper Menu");
+                Console.WriteLine("3. Exchange Buying");
+                Console.WriteLine("4. Exchange Selling");
+                Console.WriteLine("5. Upper Menu");
                 Console.WriteLine("==============================");
-                Console.Write("Make a choice (1-3): ");
+                Console.Write("Make a choice (1-5): ");
                 choice = Console.ReadLine();
 
                 switch (choice)
@@ -217,13 +222,21 @@ namespace FabrieBank
                         pCurrency1.CustomDateRates();
                         break;
                     case "3":
+                        PCurrency pCurrency2 = new PCurrency();
+                        pCurrency2.ExchangeBuying(customer);
+                        break;
+                    case "4":
+                        PCurrency pCurrency3 = new PCurrency();
+                        pCurrency3.ExchangeSelling(customer);
+                        break;
+                    case "5":
                         Console.WriteLine("\nExited from Currency Rates.\n");
                         break;
                     default:
                         Console.WriteLine("\nInvalid selection. Try again.\n");
                         break;
                 }
-            } while (choice != "3");
+            } while (choice != "5");
         }
 
         public void CustomerMenu(DTOCustomer customer)

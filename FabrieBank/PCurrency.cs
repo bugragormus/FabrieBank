@@ -1,4 +1,6 @@
 ﻿using System.Text.RegularExpressions;
+using FabrieBank.BLL.Logic;
+using FabrieBank.BLL.Service;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
@@ -9,10 +11,16 @@ namespace FabrieBank
     public class PCurrency
     {
         private readonly SCurrency currency;
+        private EnumCurrencyTypes.CurrencyTypes baseCurrency;
+        private EAccountInfo eAccount;
+        private BAccount bAccount;
 
         public PCurrency()
         {
             currency = new SCurrency();
+            baseCurrency = EnumCurrencyTypes.CurrencyTypes.TRY;//TRY
+            eAccount = new EAccountInfo();
+            bAccount = new BAccount();
         }
 
         public void TodaysRates()
@@ -61,6 +69,27 @@ namespace FabrieBank
                 EErrorLogger errorLogger = new EErrorLogger();
                 errorLogger.LogAndHandleError(ex);
             }
+        }
+
+        public List<DTOCurrencyRate> GetCurrencyRates(Dictionary<string, DTOCurrencyRate> currencyRates)
+        {
+            List<DTOCurrencyRate> dtoCurrencyRates = new List<DTOCurrencyRate>();
+
+            foreach (var rate in currencyRates)
+            {
+                DTOCurrencyRate dtoCurrencyRate = new DTOCurrencyRate
+                {
+                    CurrencyCode = rate.Key,
+                    ForexBuyingRate = rate.Value.ForexBuyingRate,
+                    ForexSellingRate = rate.Value.ForexSellingRate,
+                    BanknoteBuyingRate = rate.Value.BanknoteBuyingRate,
+                    BanknoteSellingRate = rate.Value.BanknoteSellingRate
+                };
+
+                dtoCurrencyRates.Add(dtoCurrencyRate);
+            }
+
+            return dtoCurrencyRates;
         }
 
         public void DisplayCurrencyRatesTable(EnumCurrencyTypes.CurrencyTypes baseCurrency, Dictionary<string, DTOCurrencyRate> currencyRates)
@@ -134,5 +163,100 @@ namespace FabrieBank
             return true;
         }
 
+        //public void GetRate()
+        //{
+        //    try
+        //    {
+        //        var baseCurrency = EnumCurrencyTypes.CurrencyTypes.TRY;//TRY
+        //        var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency).Result;
+        //        List<DTOCurrencyRate> dtoCurrencyRates = GetCurrencyRates(currencyRates);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        EErrorLogger errorLogger = new EErrorLogger();
+        //        errorLogger.LogAndHandleError(ex);
+        //    }
+        //}
+
+        public void ExchangeBuying(DTOCustomer customer)
+        {
+            var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency).Result;
+            List<DTOCurrencyRate> dTOCurrencyRates = GetCurrencyRates(currencyRates);
+
+            if (dTOCurrencyRates.Count > 0)
+            {
+                Console.WriteLine("\nBanknote Selling Rate for;  ");
+                for (int i = 0; i < dTOCurrencyRates.Count; i++)
+                {
+                    decimal banknoteSellingRate = dTOCurrencyRates[i].BanknoteSellingRate;
+                    string currencyType = dTOCurrencyRates[i].CurrencyCode;
+                    Console.WriteLine($"\n[{i}] {currencyType}: {banknoteSellingRate}");
+                }
+                Console.WriteLine("What type of currency would you like to trade?");
+                Console.Write(">>> ");
+                int exchange = int.Parse(Console.ReadLine());
+                decimal exchangeRate = dTOCurrencyRates[exchange].BanknoteSellingRate;
+                string exchangeType = dTOCurrencyRates[exchange].CurrencyCode;
+
+                DTOAccountInfo dTOAccounts = new DTOAccountInfo()
+                {
+                    CustomerId = customer.CustomerId,
+                    CurrencyType = (int)baseCurrency
+                };
+
+                List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccounts);
+
+                Console.WriteLine("\nFrom which account would you like to withdraw the money?\n");
+                bAccount.PrintAccountList(accountInfos);
+
+                Console.Write("Account Index: ");
+                int withdrawAccIndex = int.Parse(Console.ReadLine());
+
+                if (withdrawAccIndex >= 0 && withdrawAccIndex < accountInfos.Count)
+                {
+                    long withdrawAccNo = accountInfos[withdrawAccIndex].AccountNo;
+                    decimal withdrawAccBalance = accountInfos[withdrawAccIndex].Balance;
+
+                    DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                    {
+                        CustomerId = customer.CustomerId,
+                        CurrencyType = 2
+                    };
+
+                    List<DTOAccountInfo> accountInfo = eAccount.ReadListAccountInfo(dTOAccount);
+
+                    Console.WriteLine("\nFrom which account would you like to withdraw the money?\n");
+                    bAccount.PrintAccountList(accountInfo);
+
+                    Console.Write("Account Index: ");
+                    int depositAccIndex = int.Parse(Console.ReadLine());
+
+                    if (depositAccIndex >= 0 && depositAccIndex < accountInfos.Count)
+                    {
+                        long depositAccNo = accountInfos[depositAccIndex].AccountNo;
+                        decimal depositAccBalance = accountInfos[depositAccIndex].Balance;
+
+                        Console.WriteLine("\nkaç para?\n");
+                        decimal amount = int.Parse(Console.ReadLine());
+
+                        decimal tl = amount * exchangeRate;
+                        Console.WriteLine(tl);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No.");
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine("No currency rates available.");
+                }
+            }
+        }
+        public void ExchangeSelling(DTOCustomer customer)
+        {
+
+        }
     }
 }
