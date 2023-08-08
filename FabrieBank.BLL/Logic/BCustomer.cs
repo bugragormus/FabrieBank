@@ -1,16 +1,17 @@
-﻿using FabrieBank.DAL.Common.DTOs;
+﻿using FabrieBank.DAL;
+using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank.BLL.Logic
 {
-	public class BCustomer
-	{
+    public class BCustomer
+    {
         private ECustomer eCustomer;
 
-		public BCustomer()
-		{
+        public BCustomer()
+        {
             eCustomer = new ECustomer();
-		}
+        }
 
         /// <summary>
         /// Müşteri Oluşturur
@@ -38,7 +39,7 @@ namespace FabrieBank.BLL.Logic
         /// <param name="tckn"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public DTOCustomer LogIn(long tckn, int password)
+        public DTOCustomer LogIn(long tckn, string password)
         {
             DTOCustomer customer = eCustomer.ReadCustomer(new DTOCustomer { Tckn = tckn });
 
@@ -84,6 +85,7 @@ namespace FabrieBank.BLL.Logic
         public bool ForgotPassword(DTOCustomer customer, string email)
         {
             int temporaryPassword = GenerateTemporaryPassword();
+            string hashedPassword = DataAccessLayer.ComputeSha256Hash(temporaryPassword.ToString());
             customer = eCustomer.ReadCustomer(customer);
 
             if (customer.Email != email)
@@ -98,7 +100,7 @@ namespace FabrieBank.BLL.Logic
                     CustomerId = customer.CustomerId,
                     Name = customer.Name,
                     Lastname = customer.Lastname,
-                    Password = temporaryPassword,
+                    Password = hashedPassword,
                     CellNo = customer.CellNo,
                     Email = customer.Email
                 };

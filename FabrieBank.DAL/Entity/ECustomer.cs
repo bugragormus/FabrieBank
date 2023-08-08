@@ -50,7 +50,7 @@ namespace FabrieBank.DAL.Entity
                                 Name = dataTable.Rows[0]["name"].ToString(),
                                 Lastname = dataTable.Rows[0]["lastname"].ToString(),
                                 Tckn = (long)dataTable.Rows[0]["tckn"],
-                                Password = (int)dataTable.Rows[0]["password"],
+                                Password = dataTable.Rows[0]["password"].ToString(),
                                 CellNo = (long)dataTable.Rows[0]["cell_no"],
                                 Email = dataTable.Rows[0]["email"].ToString(),
                             };
@@ -111,7 +111,7 @@ namespace FabrieBank.DAL.Entity
                                 Name = dataTable.Rows[0]["name"].ToString(),
                                 Lastname = dataTable.Rows[0]["lastname"].ToString(),
                                 Tckn = (long)dataTable.Rows[0]["tckn"],
-                                Password = (int)dataTable.Rows[0]["password"],
+                                Password = dataTable.Rows[0]["password"].ToString(),
                                 CellNo = (long)dataTable.Rows[0]["cell_no"],
                                 Email = dataTable.Rows[0]["email"].ToString(),
                             };
@@ -150,7 +150,7 @@ namespace FabrieBank.DAL.Entity
                         command.Parameters.AddWithValue("@p_name", NpgsqlDbType.Varchar, (object)customer.Name ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_lastname", NpgsqlDbType.Varchar, (object)customer.Lastname ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_tckn", NpgsqlDbType.Bigint, customer.Tckn);
-                        command.Parameters.AddWithValue("@p_password", NpgsqlDbType.Integer, customer.Password);
+                        command.Parameters.AddWithValue("@p_password", NpgsqlDbType.Varchar, (object)customer.Password ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_cell_no", NpgsqlDbType.Bigint, customer.CellNo);
                         command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
 
@@ -191,7 +191,7 @@ namespace FabrieBank.DAL.Entity
                         command.Parameters.AddWithValue("@p_customer_id", NpgsqlDbType.Integer, customer.CustomerId);
                         command.Parameters.AddWithValue("@p_name", NpgsqlDbType.Varchar, (object)customer.Name ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_lastname", NpgsqlDbType.Varchar, (object)customer.Lastname ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@p_password", NpgsqlDbType.Integer, customer.Password);
+                        command.Parameters.AddWithValue("@p_password", NpgsqlDbType.Varchar, (object)customer.Password ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_cell_no", NpgsqlDbType.Bigint, customer.CellNo);
                         command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
 

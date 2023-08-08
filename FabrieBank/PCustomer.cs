@@ -1,5 +1,8 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using FabrieBank.BLL.Logic;
+using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
 
@@ -16,7 +19,7 @@ namespace FabrieBank
             bCustomer = new BCustomer();
         }
 
-        public void CreateMusteri()
+        public void CreateCustomer()
         {
             try
             {
@@ -58,6 +61,8 @@ namespace FabrieBank
                 {
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
+
+                string hashedPassword = DataAccessLayer.ComputeSha256Hash(customerPassword.ToString());
 
                 static string GetMaskedInput()
                 {
@@ -107,7 +112,7 @@ namespace FabrieBank
                     Name = customerName,
                     Lastname = customerLastname,
                     Tckn = customerTckn,
-                    Password = customerPassword,
+                    Password = hashedPassword,
                     CellNo = customerCellNo,
                     Email = customerEmail
                 };
@@ -142,6 +147,8 @@ namespace FabrieBank
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
 
+                string hashedPassword = DataAccessLayer.ComputeSha256Hash(password.ToString());
+
                 static string GetMaskedInput()
                 {
                     string input = "";
@@ -167,7 +174,7 @@ namespace FabrieBank
                     return input;
                 }
 
-                DTOCustomer customer = bCustomer.LogIn(tckn, password);
+                DTOCustomer customer = bCustomer.LogIn(tckn, hashedPassword);
 
                 if (customer != null)
                 {
@@ -275,7 +282,9 @@ namespace FabrieBank
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
 
-                while (dTOCustomer.Password != currentPassword)
+                string currentHashedPassword = DataAccessLayer.ComputeSha256Hash(currentPassword.ToString());
+
+                while (dTOCustomer.Password != currentHashedPassword)
                 {
                     Console.WriteLine("\nThe current password and the entered password do not match, try again:");
                     Console.Write(">>> ");
@@ -293,7 +302,9 @@ namespace FabrieBank
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
 
-                while (newPassword == currentPassword)
+                string newHashedPassword = DataAccessLayer.ComputeSha256Hash(newPassword.ToString());
+
+                while (newHashedPassword == currentHashedPassword)
                 {
                     Console.WriteLine("The new password cannot be the same as the old one. Please try again:");
                     Console.Write(">>> ");
@@ -326,7 +337,7 @@ namespace FabrieBank
                     CustomerId = customerId,
                     Name = dTOCustomer.Name,
                     Lastname = dTOCustomer.Lastname,
-                    Password = newPassword2,
+                    Password = newHashedPassword,
                     CellNo = dTOCustomer.CellNo,
                     Email = dTOCustomer.Email
                 };

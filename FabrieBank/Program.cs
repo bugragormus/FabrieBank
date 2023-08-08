@@ -33,7 +33,7 @@ namespace FabrieBank
                     case "2":
 
                         PCustomer pCustomer1 = new PCustomer(customer.CustomerId);
-                        pCustomer1.CreateMusteri();
+                        pCustomer1.CreateCustomer();
                         break;
 
                     case "3":
