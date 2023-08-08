@@ -38,7 +38,7 @@ namespace FabrieBank
 
                     case "3":
 
-                        //ATMMenu(customer.CustomerId);
+                        ATMMenu();
                         break;
 
                     case "4":
@@ -154,8 +154,9 @@ namespace FabrieBank
             }
         }
 
-        public void ATMMenu(int customerId)
+        public static void ATMMenu()
         {
+            DTOCustomer customer = new DTOCustomer();
             string choice;
 
             do
@@ -173,11 +174,11 @@ namespace FabrieBank
                 switch (choice)
                 {
                     case "1":
-                        PTransaction pTransaction = new PTransaction(customerId);
+                        PTransaction pTransaction = new PTransaction(customer.CustomerId);
                         pTransaction.Deposit();
                         break;
                     case "2":
-                        PTransaction pTransaction1 = new PTransaction(customerId);
+                        PTransaction pTransaction1 = new PTransaction(customer.CustomerId);
                         pTransaction1.Withdraw();
                         break;
                     case "3":
