@@ -152,7 +152,6 @@ namespace FabrieBank.DAL
 
         public static string ComputeSha256Hash(string rawData)
         {
-            // Use a deterministic salt (replace with your own salt value)
             string salt = "FabrieBankPasswordSafety";
 
             // Combine the password and salt
