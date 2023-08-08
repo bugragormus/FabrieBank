@@ -159,16 +159,16 @@ namespace FabrieBank.DAL
         {
             string salt = "FabrieBankPasswordSafety";
 
-            // Combine the password and salt
+
             byte[] combinedBytes = Encoding.UTF8.GetBytes(rawData + salt);
 
-            // Create a SHA256
+
             using (SHA256 sha256Hash = SHA256.Create())
             {
-                // ComputeHash - returns byte array
+
                 byte[] hashBytes = sha256Hash.ComputeHash(combinedBytes);
 
-                // Convert byte array to a string
+
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < hashBytes.Length; i++)
                 {
