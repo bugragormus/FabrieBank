@@ -22,7 +22,7 @@ namespace FabrieBank
             Console.WriteLine("*            V                         V             *");
             Console.WriteLine("******************************************************\n");
 
-            accountLogic.AccountLogicM(customer);
+            accountLogic.AccountList(customer);
         }
 
         public void CreateAccount(DTOCustomer customer)
@@ -45,8 +45,8 @@ namespace FabrieBank
                     AccountName = accountName
                 };
 
-                EAccountInfo eAccount = new EAccountInfo();
-                eAccount.CreateAccount(accountInfo);
+                BAccount bAccount = new BAccount();
+                bAccount.CreateAccount(accountInfo);
             }
             catch (Exception ex)
             {

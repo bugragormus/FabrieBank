@@ -18,23 +18,6 @@ namespace FabrieBank.DAL.Entity
             database = dataAccessLayer.CallDB();
         }
 
-        public void CreateAccount(DTOAccountInfo accountInfo)
-        {
-            _ = InsertAccountInfo(accountInfo);
-
-            int numericValue = accountInfo.CurrencyType;
-            string currencyName = Enum.GetName(typeof(EnumCurrencyTypes.CurrencyTypes), numericValue);
-
-            if (accountInfo.AccountName != "")
-            {
-                Console.WriteLine($"\n'{accountInfo.AccountName}' named new '{currencyName}' account has been created.\n");
-            }
-            else
-            {
-                Console.WriteLine($"\nNew '{currencyName}' account has been created.\n");
-            }
-        }
-
         /// <summary>
         /// Hesap Tablosundan Tek Satır Döndürür
         /// </summary>

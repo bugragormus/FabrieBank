@@ -17,7 +17,24 @@ namespace FabrieBank.BLL.Logic
             dataAccessLayer = new DataAccessLayer();
         }
 
-        public void AccountLogicM(DTOCustomer customer)
+        public void CreateAccount(DTOAccountInfo accountInfo)
+        {
+            _ = eAccount.InsertAccountInfo(accountInfo);
+
+            int numericValue = accountInfo.CurrencyType;
+            string currencyName = Enum.GetName(typeof(EnumCurrencyTypes.CurrencyTypes), numericValue);
+
+            if (accountInfo.AccountName != "")
+            {
+                Console.WriteLine($"\n'{accountInfo.AccountName}' named new '{currencyName}' account has been created.\n");
+            }
+            else
+            {
+                Console.WriteLine($"\nNew '{currencyName}' account has been created.\n");
+            }
+        }
+
+        public void AccountList(DTOCustomer customer)
         {
             EAccountInfo eAccount1 = new EAccountInfo();
             DTOAccountInfo dTOAccount = new DTOAccountInfo()
