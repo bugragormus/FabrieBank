@@ -175,6 +175,5 @@ namespace FabrieBank.DAL
                 return builder.ToString();
             }
         }
-
     }
 }
