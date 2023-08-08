@@ -161,7 +161,6 @@ namespace FabrieBank.DAL
 
             byte[] combinedBytes = Encoding.UTF8.GetBytes(rawData + salt);
 
-
             using (SHA256 sha256Hash = SHA256.Create())
             {
 
