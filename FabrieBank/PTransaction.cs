@@ -8,13 +8,13 @@ namespace FabrieBank
     {
         private int customerId;
         private BTransaction transactionLogic;
-        private EAccountInfo eAccount;
+        private BAccount bAccount;
 
         public PTransaction(int customerId)
         {
             this.customerId = customerId;
             transactionLogic = new BTransaction();
-            eAccount = new EAccountInfo();
+            bAccount = new BAccount();
         }
 
         public void Deposit()
@@ -40,7 +40,7 @@ namespace FabrieBank
                             AccountNo = accountNo
                         };
 
-                        atm.Deposit(accountInfo, amount);
+                        transactionLogic.Deposit(accountInfo, amount);
                     }
                     else
                     {
@@ -84,7 +84,7 @@ namespace FabrieBank
                             Balance = amount
                         };
 
-                        atm.Withdraw(accountInfo, amount);
+                        transactionLogic.Withdraw(accountInfo, amount);
                     }
                     else
                     {
@@ -106,7 +106,7 @@ namespace FabrieBank
         public void HavaleEFT(List<DTOAccountInfo> accountInfos)
         {
             Console.WriteLine("\nWhich account do you want to withdraw money from?");
-            transactionLogic.PrintAccountList(accountInfos);
+            bAccount.PrintAccountList(accountInfos);
 
             Console.Write("Source Account Index: ");
             int sourceAccountIndex = int.Parse(Console.ReadLine());
@@ -131,13 +131,13 @@ namespace FabrieBank
         public void TransferBetweenAccounts(List<DTOAccountInfo> accountInfos)
         {
             Console.WriteLine("\nWhich account do you want to withdraw money from?");
-            transactionLogic.PrintAccountList(accountInfos);
+            bAccount.PrintAccountList(accountInfos);
 
             Console.Write("Source Account Index: ");
             int sourceAccountIndex = int.Parse(Console.ReadLine());
 
             Console.WriteLine("\nWhich account do you want to transfer money to?");
-            transactionLogic.PrintAccountList(accountInfos);
+            bAccount.PrintAccountList(accountInfos);
 
             Console.Write("Target Account Index: ");
             int targetAccountIndex = int.Parse(Console.ReadLine());

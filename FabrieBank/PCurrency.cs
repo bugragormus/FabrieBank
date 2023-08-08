@@ -13,7 +13,6 @@ namespace FabrieBank
         public PCurrency()
         {
             currency = new SCurrency();
-            currencyTable = new CurrencyTable();
         }
 
         public void TodaysRates()
@@ -22,7 +21,7 @@ namespace FabrieBank
             {
                 var baseCurrency = EnumCurrencyTypes.CurrencyTypes.TRY;//TRY
                 var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency).Result;
-                currencyTable.DisplayCurrencyRatesTable(baseCurrency, currencyRates);
+                DisplayCurrencyRatesTable(baseCurrency, currencyRates);
             }
             catch (Exception ex)
             {
@@ -36,7 +35,7 @@ namespace FabrieBank
             try
             {
                 Console.WriteLine("Which date would you like to see the exchange rate information?");
-                Console.WriteLine("Please enter the date in DD/MM/YYYY format.");
+                Console.WriteLine("Please enter the date in DD.MM.YYYY format.");
                 string input = Console.ReadLine();
 
                 if (IsValidDate(input, out int day, out int month, out int year))
@@ -49,7 +48,7 @@ namespace FabrieBank
                     // Check if currency rates are available for the custom date
                     if (currencyRates.Count > 0)
                     {
-                        currencyTable.DisplayCurrencyRatesTable(baseCurrency, currencyRates);
+                        DisplayCurrencyRatesTable(baseCurrency, currencyRates);
                     }
                     else
                     {
@@ -88,15 +87,15 @@ namespace FabrieBank
 
         static bool IsValidDate(string input, out int day, out int month, out int year)
         {
-            string pattern = @"^\d{2}/\d{2}/\d{4}$"; // DD/AA/YYYY formatı için regex deseni
+            string pattern = @"^\d{2}\.\d{2}\.\d{4}$"; // DD.MM.YYYY formatı için regex deseni
             if (!Regex.IsMatch(input, pattern))
             {
-                Console.WriteLine("Invalid date format! Date (must be in DD/MM/YYYY format.)");
+                Console.WriteLine("Geçersiz tarih formatı! Tarih (DD.MM.YYYY formatında olmalıdır.)");
                 day = month = year = 0;
                 return false;
             }
 
-            string[] dateParts = input.Split('/');
+            string[] dateParts = input.Split('.');
             day = int.Parse(dateParts[0]);
             month = int.Parse(dateParts[1]);
             year = int.Parse(dateParts[2]);
@@ -104,12 +103,12 @@ namespace FabrieBank
             // Tarih geçerlilik kontrolü
             if (month < 1 || month > 12)
             {
-                Console.WriteLine("Invalid month! The month value must be between 1 and 12.");
+                Console.WriteLine("Geçersiz ay! Ay değeri 1 ile 12 arasında olmalıdır.");
                 return false;
             }
             else if (day < 1 || day > 31)
             {
-                Console.WriteLine("Invalid day! The day value must be between 1 and 31.");
+                Console.WriteLine("Geçersiz gün! Gün değeri 1 ile 31 arasında olmalıdır.");
                 return false;
             }
             else
@@ -121,18 +120,19 @@ namespace FabrieBank
                     bool isLeapYear = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
                     if (day > 29 || (day == 29 && !isLeapYear))
                     {
-                        Console.WriteLine("Invalid day! Invalid day value for February.");
+                        Console.WriteLine("Geçersiz gün! Şubat için geçersiz gün değeri.");
                         return false;
                     }
                 }
                 // Diğer aylar için gün sayısı kontrolü
                 else if (day > 30 && (month == 4 || month == 6 || month == 9 || month == 11))
                 {
-                    Console.WriteLine("Invalid day! Invalid day value for this month.");
+                    Console.WriteLine("Geçersiz gün! Bu ay için geçersiz gün değeri.");
                     return false;
                 }
             }
             return true;
         }
+
     }
 }

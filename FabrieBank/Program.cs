@@ -1,6 +1,6 @@
 ﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.BLL.Logic;
-using System.Security.Principal;
+using FabrieBank.DAL.Entity;
 
 namespace FabrieBank
 {
@@ -8,297 +8,312 @@ namespace FabrieBank
     {
         private static void Main()
         {
-            public void OpeningMenu()
+            string? ch;
+
+            for (; ; )
             {
-                string? ch;
+                Console.WriteLine("=====================================================================================");
+                Console.WriteLine("                                  Welcome To FabrieBank!                             ");
+                Console.WriteLine("=====================================================================================");
+                Console.WriteLine("1.Login           2.New Customer         3.ATM         4.Forgot Password       5.Exit");
+                Console.WriteLine("=====================================================================================");
+                Console.Write(">>> ");
+                ch = Console.ReadLine();
 
-                for (; ; )
+                DTOCustomer customer = new DTOCustomer();
+
+                switch (ch)
                 {
-                    Console.WriteLine("=====================================================================================");
-                    Console.WriteLine("                                  Welcome To FabrieBank!                             ");
-                    Console.WriteLine("=====================================================================================");
-                    Console.WriteLine("1.Login           2.New Customer         3.ATM         4.Forgot Password       5.Exit");
-                    Console.WriteLine("=====================================================================================");
-                    Console.Write(">>> ");
-                    ch = Console.ReadLine();
+                    case "1":
 
-                    switch (ch)
-                    {
-                        case "1":
+                        PCustomer pCustomer = new PCustomer(customer.CustomerId);
+                        pCustomer.LogInM();
+                        break;
 
-                            LogIn logIn = new LogIn();
-                            logIn.LogInM();
-                            break;
+                    case "2":
 
-                        case "2":
+                        PCustomer pCustomer1 = new PCustomer(customer.CustomerId);
+                        pCustomer1.CreateMusteriM();
+                        break;
 
-                            CreateMusteri createMusteri = new CreateMusteri();
-                            createMusteri.CreateMusteriM();
-                            break;
+                    case "3":
 
-                        case "3":
+                        //ATMMenu(customer.CustomerId);
+                        break;
 
-                            ATMMenu();
-                            break;
+                    case "4":
 
-                        case "4":
+                        PCustomer pCustomer2 = new PCustomer(customer.CustomerId);
+                        pCustomer2.ForgotPassword(customer);
+                        break;
 
-                            DTOCustomer customer = new DTOCustomer();
-                            LogIn forgot = new LogIn();
-                            forgot.ForgotPassword(customer);
-                            break;
+                    case "5":
 
-                        case "5":
+                        Environment.Exit(0);
+                        break;
 
-                            Environment.Exit(0);
-                            break;
+                    default:
 
-                        default:
-
-                            Console.WriteLine("Invalid Choice!");
-                            break;
-                    }
+                        Console.WriteLine("Invalid Choice!");
+                        break;
                 }
             }
+        }
 
-            public void MainMenu(DTOCustomer customer)
+        public void MainMenu(DTOCustomer customer)
+        {
+            string? ch;
+
+            for (; ; )
             {
-                string? ch;
+                Console.WriteLine("=============================================================================================");
+                Console.WriteLine("                                         MAIN MENU                                           ");
+                Console.WriteLine("=============================================================================================");
+                Console.WriteLine("1.User Operations    2.Bank Accounts     3.Money Transfers     4. Currency Rates     5.Exit  ");
+                Console.WriteLine("=============================================================================================");
+                Console.Write(">>> ");
+                ch = Console.ReadLine();
+                Console.Clear();
 
-                for (; ; )
+                switch (ch)
                 {
-                    Console.WriteLine("=============================================================================================");
-                    Console.WriteLine("                                         MAIN MENU                                           ");
-                    Console.WriteLine("=============================================================================================");
-                    Console.WriteLine("1.User Operations    2.Bank Accounts     3.Money Transfers     4. Currency Rates     5.Exit  ");
-                    Console.WriteLine("=============================================================================================");
-                    Console.Write(">>> ");
-                    ch = Console.ReadLine();
-                    Console.Clear();
+                    case "1":
 
-                    switch (ch)
-                    {
-                        case "1":
+                        CustomerMenu(customer);
+                        break;
 
-                            CustomerMenu(customer);
-                            break;
+                    case "2":
 
-                        case "2":
+                        AccountMenu(customer);
+                        break;
 
-                            AccountMenu(customer);
-                            break;
+                    case "3":
 
-                        case "3":
+                        TransferMenu(customer.CustomerId);
+                        break;
 
-                            TransferMenu();
-                            break;
+                    case "4":
 
-                        case "4":
+                        CurrencyMenu();
+                        break;
 
-                            CurrencyMenu();
-                            break;
+                    case "5":
 
-                        case "5":
+                        Environment.Exit(0);
+                        break;
 
-                            Environment.Exit(0);
-                            break;
+                    default:
 
-                        default:
-
-                            Console.WriteLine("Invalid Choice!");
-                            break;
-                    }
+                        Console.WriteLine("Invalid Choice!");
+                        break;
                 }
             }
+        }
 
-            public void AccountMenu(DTOCustomer customer)
+        public void AccountMenu(DTOCustomer customer)
+        {
+            string? ch;
+
+            for (; ; )
             {
-                string? ch;
-
-                for (; ; )
+                Console.WriteLine("=====================================================================");
+                Console.WriteLine("1.New Account    2.Show Accounts     3.Delete Account    4.Upper Menu");
+                Console.WriteLine("=====================================================================");
+                Console.Write(">>> ");
+                ch = Console.ReadLine();
+                switch (ch)
                 {
-                    Console.WriteLine("=====================================================================");
-                    Console.WriteLine("1.New Account    2.Show Accounts     3.Delete Account    4.Upper Menu");
-                    Console.WriteLine("=====================================================================");
-                    Console.Write(">>> ");
-                    ch = Console.ReadLine();
-                    switch (ch)
-                    {
-                        case "1":
+                    case "1":
 
-                            CreateAccount createAccount = new CreateAccount();
-                            createAccount.CreateAccountM(customer);
-                            break;
+                        PAccountInfo pAccountInfo1 = new PAccountInfo();
+                        pAccountInfo1.CreateAccount(customer);
+                        break;
 
-                        case "2":
+                    case "2":
 
-                            AccountInfo accountInfo = new AccountInfo();
-                            accountInfo.AccountInfoM(customer);
-                            break;
+                        PAccountInfo pAccountInfo = new PAccountInfo();
+                        pAccountInfo.AccountInfo(customer);
+                        break;
 
-                        case "3":
+                    case "3":
 
-                            BAccount accountLogic = new BAccount();
-                            accountLogic.DeleteAccount(customer);
-                            break;
+                        BAccount accountLogic = new BAccount();
+                        accountLogic.DeleteAccount(customer);
+                        break;
 
-                        case "4":
+                    case "4":
 
-                            MainMenu(customer);
-                            break;
+                        MainMenu(customer);
+                        break;
 
-                        default:
+                    default:
 
-                            Console.WriteLine("Invalid Choice!");
-                            break;
-                    }
+                        Console.WriteLine("Invalid Choice!");
+                        break;
                 }
             }
+        }
 
-            public void ATMMenu()
+        public void ATMMenu(int customerId)
+        {
+            string choice;
+
+            do
             {
-                string choice;
+                Console.WriteLine("\n==============================");
+                Console.WriteLine("ATM TRANSACTIONS");
+                Console.WriteLine("==============================");
+                Console.WriteLine("1. Deposit");
+                Console.WriteLine("2. Withdraw");
+                Console.WriteLine("3. Back to Main Menu");
+                Console.WriteLine("==============================");
+                Console.Write("Make your choice (1-3): ");
+                choice = Console.ReadLine();
 
-                do
+                switch (choice)
                 {
-                    Console.WriteLine("\n==============================");
-                    Console.WriteLine("ATM TRANSACTIONS");
-                    Console.WriteLine("==============================");
-                    Console.WriteLine("1. Deposit");
-                    Console.WriteLine("2. Withdraw");
-                    Console.WriteLine("3. Back to Main Menu");
-                    Console.WriteLine("==============================");
-                    Console.Write("Make your choice (1-3): ");
-                    choice = Console.ReadLine();
+                    case "1":
+                        PTransaction pTransaction = new PTransaction(customerId);
+                        pTransaction.Deposit();
+                        break;
+                    case "2":
+                        PTransaction pTransaction1 = new PTransaction(customerId);
+                        pTransaction1.Withdraw();
+                        break;
+                    case "3":
+                        Console.WriteLine("Checked out from ATM.");
+                        break;
+                    default:
+                        Console.WriteLine("Invalid selection. Try again.");
+                        break;
+                }
+            } while (choice != "3");
+        }
 
-                    switch (choice)
-                    {
-                        case "1":
-                            Deposit();
-                            break;
-                        case "2":
-                            Withdraw();
-                            break;
-                        case "3":
-                            Console.WriteLine("Checked out from ATM.");
-                            break;
-                        default:
-                            Console.WriteLine("Invalid selection. Try again.");
-                            break;
-                    }
-                } while (choice != "3");
-            }
-
-            public void CurrencyMenu()
+        public void CurrencyMenu()
+        {
+            string choice;
+            do
             {
-                string choice;
-                do
+                Console.WriteLine("\n==============================");
+                Console.WriteLine("CURRENCY RATES");
+                Console.WriteLine("==============================");
+                Console.WriteLine("1. Todays Rates");
+                Console.WriteLine("2. Another Days Rates");
+                Console.WriteLine("3. Upper Menu");
+                Console.WriteLine("==============================");
+                Console.Write("Make a choice (1-3): ");
+                choice = Console.ReadLine();
+
+                switch (choice)
                 {
-                    Console.WriteLine("\n==============================");
-                    Console.WriteLine("CURRENCY RATES");
-                    Console.WriteLine("==============================");
-                    Console.WriteLine("1. Todays Rates");
-                    Console.WriteLine("2. Another Days Rates");
-                    Console.WriteLine("3. Upper Menu");
-                    Console.WriteLine("==============================");
-                    Console.Write("Make a choice (1-3): ");
-                    choice = Console.ReadLine();
+                    case "1":
+                        PCurrency pCurrency = new PCurrency();
+                        pCurrency.TodaysRates();
+                        break;
+                    case "2":
+                        PCurrency pCurrency1 = new PCurrency();
+                        pCurrency1.CustomDateRates();
+                        break;
+                    case "3":
+                        Console.WriteLine("\nExited from Currency Rates.\n");
+                        break;
+                    default:
+                        Console.WriteLine("\nInvalid selection. Try again.\n");
+                        break;
+                }
+            } while (choice != "3");
+        }
 
-                    switch (choice)
-                    {
-                        case "1":
-                            TodaysRates();
-                            break;
-                        case "2":
-                            CustomDateRates();
-                            break;
-                        case "3":
-                            Console.WriteLine("\nExited from Currency Rates.\n");
-                            break;
-                        default:
-                            Console.WriteLine("\nInvalid selection. Try again.\n");
-                            break;
-                    }
-                } while (choice != "3");
-            }
+        public void CustomerMenu(DTOCustomer customer)
+        {
+            string choice;
 
-            public void CustomerMenu(DTOCustomer customer)
+            do
             {
-                string choice;
+                Console.WriteLine("==============================");
+                Console.WriteLine("USER OPERATIONS");
+                Console.WriteLine("==============================");
+                Console.WriteLine("1. View Personal Information");
+                Console.WriteLine("2. Update Personal Information");
+                Console.WriteLine("3. Change Password");
+                Console.WriteLine("4. Back to Main Menu");
+                Console.WriteLine("==============================");
+                Console.Write("Make your pick (1-4): ");
+                choice = Console.ReadLine();
 
-                do
+                switch (choice)
                 {
-                    Console.WriteLine("==============================");
-                    Console.WriteLine("USER OPERATIONS");
-                    Console.WriteLine("==============================");
-                    Console.WriteLine("1. View Personal Information");
-                    Console.WriteLine("2. Update Personal Information");
-                    Console.WriteLine("3. Change Password");
-                    Console.WriteLine("4. Back to Main Menu");
-                    Console.WriteLine("==============================");
-                    Console.Write("Make your pick (1-4): ");
-                    choice = Console.ReadLine();
+                    case "1":
+                        PCustomer pCustomer2 = new PCustomer(customer.CustomerId);
+                        pCustomer2.PersonelInfoM(customer);
+                        break;
+                    case "2":
+                        PCustomer pCustomer1 = new PCustomer(customer.CustomerId);
+                        pCustomer1.UpdatePersonelInfo(customer);
+                        break;
+                    case "3":
+                        PCustomer pCustomer = new PCustomer(customer.CustomerId);
+                        pCustomer.ChangePassword(customer);
+                        break;
+                    case "4":
+                        Console.WriteLine("\nExited from User Operations.\n");
+                        break;
+                    default:
+                        Console.WriteLine("\nInvalid selection. Try again.\n");
+                        break;
+                }
+            } while (choice != "4");
+        }
 
-                    switch (choice)
-                    {
-                        case "1":
-                            PersonelInfo personelInfo = new PersonelInfo();
-                            personelInfo.PersonelInfoM(customer);
-                            break;
-                        case "2":
-                            UpdatePersonelInfo(customer);
-                            break;
-                        case "3":
-                            ChangePassword(customer);
-                            break;
-                        case "4":
-                            Console.WriteLine("\nExited from User Operations.\n");
-                            break;
-                        default:
-                            Console.WriteLine("\nInvalid selection. Try again.\n");
-                            break;
-                    }
-                } while (choice != "4");
-            }
-
-            public void TransferMenu()
+        public void TransferMenu(int customerId)
+        {
+            DTOAccountInfo dTOAccount = new DTOAccountInfo()
             {
-                DTOAccountInfo dTOAccount = new DTOAccountInfo()
-                {
-                    CustomerId = customerId
-                };
-                List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
+                CustomerId = customerId
+            };
 
-                string choice;
-                do
-                {
-                    Console.WriteLine("\n==============================");
-                    Console.WriteLine("MONEY TRANSFERS");
-                    Console.WriteLine("==============================");
-                    Console.WriteLine("1. Transfer Between Accounts");
-                    Console.WriteLine("2. To Another Account Havale/EFT");
-                    Console.WriteLine("3. Back to Main Menu");
-                    Console.WriteLine("==============================");
-                    Console.Write("Make your choice (1-3): ");
-                    choice = Console.ReadLine();
+            EAccountInfo eAccount = new EAccountInfo();
+            List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
-                    switch (choice)
-                    {
-                        case "1":
-                            TransferBetweenAccounts(accountInfos);
-                            break;
-                        case "2":
-                            HavaleEFT(accountInfos);
-                            break;
-                        case "3":
-                            Console.WriteLine("Exited from money transfers");
-                            break;
-                        default:
-                            Console.WriteLine("Invalid selection. Try again.");
-                            break;
-                    }
-                } while (choice != "3");
-            }
+            string choice;
+            do
+            {
+                Console.WriteLine("\n==============================");
+                Console.WriteLine("MONEY TRANSFERS");
+                Console.WriteLine("==============================");
+                Console.WriteLine("1. Transfer Between Accounts");
+                Console.WriteLine("2. To Another Account Havale/EFT");
+                Console.WriteLine("3. Back to Main Menu");
+                Console.WriteLine("==============================");
+                Console.Write("Make your choice (1-3): ");
+                choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+
+                        PTransaction pTransaction = new PTransaction(customerId);
+                        pTransaction.TransferBetweenAccounts(accountInfos);
+                        break;
+
+                    case "2":
+
+                        PTransaction pTransaction1 = new PTransaction(customerId);
+                        pTransaction1.HavaleEFT(accountInfos);
+                        break;
+
+                    case "3":
+
+                        Console.WriteLine("Exited from money transfers");
+                        break;
+
+                    default:
+
+                        Console.WriteLine("Invalid selection. Try again.");
+                        break;
+                }
+            } while (choice != "3");
         }
     }
 }

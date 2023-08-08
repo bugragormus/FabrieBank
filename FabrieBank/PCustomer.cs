@@ -112,8 +112,7 @@ namespace FabrieBank
                     Email = customerEmail
                 };
 
-                ECustomer createCustomerDB = new ECustomer();
-                createCustomerDB.CreateCustomer(customer);
+                bCustomer.CreateCustomer(customer);
             }
             catch (Exception ex)
             {

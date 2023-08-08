@@ -45,8 +45,8 @@ namespace FabrieBank
                     AccountName = accountName
                 };
 
-                CreateAccountDB createAccountDB = new CreateAccountDB();
-                createAccountDB.CreateAccount(accountInfo);
+                EAccountInfo eAccount = new EAccountInfo();
+                eAccount.CreateAccount(accountInfo);
             }
             catch (Exception ex)
             {
