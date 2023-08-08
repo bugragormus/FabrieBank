@@ -155,7 +155,7 @@ namespace FabrieBank.DAL
         /// </summary>
         /// <param name="rawData"></param>
         /// <returns></returns>
-        public static string ComputeSha256Hash(string rawData)
+        public static string ComputeHash(string rawData)
         {
             string salt = "FabrieBankPasswordSafety";
 

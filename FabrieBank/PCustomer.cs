@@ -62,7 +62,7 @@ namespace FabrieBank
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
 
-                string hashedPassword = DataAccessLayer.ComputeSha256Hash(customerPassword.ToString());
+                string hashedPassword = DataAccessLayer.ComputeHash(customerPassword.ToString());
 
                 static string GetMaskedInput()
                 {
@@ -147,7 +147,7 @@ namespace FabrieBank
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
 
-                string hashedPassword = DataAccessLayer.ComputeSha256Hash(password.ToString());
+                string hashedPassword = DataAccessLayer.ComputeHash(password.ToString());
 
                 static string GetMaskedInput()
                 {
@@ -282,7 +282,7 @@ namespace FabrieBank
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
 
-                string currentHashedPassword = DataAccessLayer.ComputeSha256Hash(currentPassword.ToString());
+                string currentHashedPassword = DataAccessLayer.ComputeHash(currentPassword.ToString());
 
                 while (dTOCustomer.Password != currentHashedPassword)
                 {
@@ -302,7 +302,7 @@ namespace FabrieBank
                     Console.WriteLine("Invalid password. Please enter a 4-digit password:");
                 }
 
-                string newHashedPassword = DataAccessLayer.ComputeSha256Hash(newPassword.ToString());
+                string newHashedPassword = DataAccessLayer.ComputeHash(newPassword.ToString());
 
                 while (newHashedPassword == currentHashedPassword)
                 {

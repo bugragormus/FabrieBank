@@ -85,7 +85,7 @@ namespace FabrieBank.BLL.Logic
         public bool ForgotPassword(DTOCustomer customer, string email)
         {
             int temporaryPassword = GenerateTemporaryPassword();
-            string hashedPassword = DataAccessLayer.ComputeSha256Hash(temporaryPassword.ToString());
+            string hashedPassword = DataAccessLayer.ComputeHash(temporaryPassword.ToString());
             customer = eCustomer.ReadCustomer(customer);
 
             if (customer.Email != email)
