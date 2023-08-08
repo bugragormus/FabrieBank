@@ -152,20 +152,27 @@ namespace FabrieBank.DAL
 
         public static string ComputeSha256Hash(string rawData)
         {
+            // Use a deterministic salt (replace with your own salt value)
+            string salt = "FabrieBankPasswordSafety";
+
+            // Combine the password and salt
+            byte[] combinedBytes = Encoding.UTF8.GetBytes(rawData + salt);
+
             // Create a SHA256
             using (SHA256 sha256Hash = SHA256.Create())
             {
                 // ComputeHash - returns byte array
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+                byte[] hashBytes = sha256Hash.ComputeHash(combinedBytes);
 
                 // Convert byte array to a string
                 StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
+                for (int i = 0; i < hashBytes.Length; i++)
                 {
-                    builder.Append(bytes[i].ToString("x2"));
+                    builder.Append(hashBytes[i].ToString("x2"));
                 }
                 return builder.ToString();
             }
         }
+
     }
 }
