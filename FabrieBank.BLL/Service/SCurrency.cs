@@ -38,7 +38,7 @@ namespace FabrieBank.Services
                             continue; // Skip if base currency is the same as the target currency
                         }
 
-                        string currencyCode = targetCurrency.ToString();
+                        EnumCurrencyTypes.CurrencyTypes currencyCode = targetCurrency;
                         string xpath = $"Tarih_Date/Currency[@Kod='{currencyCode}']";
 
                         XmlNode node = xmlDoc.SelectSingleNode(xpath);
@@ -59,7 +59,7 @@ namespace FabrieBank.Services
                             double forexSellingRate = Convert.ToDouble(node["ForexSelling"].InnerText, CultureInfo.GetCultureInfo("en-US"));
                             currency.ForexSellingRate = (decimal)forexSellingRate;
 
-                            currencyRates.Add(currencyCode, currency);
+                            currencyRates.Add(currencyCode.ToString(), currency);
                         }
                         else
                         {
@@ -106,7 +106,7 @@ namespace FabrieBank.Services
                             continue; // Skip if base currency is the same as the target currency
                         }
 
-                        string currencyCode = targetCurrency.ToString();
+                        EnumCurrencyTypes.CurrencyTypes currencyCode = targetCurrency;
                         string xpath = $"Tarih_Date/Currency[@Kod='{currencyCode}']";
 
                         XmlNode node = xmlDoc.SelectSingleNode(xpath);
@@ -127,7 +127,7 @@ namespace FabrieBank.Services
                             double forexSellingRate = Convert.ToDouble(node["ForexSelling"].InnerText, CultureInfo.GetCultureInfo("en-US"));
                             currency.ForexSellingRate = (decimal)forexSellingRate;
 
-                            currencyRates.Add(currencyCode, currency);
+                            currencyRates.Add(currencyCode.ToString(), currency);
                         }
                         else
                         {

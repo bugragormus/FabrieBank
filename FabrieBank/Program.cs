@@ -222,12 +222,12 @@ namespace FabrieBank
                         pCurrency1.CustomDateRates();
                         break;
                     case "3":
-                        PCurrency pCurrency2 = new PCurrency();
-                        pCurrency2.ExchangeBuying(customer);
+                        PTransaction pTransaction = new PTransaction(customer.CustomerId);
+                        pTransaction.ExchangeBuying(customer);
                         break;
                     case "4":
-                        PCurrency pCurrency3 = new PCurrency();
-                        pCurrency3.ExchangeSelling(customer);
+                        PTransaction pTransaction1 = new PTransaction(customer.CustomerId);
+                        pTransaction1.ExchangeSelling(customer);
                         break;
                     case "5":
                         Console.WriteLine("\nExited from Currency Rates.\n");

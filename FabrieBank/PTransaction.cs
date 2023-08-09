@@ -1,6 +1,9 @@
 ﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
 using FabrieBank.BLL.Logic;
+using FabrieBank.DAL.Common.Enums;
+using FabrieBank.Services;
+using System.Security.Principal;
 
 namespace FabrieBank
 {
@@ -9,12 +12,20 @@ namespace FabrieBank
         private int customerId;
         private BTransaction transactionLogic;
         private BAccount bAccount;
+        private readonly SCurrency currency;
+        private EnumCurrencyTypes.CurrencyTypes baseCurrency;
+        private EAccountInfo eAccount;
+        private PCurrency pCurrency;
 
         public PTransaction(int customerId)
         {
             this.customerId = customerId;
             transactionLogic = new BTransaction();
             bAccount = new BAccount();
+            currency = new SCurrency();
+            baseCurrency = EnumCurrencyTypes.CurrencyTypes.TRY;
+            eAccount = new EAccountInfo();
+            pCurrency = new PCurrency();
         }
 
         public void Deposit()
@@ -153,6 +164,112 @@ namespace FabrieBank
             };
 
             transactionLogic.TransferBetweenAccounts(customerId, transfer);
+        }
+
+        public void ExchangeBuying(DTOCustomer customer)
+        {
+            try
+            {
+                var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency).Result;
+                List<DTOCurrencyRate> dTOCurrencyRates = pCurrency.GetCurrencyRates(currencyRates);
+
+                if (dTOCurrencyRates.Count > 0)
+                {
+                    Console.WriteLine("\nBanknote Selling Rate for;  ");
+                    for (int i = 0; i < dTOCurrencyRates.Count; i++)
+                    {
+                        decimal banknoteSellingRate = dTOCurrencyRates[i].BanknoteSellingRate;
+                        EnumCurrencyTypes.CurrencyTypes currencyType = dTOCurrencyRates[i].CurrencyCode;
+                        Console.WriteLine($"\n[{i}] {currencyType}: {banknoteSellingRate}");
+                    }
+                    Console.WriteLine("What type of currency would you like to trade?");
+                    Console.Write(">>> ");
+                    int exchange = int.Parse(Console.ReadLine());
+                    decimal exchangeRate = dTOCurrencyRates[exchange].BanknoteSellingRate;
+                    EnumCurrencyTypes.CurrencyTypes exchangeType = dTOCurrencyRates[exchange].CurrencyCode;
+
+                    DTOAccountInfo dTOAccounts = new DTOAccountInfo()
+                    {
+                        CustomerId = customer.CustomerId,
+                        CurrencyType = (int)baseCurrency
+                    };
+
+                    List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccounts);
+
+                    Console.WriteLine("\nFrom which account would you like to withdraw the money?\n");
+                    bAccount.PrintAccountList(accountInfos);
+
+                    Console.Write("Account Index: ");
+                    int withdrawAccIndex = int.Parse(Console.ReadLine());
+
+                    if (withdrawAccIndex >= 0 && withdrawAccIndex < accountInfos.Count)
+                    {
+                        long withdrawAccNo = accountInfos[withdrawAccIndex].AccountNo;
+                        decimal withdrawAccBalance = accountInfos[withdrawAccIndex].Balance;
+
+                        if (withdrawAccBalance != 0)
+                        {
+                            DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                            {
+                                CustomerId = customer.CustomerId,
+                                CurrencyType = (int)exchangeType
+                            };
+
+                            List<DTOAccountInfo> accountInfo = eAccount.ReadListAccountInfo(dTOAccount);
+
+                            Console.WriteLine("\nFrom which account would you like to withdraw the money?\n");
+                            bAccount.PrintAccountList(accountInfo);
+
+                            Console.Write("Account Index: ");
+                            int depositAccIndex = int.Parse(Console.ReadLine());
+
+                            if (depositAccIndex >= 0 && depositAccIndex < accountInfos.Count)
+                            {
+                                long depositAccNo = accountInfos[depositAccIndex].AccountNo;
+                                decimal depositAccBalance = accountInfos[depositAccIndex].Balance;
+
+                                Console.WriteLine("\nAmount: \n");
+                                decimal amount = int.Parse(Console.ReadLine());
+
+                                DTOExchange dTOExchange = new DTOExchange()
+                                {
+                                    ExchangeRate = exchangeRate,
+                                    CurrencyType = exchangeType,
+                                    SourceAccountNo = withdrawAccNo,
+                                    SourceAccountBalance = withdrawAccBalance,
+                                    TargetAccountNo = depositAccNo,
+                                    TargetAccountBalance = depositAccBalance,
+                                    Amount = amount
+                                };
+
+                                transactionLogic.ExchangeBuying(dTOExchange);
+                            }
+                            else
+                            {
+                                Console.WriteLine("No.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Insufficient balance.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No currency rates available.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                EErrorLogger errorLogger = new EErrorLogger();
+                errorLogger.LogAndHandleError(ex);
+            }
+        }
+
+        public void ExchangeSelling(DTOCustomer customer)
+        {
+
         }
     }
 }
