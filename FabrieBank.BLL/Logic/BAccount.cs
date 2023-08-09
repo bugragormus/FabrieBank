@@ -136,6 +136,13 @@ namespace FabrieBank.BLL.Logic
 
                 if (oldBalance < movement.Amount)
                 {
+                    DTOAccountInfo dTOAccountss = new DTOAccountInfo()
+                    {
+                        AccountNo = movement.TargetAccountNo
+                    };
+
+                    accountInfo = eAccount.ReadAccountInfo(dTOAccountss);
+
                     // Log the failed transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
@@ -146,6 +153,8 @@ namespace FabrieBank.BLL.Logic
                         TransferAmount = movement.Amount,
                         SourceOldBalance = oldBalance,
                         SourceNewBalance = oldBalance,
+                        TargetOldBalance = accountInfo.Balance,
+                        TargetNewBalance = accountInfo.Balance,
                         Timestamp = DateTime.Now
                     };
                     dataAccessLayer.LogTransaction(transactionLog);
@@ -190,6 +199,8 @@ namespace FabrieBank.BLL.Logic
                         TransferAmount = movement.Amount,
                         SourceOldBalance = oldBalance,
                         SourceNewBalance = newBalance,
+                        TargetOldBalance = dTOAccount.Balance,
+                        TargetNewBalance = dTOAccount.Balance + movement.Amount,
                         Timestamp = DateTime.Now
                     };
 
@@ -209,6 +220,8 @@ namespace FabrieBank.BLL.Logic
                         TransferAmount = movement.Amount,
                         SourceOldBalance = oldBalance,
                         SourceNewBalance = oldBalance,
+                        TargetOldBalance = dTOAccount.Balance,
+                        TargetNewBalance = dTOAccount.Balance,
                         Timestamp = DateTime.Now
                     };
 
@@ -260,9 +273,16 @@ namespace FabrieBank.BLL.Logic
                 decimal oldBalance = accountInfo.Balance;
                 decimal newBalance = oldBalance - movement.Amount - movement.Fee;
 
-                if (oldBalance < movement.Amount)
+                if (oldBalance < movement.Amount + movement.Fee)
                 {
                     Console.WriteLine("\nInsufficient balance. Transfer failed.");
+
+                    DTOAccountInfo dTOAccountsss = new DTOAccountInfo()
+                    {
+                        AccountNo = movement.TargetAccountNo
+                    };
+
+                    accountInfo = eAccount.ReadAccountInfo(dTOAccountsss);
 
                     // Log the failed transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
@@ -272,8 +292,10 @@ namespace FabrieBank.BLL.Logic
                         TransactionType = movement.Type,
                         TransactionStatus = EnumTransactionStatus.Failed,
                         TransferAmount = movement.Amount,
-                        TargetOldBalance = oldBalance,
-                        TargetNewBalance= oldBalance,
+                        SourceOldBalance = oldBalance,
+                        SourceNewBalance = oldBalance,
+                        TargetOldBalance = accountInfo.Balance,
+                        TargetNewBalance = accountInfo.Balance,
                         Timestamp = DateTime.Now
                     };
                     dataAccessLayer.LogTransaction(transactionLog);
@@ -287,65 +309,67 @@ namespace FabrieBank.BLL.Logic
                         AccountName = accountInfo.AccountName
                     };
                     eAccount.UpdateAccountInfo(updateSource);
-                }
 
-                DTOAccountInfo dTOAccount = new DTOAccountInfo()
-                {
-                    AccountNo = movement.TargetAccountNo
-                };
-
-                accountInfo = eAccount.ReadAccountInfo(dTOAccount);
-                if (accountInfo.CustomerId != 0)
-                {
-                    DTOAccountInfo updateTarget = new DTOAccountInfo()
+                    DTOAccountInfo dTOAccount = new DTOAccountInfo()
                     {
-                        AccountNo = movement.TargetAccountNo,
-                        Balance = accountInfo.Balance + movement.Amount,
-                        AccountName = accountInfo.AccountName
+                        AccountNo = movement.TargetAccountNo
                     };
 
-                    eAccount.UpdateAccountInfo(updateTarget);
-
-                    // Log the successful transfer
-                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                    accountInfo = eAccount.ReadAccountInfo(dTOAccount);
+                    if (accountInfo.CustomerId != 0)
                     {
-                        SourceAccountNumber = movement.SourceAccountNo,
-                        TargetAccountNumber = movement.TargetAccountNo,
-                        TransactionType = movement.Type,
-                        TransactionStatus = EnumTransactionStatus.Success,
-                        TransferAmount = movement.Amount,
-                        TargetOldBalance = oldBalance,
-                        TargetNewBalance = newBalance,
-                        Timestamp = DateTime.Now,
-                        TransactionFee = movement.Fee
-                    };
+                        DTOAccountInfo updateTarget = new DTOAccountInfo()
+                        {
+                            AccountNo = movement.TargetAccountNo,
+                            Balance = accountInfo.Balance + movement.Amount,
+                            AccountName = accountInfo.AccountName
+                        };
 
-                    dataAccessLayer.LogTransaction(transactionLog);
-                    Console.WriteLine("Havale Transaction Successfully Performed.");
+                        eAccount.UpdateAccountInfo(updateTarget);
 
-                    return true;
-                }
-                else
-                {
-                    Console.WriteLine("EFT Transaction Successfully Performed.");
+                        // Log the successful transfer
+                        DTOTransactionLog transactionLog = new DTOTransactionLog
+                        {
+                            SourceAccountNumber = movement.SourceAccountNo,
+                            TargetAccountNumber = movement.TargetAccountNo,
+                            TransactionType = movement.Type,
+                            TransactionStatus = EnumTransactionStatus.Success,
+                            TransferAmount = movement.Amount,
+                            SourceOldBalance = oldBalance,
+                            SourceNewBalance = newBalance,
+                            TargetOldBalance = accountInfo.Balance,
+                            TargetNewBalance = accountInfo.Balance + movement.Amount,
+                            Timestamp = DateTime.Now,
+                            TransactionFee = movement.Fee
+                        };
 
-                    // Log the successful transfer
-                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                        dataAccessLayer.LogTransaction(transactionLog);
+                        Console.WriteLine("Havale Transaction Successfully Performed.");
+
+                        return true;
+                    }
+                    else
                     {
-                        SourceAccountNumber = movement.SourceAccountNo,
-                        TargetAccountNumber = movement.TargetAccountNo,
-                        TransactionType = movement.Type,
-                        TransactionStatus = EnumTransactionStatus.Success,
-                        TransferAmount = movement.Amount,
-                        SourceOldBalance = oldBalance,
-                        SourceNewBalance = newBalance,
-                        Timestamp = DateTime.Now,
-                        TransactionFee = movement.Fee
-                    };
+                        Console.WriteLine("EFT Transaction Successfully Performed.");
 
-                    dataAccessLayer.LogTransaction(transactionLog);
+                        // Log the successful transfer
+                        DTOTransactionLog transactionLog = new DTOTransactionLog
+                        {
+                            SourceAccountNumber = movement.SourceAccountNo,
+                            TargetAccountNumber = movement.TargetAccountNo,
+                            TransactionType = movement.Type,
+                            TransactionStatus = EnumTransactionStatus.Success,
+                            TransferAmount = movement.Amount,
+                            SourceOldBalance = oldBalance,
+                            SourceNewBalance = newBalance,
+                            Timestamp = DateTime.Now,
+                            TransactionFee = movement.Fee
+                        };
 
-                    return true;
+                        dataAccessLayer.LogTransaction(transactionLog);
+
+                        return true;
+                    }
                 }
             }
             else

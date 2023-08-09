@@ -90,35 +90,55 @@ namespace FabrieBank.BLL.Logic
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
             if (accountInfo != null)
             {
-                decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
-                decimal newBalance = oldBalance - balance;
-
-                DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                if (accountInfo.Balance >= balance)
                 {
-                    AccountNo = accountInfo.AccountNo,
-                    Balance = newBalance,
-                    AccountName = accountInfo.AccountName
-                };
+                    decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                    decimal newBalance = oldBalance - balance;
 
-                eAccount.UpdateAccountInfo(dTOAccount);
+                    DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                    {
+                        AccountNo = accountInfo.AccountNo,
+                        Balance = newBalance,
+                        AccountName = accountInfo.AccountName
+                    };
 
-                // Log the successful deposit
-                DTOTransactionLog transactionLog = new DTOTransactionLog
+                    eAccount.UpdateAccountInfo(dTOAccount);
+
+                    // Log the successful deposit
+                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                    {
+                        TargetAccountNumber = accountInfo.AccountNo,
+                        TransactionType = EnumTransactionType.Withdrawal,
+                        TransactionStatus = EnumTransactionStatus.Success,
+                        TransferAmount = oldBalance - newBalance,
+                        TargetOldBalance = oldBalance,
+                        TargetNewBalance = newBalance,
+                        Timestamp = DateTime.Now
+                    };
+
+                    dataAccessLayer.LogTransaction(transactionLog);
+
+                    Console.WriteLine("\nWithdraw successful");
+                    Console.WriteLine($"Old balance: {oldBalance}");
+                    Console.WriteLine($"New Balance: {newBalance}");
+                }
+                else
                 {
-                    TargetAccountNumber = accountInfo.AccountNo,
-                    TransactionType = EnumTransactionType.Withdrawal,
-                    TransactionStatus = EnumTransactionStatus.Success,
-                    TransferAmount = oldBalance - newBalance,
-                    TargetOldBalance = oldBalance,
-                    TargetNewBalance = newBalance,
-                    Timestamp = DateTime.Now
-                };
+                    // Log the failed deposit
+                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                    {
+                        TargetAccountNumber = accountInfo.AccountNo,
+                        TransactionType = EnumTransactionType.Withdrawal,
+                        TransactionStatus = EnumTransactionStatus.Failed,
+                        TransferAmount = balance,
+                        TargetOldBalance = accountInfo.Balance,
+                        TargetNewBalance = accountInfo.Balance,
+                        Timestamp = DateTime.Now
+                    };
+                    dataAccessLayer.LogTransaction(transactionLog);
 
-                dataAccessLayer.LogTransaction(transactionLog);
-
-                Console.WriteLine("\nWithdraw successful");
-                Console.WriteLine($"Old balance: {oldBalance}");
-                Console.WriteLine($"New Balance: {newBalance}");
+                    Console.WriteLine("Insufficient balance.");
+                }
             }
             else
             {
@@ -156,6 +176,8 @@ namespace FabrieBank.BLL.Logic
                     long targetAccountNo = accountInfos[transfer.TargetAccountIndex].AccountNo;
                     int sourceCurrencyType = accountInfos[transfer.SourceAccountIndex].CurrencyType;
                     int targetCurrencyType = accountInfos[transfer.TargetAccountIndex].CurrencyType;
+                    decimal sourceAccountBalance = accountInfos[transfer.SourceAccountIndex].Balance;
+                    decimal targetAccountBalance = accountInfos[transfer.TargetAccountIndex].Balance;
 
                     DTOCurrencyMovement currencyMovement = new DTOCurrencyMovement
                     {
@@ -181,11 +203,43 @@ namespace FabrieBank.BLL.Logic
                         }
                         else
                         {
+                            // Log the failed transfer
+                            DTOTransactionLog transactionLog = new DTOTransactionLog
+                            {
+                                SourceAccountNumber = sourceAccountNo,
+                                TargetAccountNumber = targetAccountNo,
+                                TransactionType = EnumTransactionType.BOATransfer,
+                                TransactionStatus = EnumTransactionStatus.Failed,
+                                TransferAmount = transfer.Amount,
+                                SourceOldBalance = sourceAccountBalance,
+                                SourceNewBalance = sourceAccountBalance,
+                                TargetOldBalance = targetAccountBalance,
+                                TargetNewBalance = targetAccountBalance,
+                                Timestamp = DateTime.Now
+                            };
+                            dataAccessLayer.LogTransaction(transactionLog);
+
                             Console.WriteLine("Transfer Between Accounts transaction could not be done. Please try again.");
                         }
                     }
                     else
                     {
+                        // Log the failed transfer
+                        DTOTransactionLog transactionLog = new DTOTransactionLog
+                        {
+                            SourceAccountNumber = sourceAccountNo,
+                            TargetAccountNumber = targetAccountNo,
+                            TransactionType = EnumTransactionType.BOATransfer,
+                            TransactionStatus = EnumTransactionStatus.Failed,
+                            TransferAmount = transfer.Amount,
+                            SourceOldBalance = sourceAccountBalance,
+                            SourceNewBalance = sourceAccountBalance,
+                            TargetOldBalance = targetAccountBalance,
+                            TargetNewBalance = targetAccountBalance,
+                            Timestamp = DateTime.Now
+                        };
+                        dataAccessLayer.LogTransaction(transactionLog);
+
                         Console.WriteLine("Source account and target account currency types do not match. The transfer could not be performed.");
                     }
                 }
@@ -293,7 +347,7 @@ namespace FabrieBank.BLL.Logic
                         bool isOwnAccount = IsOwnAccount(accountInfos, transfer.TargetAccountNo);
                         if (isOwnAccount)
                         {
-                            Console.WriteLine("The target account is your own account. Remittance cannot be performed.");
+                            Console.WriteLine("The target account is your own account. Havale/EFT cannot be performed.");
                         }
                         else
                         {
@@ -363,9 +417,27 @@ namespace FabrieBank.BLL.Logic
                     };
 
                     dataAccessLayer.LogTransaction(transactionLog);
+
+                    Console.WriteLine($"\n{dTOExchange.CurrencyType} buying successful.");
                 }
                 else
                 {
+                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                    {
+                        SourceAccountNumber = dTOExchange.SourceAccountNo,
+                        TargetAccountNumber = dTOExchange.TargetAccountNo,
+                        TransactionType = EnumTransactionType.CurrencyBuying,
+                        TransactionStatus = EnumTransactionStatus.Failed,
+                        TransferAmount = dTOExchange.Amount,
+                        CurrencyRate = dTOExchange.ExchangeRate,
+                        SourceOldBalance = dTOExchange.SourceAccountBalance,
+                        SourceNewBalance = dTOExchange.SourceAccountBalance,
+                        TargetOldBalance = dTOExchange.TargetAccountBalance,
+                        TargetNewBalance = dTOExchange.TargetAccountBalance,
+                        Timestamp = DateTime.Now
+                    };
+                    dataAccessLayer.LogTransaction(transactionLog);
+
                     Console.WriteLine("Insufficient balance.");
                 }
 
