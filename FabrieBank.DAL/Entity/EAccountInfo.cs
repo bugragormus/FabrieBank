@@ -1,7 +1,5 @@
 ﻿using System.Data;
-using System.Security.Principal;
 using FabrieBank.DAL.Common.DTOs;
-using FabrieBank.DAL.Common.Enums;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -19,7 +17,7 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Hesap Tablosundan Tek Satır Döndürür
+        /// Read By Id SP caller for AccountInfo
         /// </summary>
         /// <param name="accountInfo"></param>
         /// <returns></returns>
@@ -74,7 +72,7 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Hesap Tablosundan Liste Döndürür
+        /// Read List SP caller for AccountInfo
         /// </summary>
         /// <param name="dTOAccount"></param>
         /// <returns></returns>
@@ -127,7 +125,7 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Hesap Tablosuna Veri Gönderir
+        /// Insert SP caller for AccountInfo
         /// </summary>
         /// <param name="dTOAccount"></param>
         /// <returns></returns>
@@ -166,7 +164,7 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Hesap Tablosundaki Verileri Yeniler
+        /// Update SP caller for AccountInfo
         /// </summary>
         /// <param name="dTOAccount"></param>
         /// <returns></returns>
@@ -204,9 +202,9 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Hesap Tablosundan Veri Siler
+        /// Delete SP caller for AccountInfo
         /// </summary>
-        /// <param name="hesapNo">Müşteri hesap no</param>
+        /// <param name="dTOAccount"></param>
         /// <returns></returns>
         public bool DeleteAccountInfo(DTOAccountInfo dTOAccount)
         {

@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using FabrieBank.BLL.Logic;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
@@ -16,6 +15,9 @@ namespace FabrieBank
             currency = new SCurrency();
         }
 
+        /// <summary>
+        /// Calls 'DisplayCurrencyRatesTable' for Todays Rates
+        /// </summary>
         public void TodaysRates()
         {
             try
@@ -31,6 +33,9 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Calls 'DisplayCurrencyRatesTable' for Custome Dates
+        /// </summary>
         public void CustomDateRates()
         {
             try
@@ -41,12 +46,10 @@ namespace FabrieBank
 
                 if (IsValidDate(input, out int day, out int month, out int year))
                 {
-                    var baseCurrency = EnumCurrencyTypes.CurrencyTypes.TRY;//TRY
+                    var baseCurrency = EnumCurrencyTypes.CurrencyTypes.TRY;
 
-                    // Fetch the currency rates for the custom date
                     var currencyRates = currency.GetCustomDateCurrencyRates(baseCurrency, year, month, day).Result;
 
-                    // Check if currency rates are available for the custom date
                     if (currencyRates.Count > 0)
                     {
                         DisplayCurrencyRatesTable(baseCurrency, currencyRates);
@@ -64,6 +67,11 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Saves exchange rates into DTOCurrencyRates
+        /// </summary>
+        /// <param name="currencyRates"></param>
+        /// <returns></returns>
         public List<DTOCurrencyRate> GetCurrencyRates(Dictionary<string, DTOCurrencyRate> currencyRates)
         {
             List<DTOCurrencyRate> dtoCurrencyRates = new List<DTOCurrencyRate>();
@@ -85,6 +93,11 @@ namespace FabrieBank
             return dtoCurrencyRates;
         }
 
+        /// <summary>
+        /// Prints exchange rate table
+        /// </summary>
+        /// <param name="baseCurrency"></param>
+        /// <param name="currencyRates"></param>
         public void DisplayCurrencyRatesTable(EnumCurrencyTypes.CurrencyTypes baseCurrency, Dictionary<string, DTOCurrencyRate> currencyRates)
         {
             try
@@ -107,6 +120,14 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Checks date format
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="day"></param>
+        /// <param name="month"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         static bool IsValidDate(string input, out int day, out int month, out int year)
         {
             string pattern = @"^\d{2}\.\d{2}\.\d{4}$"; // DD.MM.YYYY formatı için regex deseni
@@ -122,7 +143,6 @@ namespace FabrieBank
             month = int.Parse(dateParts[1]);
             year = int.Parse(dateParts[2]);
 
-            // Tarih geçerlilik kontrolü
             if (month < 1 || month > 12)
             {
                 Console.WriteLine("Geçersiz ay! Ay değeri 1 ile 12 arasında olmalıdır.");
@@ -135,10 +155,8 @@ namespace FabrieBank
             }
             else
             {
-                // Şubat ayı için özel kontrol
                 if (month == 2)
                 {
-                    // Şubat ayı 28 veya 29 gün çekebilir (artık yıl kontrolü yapmalıyız)
                     bool isLeapYear = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
                     if (day > 29 || (day == 29 && !isLeapYear))
                     {
@@ -146,7 +164,6 @@ namespace FabrieBank
                         return false;
                     }
                 }
-                // Diğer aylar için gün sayısı kontrolü
                 else if (day > 30 && (month == 4 || month == 6 || month == 9 || month == 11))
                 {
                     Console.WriteLine("Geçersiz gün! Bu ay için geçersiz gün değeri.");

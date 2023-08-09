@@ -3,7 +3,6 @@ using FabrieBank.DAL.Entity;
 using FabrieBank.BLL.Logic;
 using FabrieBank.DAL.Common.Enums;
 using FabrieBank.Services;
-using System.Security.Principal;
 
 namespace FabrieBank
 {
@@ -28,6 +27,9 @@ namespace FabrieBank
             pCurrency = new PCurrency();
         }
 
+        /// <summary>
+        /// Gets input for deposit operations
+        /// </summary>
         public void Deposit()
         {
             try
@@ -71,6 +73,9 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Gets input for withdraw operations
+        /// </summary>
         public void Withdraw()
         {
             try
@@ -114,6 +119,10 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Gets input for Havale/EFT operations
+        /// </summary>
+        /// <param name="accountInfos"></param>
         public void HavaleEFT(List<DTOAccountInfo> accountInfos)
         {
             Console.WriteLine("\nWhich account do you want to withdraw money from?");
@@ -139,6 +148,10 @@ namespace FabrieBank
             transactionLogic.HavaleEFT(customerId, transfer);
         }
 
+        /// <summary>
+        /// Gets input for BOA operations
+        /// </summary>
+        /// <param name="accountInfos"></param>
         public void TransferBetweenAccounts(List<DTOAccountInfo> accountInfos)
         {
             Console.WriteLine("\nWhich account do you want to withdraw money from?");
@@ -166,6 +179,10 @@ namespace FabrieBank
             transactionLogic.TransferBetweenAccounts(customerId, transfer);
         }
 
+        /// <summary>
+        /// Gets input for Exchange Buying operations
+        /// </summary>
+        /// <param name="customer"></param>
         public void ExchangeBuying(DTOCustomer customer)
         {
             try
@@ -286,9 +303,23 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// /// Gets input for Exchange Selling operations
+        /// </summary>
+        /// <param name="customer"></param>
         public void ExchangeSelling(DTOCustomer customer)
         {
+            try
+            {
 
+
+
+            }
+            catch (Exception ex)
+            {
+                EErrorLogger errorLogger = new EErrorLogger();
+                errorLogger.LogAndHandleError(ex);
+            }
         }
     }
 }

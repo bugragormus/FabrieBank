@@ -17,7 +17,7 @@ namespace FabrieBank.DAL
         }
 
         /// <summary>
-        /// DB Bağlanma
+        /// DB connection
         /// </summary>
         /// <returns></returns>
         public NpgsqlConnectionStringBuilder CallDB()
@@ -42,7 +42,7 @@ namespace FabrieBank.DAL
         }
 
         /// <summary>
-        /// EErrorLogger.cs
+        /// Calls Insert SP for error logging
         /// </summary>
         /// <param name="ex"></param>
         /// <param name="methodName"></param>
@@ -69,7 +69,7 @@ namespace FabrieBank.DAL
         }
 
         /// <summary>
-        /// TransactionLogDB.cs
+        /// Calls Insert SP for money transaction logging
         /// </summary>
         /// <param name="transactionLog"></param>
         public void LogTransaction(DTOTransactionLog transactionLog)
@@ -115,7 +115,7 @@ namespace FabrieBank.DAL
         }
 
         /// <summary>
-        /// TransactionFeeDB.cs
+        /// Gets transaction fees from DB
         /// </summary>
         /// <param name="transactionType"></param>
         /// <returns></returns>
@@ -156,7 +156,7 @@ namespace FabrieBank.DAL
         }
 
         /// <summary>
-        /// It hashes passwords
+        /// Password hashing algorithm
         /// </summary>
         /// <param name="rawData"></param>
         /// <returns></returns>

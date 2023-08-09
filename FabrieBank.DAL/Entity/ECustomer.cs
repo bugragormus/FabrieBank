@@ -17,7 +17,7 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Müşteri Tablosundan Tek Veri Döndürür
+        /// Read By Id SP caller for Customer
         /// </summary>
         /// <param name="customer"></param>
         /// <returns></returns>
@@ -74,9 +74,9 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Müşteri Tablosundan Liste Döndürür
+        /// Read List SP caller for Customer
         /// </summary>
-        /// <param name="dTOAccount"></param>
+        /// <param name="customer"></param>
         /// <returns></returns>
         public List<DTOCustomer> ReadListCustomer(DTOCustomer customer)
         {
@@ -129,9 +129,9 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Musteri_Bilgi Tablosuna Veri Gönderir
+        /// Insert SP caller for Customer
         /// </summary>
-        /// <param name="dTOAccount"></param>
+        /// <param name="customer"></param>
         /// <returns></returns>
         public bool InsertCustomer(DTOCustomer customer)
         {
@@ -170,9 +170,9 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Musteri_Bilgi Tablosundaki Verileri Yeniler
+        /// Update SP caller for Customer
         /// </summary>
-        /// <param name="dTOAccount"></param>
+        /// <param name="customer"></param>
         /// <returns></returns>
         public bool UpdateCustomer(DTOCustomer customer)
         {
@@ -211,9 +211,9 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Musteri_Bilgi Tablosundan Veri Siler
+        /// Delete SP caller for Customer
         /// </summary>
-        /// <param name="hesapNo">Müşteri hesap no</param>
+        /// <param name="customer"></param>
         /// <returns></returns>
         public bool DeleteCustomer(DTOCustomer customer)
         {

@@ -17,9 +17,9 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Dovizler Tablosundan Tek Veri Döndürür
+        /// Read By Id SP caller for Currencies
         /// </summary>
-        /// <param name="customer"></param>
+        /// <param name="currency"></param>
         /// <returns></returns>
         public DTOCurrency ReadCurrency(DTOCurrency currency)
         {
@@ -65,9 +65,9 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Dovizler Tablosundan Liste Döndürür
+        /// Read List SP caller for Currencies
         /// </summary>
-        /// <param name="dTOAccount"></param>
+        /// <param name="currency"></param>
         /// <returns></returns>
         public List<DTOCurrency> ReadListCurrency(DTOCurrency currency)
         {
@@ -112,9 +112,9 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Dovizler Tablosuna Veri Gönderir
+        /// Insert SP caller for Currencies
         /// </summary>
-        /// <param name="dTOAccount"></param>
+        /// <param name="currency"></param>
         /// <returns></returns>
         public bool InsertCurrency(DTOCurrency currency)
         {
@@ -149,9 +149,9 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Dovizler Tablosundaki Verileri Yeniler
+        /// Update SP caller for Currencies
         /// </summary>
-        /// <param name="dTOAccount"></param>
+        /// <param name="currency"></param>
         /// <returns></returns>
         public bool UpdateCurrency(DTOCurrency currency)
         {
@@ -186,9 +186,9 @@ namespace FabrieBank.DAL.Entity
         }
 
         /// <summary>
-        /// Dovizler Tablosundan Veri Siler
+        /// Delete SP caller for Currencies
         /// </summary>
-        /// <param name="hesapNo">Müşteri hesap no</param>
+        /// <param name="currency"></param>
         /// <returns></returns>
         public bool DeleteCurrency(DTOCurrency currency)
         {

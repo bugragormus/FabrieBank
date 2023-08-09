@@ -1,6 +1,4 @@
-﻿using System.Security.Principal;
-using FabrieBank.BLL.Service;
-using FabrieBank.DAL;
+﻿using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
@@ -21,7 +19,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Deposit B.L.
+        /// Money deposit process
         /// </summary>
         /// <param name="accountInfo"></param>
         /// <param name="balance"></param>
@@ -81,7 +79,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Withdraw B.L.
+        /// Money withdraw process
         /// </summary>
         /// <param name="accountInfo"></param>
         /// <param name="balance"></param>
@@ -160,6 +158,11 @@ namespace FabrieBank.BLL.Logic
             }
         }
 
+        /// <summary>
+        /// BOA process
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="transfer"></param>
         public void TransferBetweenAccounts(int customerId, DTOTransfer transfer)
         {
             try
@@ -255,6 +258,11 @@ namespace FabrieBank.BLL.Logic
             }
         }
 
+        /// <summary>
+        /// Havale/EFT process
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="transfer"></param>
         public void HavaleEFT(int customerId, DTOTransfer transfer)
         {
             try
@@ -372,6 +380,10 @@ namespace FabrieBank.BLL.Logic
             }
         }
 
+        /// <summary>
+        /// Exchange buying process
+        /// </summary>
+        /// <param name="dTOExchange"></param>
         public void ExchangeBuying(DTOExchange dTOExchange)
         {
             try
@@ -449,6 +461,12 @@ namespace FabrieBank.BLL.Logic
             }
         }
 
+        /// <summary>
+        /// Control for money transfers
+        /// </summary>
+        /// <param name="accountInfos"></param>
+        /// <param name="accountNo"></param>
+        /// <returns></returns>
         private bool IsOwnAccount(List<DTOAccountInfo> accountInfos, long accountNo)
         {
             foreach (DTOAccountInfo accountInfo in accountInfos)

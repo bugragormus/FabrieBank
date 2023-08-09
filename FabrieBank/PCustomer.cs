@@ -1,10 +1,7 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using FabrieBank.BLL.Logic;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
-using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank
@@ -20,6 +17,9 @@ namespace FabrieBank
             bCustomer = new BCustomer();
         }
 
+        /// <summary>
+        /// Gets input for customer creation
+        /// </summary>
         public void CreateCustomer()
         {
             try
@@ -127,6 +127,9 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Gets input for Login
+        /// </summary>
         public void LogIn()
         {
             try
@@ -206,6 +209,10 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Prints personel info
+        /// </summary>
+        /// <param name="customer"></param>
         public void PersonelInfo(DTOCustomer customer)
         {
             Console.Clear();
@@ -221,6 +228,10 @@ namespace FabrieBank
             Console.WriteLine("Email        :" + customer.Email);
         }
 
+        /// <summary>
+        /// Gets input for updating personel info
+        /// </summary>
+        /// <param name="dTOCustomer"></param>
         public void UpdatePersonelInfo(DTOCustomer dTOCustomer)
         {
             try
@@ -271,6 +282,10 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Gets input for updating password
+        /// </summary>
+        /// <param name="dTOCustomer"></param>
         public void ChangePassword(DTOCustomer dTOCustomer)
         {
             try
@@ -386,6 +401,10 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Gets input for forgotten password
+        /// </summary>
+        /// <param name="customer"></param>
         public void ForgotPassword(DTOCustomer customer)
         {
             Console.Write("TCKN: ");
@@ -409,6 +428,11 @@ namespace FabrieBank
             bCustomer.ForgotPassword(customer, email);
         }
 
+        /// <summary>
+        /// Email validation
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         private static bool IsValidEmail(string email)
         {
             string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";

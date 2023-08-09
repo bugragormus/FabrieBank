@@ -14,7 +14,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Müşteri Oluşturur
+        /// Customer creation process
         /// </summary>
         /// <param name="customer"></param>
         public void CreateCustomer(DTOCustomer customer)
@@ -34,7 +34,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Giriş işlemi yapar
+        /// Login process
         /// </summary>
         /// <param name="tckn"></param>
         /// <param name="password"></param>
@@ -54,7 +54,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// İletişim bilgileri güncelleme
+        /// Personel info updating process
         /// </summary>
         /// <param name="customer"></param>
         /// <returns></returns>
@@ -65,7 +65,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Şifre değiştirir
+        /// Password updating process
         /// </summary>
         /// <param name="customer"></param>
         /// <returns></returns>
@@ -76,11 +76,10 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Şifremi unuttum işlemleri
+        /// Forgotten password process
         /// </summary>
         /// <param name="customer"></param>
         /// <param name="email"></param>
-        /// <param name="temporaryPassword"></param>
         /// <returns></returns>
         public bool ForgotPassword(DTOCustomer customer, string email)
         {
@@ -112,7 +111,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Generates temp password
+        /// Generates temporary password for forgetting process
         /// </summary>
         /// <returns></returns>
         private int GenerateTemporaryPassword()

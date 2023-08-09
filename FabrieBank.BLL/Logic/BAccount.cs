@@ -62,8 +62,9 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Hesap Silme
+        /// Account deleting process
         /// </summary>
+        /// <param name="customer"></param>
         public void DeleteAccount(DTOCustomer customer)
         {
             DTOAccountInfo dTOAccounts = new DTOAccountInfo()
@@ -97,7 +98,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Prints customers accounts
+        /// Printing account list process
         /// </summary>
         /// <param name="accountInfos"></param>
         public void PrintAccountList(List<DTOAccountInfo> accountInfos)
@@ -121,7 +122,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// BOA B.L.
+        /// Money transfer between same persons accounts
         /// </summary>
         /// <param name="movement"></param>
         /// <param name="accountInfo"></param>
@@ -260,7 +261,7 @@ namespace FabrieBank.BLL.Logic
         }
 
         /// <summary>
-        /// Havale/EFT B.L.
+        /// Havale/EFT process
         /// </summary>
         /// <param name="movement"></param>
         /// <param name="accountInfo"></param>

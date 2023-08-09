@@ -13,6 +13,10 @@ namespace FabrieBank
             accountLogic = new BAccount();
         }
 
+        /// <summary>
+        /// It prints all accounts my customer_id
+        /// </summary>
+        /// <param name="customer"></param>
         public void AccountInfo(DTOCustomer customer)
         {
             Console.Clear();
@@ -25,6 +29,10 @@ namespace FabrieBank
             accountLogic.AccountList(customer);
         }
 
+        /// <summary>
+        /// Gets input from customer for creating accounts
+        /// </summary>
+        /// <param name="customer"></param>
         public void CreateAccount(DTOCustomer customer)
         {
             try

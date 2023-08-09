@@ -6,11 +6,11 @@ namespace FabrieBank
 {
     class Program
     {
+        /// <summary>
+        /// Main method
+        /// </summary>
         private static void Main()
         {
-            //PCurrency pCurrency = new PCurrency();
-            //pCurrency.GetRate();
-
             string? ch;
 
             for (; ; )
@@ -63,6 +63,10 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Opening menu
+        /// </summary>
+        /// <param name="customer"></param>
         public void MainMenu(DTOCustomer customer)
         {
             string? ch;
@@ -113,6 +117,10 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Menu for account operations
+        /// </summary>
+        /// <param name="customer"></param>
         public void AccountMenu(DTOCustomer customer)
         {
             string? ch;
@@ -157,6 +165,9 @@ namespace FabrieBank
             }
         }
 
+        /// <summary>
+        /// Menu for deposit and withdraw
+        /// </summary>
         public static void ATMMenu()
         {
             DTOCustomer customer = new DTOCustomer();
@@ -194,6 +205,10 @@ namespace FabrieBank
             } while (choice != "3");
         }
 
+        /// <summary>
+        /// Menu for currency operations
+        /// </summary>
+        /// <param name="customer"></param>
         public void CurrencyMenu(DTOCustomer customer)
         {
             string choice;
@@ -239,6 +254,10 @@ namespace FabrieBank
             } while (choice != "5");
         }
 
+        /// <summary>
+        /// Menu for customer operations
+        /// </summary>
+        /// <param name="customer"></param>
         public void CustomerMenu(DTOCustomer customer)
         {
             string choice;
@@ -280,6 +299,10 @@ namespace FabrieBank
             } while (choice != "4");
         }
 
+        /// <summary>
+        /// Menu for money transfers
+        /// </summary>
+        /// <param name="customerId"></param>
         public void TransferMenu(int customerId)
         {
             DTOAccountInfo dTOAccount = new DTOAccountInfo()
