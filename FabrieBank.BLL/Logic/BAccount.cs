@@ -139,13 +139,13 @@ namespace FabrieBank.BLL.Logic
                     // Log the failed transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = movement.SourceAccountNo,
+                        SourceAccountNumber = movement.SourceAccountNo,
                         TargetAccountNumber = movement.TargetAccountNo,
                         TransactionType = EnumTransactionType.BOATransfer,
                         TransactionStatus = EnumTransactionStatus.Failed,
-                        Amount = movement.Amount,
-                        OldBalance = oldBalance,
-                        NewBalance = oldBalance,
+                        TransferAmount = movement.Amount,
+                        SourceOldBalance = oldBalance,
+                        SourceNewBalance = oldBalance,
                         Timestamp = DateTime.Now
                     };
                     dataAccessLayer.LogTransaction(transactionLog);
@@ -183,13 +183,13 @@ namespace FabrieBank.BLL.Logic
                     // Log the successful transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = movement.SourceAccountNo,
+                        SourceAccountNumber = movement.SourceAccountNo,
                         TargetAccountNumber = movement.TargetAccountNo,
                         TransactionType = EnumTransactionType.BOATransfer,
                         TransactionStatus = EnumTransactionStatus.Success,
-                        Amount = movement.Amount,
-                        OldBalance = oldBalance,
-                        NewBalance = newBalance,
+                        TransferAmount = movement.Amount,
+                        SourceOldBalance = oldBalance,
+                        SourceNewBalance = newBalance,
                         Timestamp = DateTime.Now
                     };
 
@@ -202,13 +202,13 @@ namespace FabrieBank.BLL.Logic
                     // Log the failed transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = movement.SourceAccountNo,
+                        SourceAccountNumber = movement.SourceAccountNo,
                         TargetAccountNumber = movement.TargetAccountNo,
                         TransactionType = EnumTransactionType.BOATransfer,
                         TransactionStatus = EnumTransactionStatus.Failed,
-                        Amount = movement.Amount,
-                        OldBalance = oldBalance,
-                        NewBalance = oldBalance,
+                        TransferAmount = movement.Amount,
+                        SourceOldBalance = oldBalance,
+                        SourceNewBalance = oldBalance,
                         Timestamp = DateTime.Now
                     };
 
@@ -231,13 +231,13 @@ namespace FabrieBank.BLL.Logic
                 // Log the failed transfer
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
-                    AccountNumber = movement.SourceAccountNo,
+                    SourceAccountNumber = movement.SourceAccountNo,
                     TargetAccountNumber = movement.TargetAccountNo,
                     TransactionType = EnumTransactionType.BOATransfer,
                     TransactionStatus = EnumTransactionStatus.Failed,
-                    Amount = movement.Amount,
-                    OldBalance = accountInfo.Balance,
-                    NewBalance = accountInfo.Balance,
+                    TransferAmount = movement.Amount,
+                    SourceOldBalance = accountInfo.Balance,
+                    SourceNewBalance = accountInfo.Balance,
                     Timestamp = DateTime.Now
                 };
                 dataAccessLayer.LogTransaction(transactionLog);
@@ -267,13 +267,13 @@ namespace FabrieBank.BLL.Logic
                     // Log the failed transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = movement.SourceAccountNo,
+                        SourceAccountNumber = movement.SourceAccountNo,
                         TargetAccountNumber = movement.TargetAccountNo,
                         TransactionType = movement.Type,
                         TransactionStatus = EnumTransactionStatus.Failed,
-                        Amount = movement.Amount,
-                        OldBalance = oldBalance,
-                        NewBalance = oldBalance,
+                        TransferAmount = movement.Amount,
+                        TargetOldBalance = oldBalance,
+                        TargetNewBalance= oldBalance,
                         Timestamp = DateTime.Now
                     };
                     dataAccessLayer.LogTransaction(transactionLog);
@@ -309,13 +309,13 @@ namespace FabrieBank.BLL.Logic
                     // Log the successful transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = movement.SourceAccountNo,
+                        SourceAccountNumber = movement.SourceAccountNo,
                         TargetAccountNumber = movement.TargetAccountNo,
                         TransactionType = movement.Type,
                         TransactionStatus = EnumTransactionStatus.Success,
-                        Amount = movement.Amount,
-                        OldBalance = oldBalance,
-                        NewBalance = newBalance,
+                        TransferAmount = movement.Amount,
+                        TargetOldBalance = oldBalance,
+                        TargetNewBalance = newBalance,
                         Timestamp = DateTime.Now,
                         TransactionFee = movement.Fee
                     };
@@ -332,13 +332,13 @@ namespace FabrieBank.BLL.Logic
                     // Log the successful transfer
                     DTOTransactionLog transactionLog = new DTOTransactionLog
                     {
-                        AccountNumber = movement.SourceAccountNo,
+                        SourceAccountNumber = movement.SourceAccountNo,
                         TargetAccountNumber = movement.TargetAccountNo,
                         TransactionType = movement.Type,
                         TransactionStatus = EnumTransactionStatus.Success,
-                        Amount = movement.Amount,
-                        OldBalance = oldBalance,
-                        NewBalance = newBalance,
+                        TransferAmount = movement.Amount,
+                        SourceOldBalance = oldBalance,
+                        SourceNewBalance = newBalance,
                         Timestamp = DateTime.Now,
                         TransactionFee = movement.Fee
                     };
@@ -346,31 +346,6 @@ namespace FabrieBank.BLL.Logic
                     dataAccessLayer.LogTransaction(transactionLog);
 
                     return true;
-
-                    //// Log the failed transfer
-                    //DTOTransactionLog transactionLog = new DTOTransactionLog
-                    //{
-                    //    AccountNumber = hareket.KaynakHesapNo,
-                    //    TargetAccountNumber = hareket.HedefHesapNo,
-                    //    TransactionType = EnumTransactionType.BOATransfer,
-                    //    TransactionStatus = EnumTransactionStatus.Failed,
-                    //    Amount = hareket.Miktar,
-                    //    OldBalance = eskiBakiye,
-                    //    NewBalance = eskiBakiye,
-                    //    Timestamp = DateTime.Now
-                    //};
-
-                    //DTOAccountInfo updateKaynak = new DTOAccountInfo()
-                    //{
-                    //    HesapNo = hareket.KaynakHesapNo,
-                    //    Bakiye = eskiBakiye,
-                    //    HesapAdi = accountInfo.HesapAdi
-                    //};
-
-                    //dataAccessLayer.LogTransaction(transactionLog);
-                    //eAccount.UpdateAccountInfo(updateKaynak);
-
-                    //return false;
                 }
             }
             else

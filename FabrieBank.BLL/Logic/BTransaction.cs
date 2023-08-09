@@ -1,4 +1,6 @@
-﻿using FabrieBank.DAL;
+﻿using System.Security.Principal;
+using FabrieBank.BLL.Service;
+using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
@@ -43,13 +45,12 @@ namespace FabrieBank.BLL.Logic
                 // Log the successful deposit
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
-                    AccountNumber = accountInfo.AccountNo,
                     TargetAccountNumber = accountInfo.AccountNo,
                     TransactionType = EnumTransactionType.Deposit,
                     TransactionStatus = EnumTransactionStatus.Success,
-                    Amount = newBalance - oldBalance,
-                    OldBalance = oldBalance,
-                    NewBalance = newBalance,
+                    TransferAmount = newBalance - oldBalance,
+                    TargetOldBalance = oldBalance,
+                    TargetNewBalance = newBalance,
                     Timestamp = DateTime.Now
                 };
 
@@ -64,12 +65,12 @@ namespace FabrieBank.BLL.Logic
                 // Log the failed deposit
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
-                    AccountNumber = accountInfo.AccountNo,
+                    TargetAccountNumber = accountInfo.AccountNo,
                     TransactionType = EnumTransactionType.Deposit,
                     TransactionStatus = EnumTransactionStatus.Failed,
-                    Amount = balance,
-                    OldBalance = accountInfo.Balance,
-                    NewBalance = accountInfo.Balance,
+                    TransferAmount = balance,
+                    TargetOldBalance = accountInfo.Balance,
+                    TargetNewBalance = accountInfo.Balance,
                     Timestamp = DateTime.Now
                 };
 
@@ -104,13 +105,12 @@ namespace FabrieBank.BLL.Logic
                 // Log the successful deposit
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
-                    AccountNumber = accountInfo.AccountNo,
                     TargetAccountNumber = accountInfo.AccountNo,
-                    TransactionType = EnumTransactionType.Deposit,
+                    TransactionType = EnumTransactionType.Withdrawal,
                     TransactionStatus = EnumTransactionStatus.Success,
-                    Amount = oldBalance - newBalance,
-                    OldBalance = oldBalance,
-                    NewBalance = newBalance,
+                    TransferAmount = oldBalance - newBalance,
+                    TargetOldBalance = oldBalance,
+                    TargetNewBalance = newBalance,
                     Timestamp = DateTime.Now
                 };
 
@@ -125,12 +125,12 @@ namespace FabrieBank.BLL.Logic
                 // Log the failed deposit
                 DTOTransactionLog transactionLog = new DTOTransactionLog
                 {
-                    AccountNumber = accountInfo.AccountNo,
-                    TransactionType = EnumTransactionType.Deposit,
+                    TargetAccountNumber = accountInfo.AccountNo,
+                    TransactionType = EnumTransactionType.Withdrawal,
                     TransactionStatus = EnumTransactionStatus.Failed,
-                    Amount = balance,
-                    OldBalance = accountInfo.Balance,
-                    NewBalance = accountInfo.Balance,
+                    TransferAmount = balance,
+                    TargetOldBalance = accountInfo.Balance,
+                    TargetNewBalance = accountInfo.Balance,
                     Timestamp = DateTime.Now
                 };
 
@@ -322,8 +322,52 @@ namespace FabrieBank.BLL.Logic
         {
             try
             {
+                decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyFee);
+                decimal money = dTOExchange.Amount * (dTOExchange.ExchangeRate + (dTOExchange.ExchangeRate * 0.05M));
+                decimal sourceNewBalance = dTOExchange.SourceAccountBalance - money;
+                decimal targetNewBalance = dTOExchange.TargetAccountBalance + dTOExchange.Amount;
+                if (dTOExchange.SourceAccountBalance >= money)
+                {
+                    DTOAccountInfo sourceUpdate = new DTOAccountInfo()
+                    {
+                        AccountNo = dTOExchange.SourceAccountNo,
+                        Balance = sourceNewBalance,
+                        AccountName = dTOExchange.SourceAccountName
+                    };
 
+                    eAccount.UpdateAccountInfo(sourceUpdate);
 
+                    DTOAccountInfo targetUpdate = new DTOAccountInfo()
+                    {
+                        AccountNo = dTOExchange.TargetAccountNo,
+                        Balance = targetNewBalance,
+                        AccountName = dTOExchange.TargetAccountName
+                    };
+
+                    eAccount.UpdateAccountInfo(targetUpdate);
+
+                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                    {
+                        SourceAccountNumber = dTOExchange.SourceAccountNo,
+                        TargetAccountNumber = dTOExchange.TargetAccountNo,
+                        TransactionType = EnumTransactionType.CurrencyBuying,
+                        TransactionStatus = EnumTransactionStatus.Success,
+                        TransferAmount = dTOExchange.Amount,
+                        CurrencyRate = dTOExchange.ExchangeRate,
+                        SourceOldBalance = dTOExchange.SourceAccountBalance,
+                        SourceNewBalance = sourceNewBalance,
+                        TargetOldBalance = dTOExchange.TargetAccountBalance,
+                        TargetNewBalance = targetNewBalance,
+                        Timestamp = DateTime.Now,
+                        TransactionFee = transactionFee
+                    };
+
+                    dataAccessLayer.LogTransaction(transactionLog);
+                }
+                else
+                {
+                    Console.WriteLine("Insufficient balance.");
+                }
 
             }
             catch (Exception ex)
@@ -344,7 +388,5 @@ namespace FabrieBank.BLL.Logic
             }
             return false;
         }
-
-        
     }
 }

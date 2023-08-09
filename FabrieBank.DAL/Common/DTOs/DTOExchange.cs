@@ -12,6 +12,8 @@ namespace FabrieBank.DAL.Common.DTOs
 		public long TargetAccountNo { get; set; }
 		public decimal TargetAccountBalance { get; set; }
 		public decimal Amount { get; set; }
+		public string? SourceAccountName { get; set; }
+        public string? TargetAccountName { get; set; }
     }
 }
 

@@ -7,7 +7,7 @@
         BOATransfer = 3,
         Havale = 4,
         EFT = 5,
-        CurrenySell = 6,
-        CurrencyPurchase = 7,
+        CurrenySelling = 6,
+        CurrencyBuying = 7,
     }
 }
