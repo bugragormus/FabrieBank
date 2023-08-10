@@ -389,10 +389,91 @@ namespace FabrieBank.BLL.Logic
             try
             {
                 decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyFee);
-                decimal money = dTOExchange.Amount * (dTOExchange.ExchangeRate + (dTOExchange.ExchangeRate * 0.05M));
+                decimal money = dTOExchange.Amount * dTOExchange.ExchangeRate - transactionFee;
                 decimal sourceNewBalance = dTOExchange.SourceAccountBalance - money;
                 decimal targetNewBalance = dTOExchange.TargetAccountBalance + dTOExchange.Amount;
                 if (dTOExchange.SourceAccountBalance >= money)
+                {
+                    DTOAccountInfo sourceUpdate = new DTOAccountInfo()
+                    {
+                        AccountNo = dTOExchange.SourceAccountNo,
+                        Balance = sourceNewBalance,
+                        AccountName = dTOExchange.SourceAccountName
+                    };
+
+                    eAccount.UpdateAccountInfo(sourceUpdate);
+
+                    DTOAccountInfo targetUpdate = new DTOAccountInfo()
+                    {
+                        AccountNo = dTOExchange.TargetAccountNo,
+                        Balance = targetNewBalance,
+                        AccountName = dTOExchange.TargetAccountName
+                    };
+
+                    eAccount.UpdateAccountInfo(targetUpdate);
+
+                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                    {
+                        SourceAccountNumber = dTOExchange.SourceAccountNo,
+                        TargetAccountNumber = dTOExchange.TargetAccountNo,
+                        TransactionType = EnumTransactionType.CurrenySelling,
+                        TransactionStatus = EnumTransactionStatus.Success,
+                        TransferAmount = dTOExchange.Amount,
+                        CurrencyRate = dTOExchange.ExchangeRate,
+                        SourceOldBalance = dTOExchange.SourceAccountBalance,
+                        SourceNewBalance = sourceNewBalance,
+                        TargetOldBalance = dTOExchange.TargetAccountBalance,
+                        TargetNewBalance = targetNewBalance,
+                        Timestamp = DateTime.Now,
+                        TransactionFee = transactionFee
+                    };
+
+                    dataAccessLayer.LogTransaction(transactionLog);
+
+                    Console.WriteLine($"\n{dTOExchange.CurrencyType} buying successful.");
+                }
+                else
+                {
+                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                    {
+                        SourceAccountNumber = dTOExchange.SourceAccountNo,
+                        TargetAccountNumber = dTOExchange.TargetAccountNo,
+                        TransactionType = EnumTransactionType.CurrenySelling,
+                        TransactionStatus = EnumTransactionStatus.Failed,
+                        TransferAmount = dTOExchange.Amount,
+                        CurrencyRate = dTOExchange.ExchangeRate,
+                        SourceOldBalance = dTOExchange.SourceAccountBalance,
+                        SourceNewBalance = dTOExchange.SourceAccountBalance,
+                        TargetOldBalance = dTOExchange.TargetAccountBalance,
+                        TargetNewBalance = dTOExchange.TargetAccountBalance,
+                        Timestamp = DateTime.Now
+                    };
+                    dataAccessLayer.LogTransaction(transactionLog);
+
+                    Console.WriteLine("Insufficient balance.");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                EErrorLogger errorLogger = new EErrorLogger();
+                errorLogger.LogAndHandleError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Exchange selling process
+        /// </summary>
+        /// <param name="dTOExchange"></param>
+        public void ExchangeSelling(DTOExchange dTOExchange)
+        {
+            try
+            {
+                decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyFee);
+                decimal money = dTOExchange.Amount * dTOExchange.ExchangeRate - transactionFee;
+                decimal sourceNewBalance = dTOExchange.SourceAccountBalance - dTOExchange.Amount;
+                decimal targetNewBalance = dTOExchange.TargetAccountBalance + money;
+                if (dTOExchange.SourceAccountBalance >= dTOExchange.Amount)
                 {
                     DTOAccountInfo sourceUpdate = new DTOAccountInfo()
                     {
@@ -430,7 +511,7 @@ namespace FabrieBank.BLL.Logic
 
                     dataAccessLayer.LogTransaction(transactionLog);
 
-                    Console.WriteLine($"\n{dTOExchange.CurrencyType} buying successful.");
+                    Console.WriteLine($"\n{dTOExchange.CurrencyType} selling successful.");
                 }
                 else
                 {
@@ -452,7 +533,6 @@ namespace FabrieBank.BLL.Logic
 
                     Console.WriteLine("Insufficient balance.");
                 }
-
             }
             catch (Exception ex)
             {

@@ -311,9 +311,114 @@ namespace FabrieBank
         {
             try
             {
+                var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency).Result;
+                List<DTOCurrencyRate> dTOCurrencyRates = pCurrency.GetCurrencyRates(currencyRates);
 
+                if (dTOCurrencyRates.Count > 0)
+                {
+                    Console.WriteLine("\nForex Buying Rate for;  ");
+                    for (int i = 0; i < dTOCurrencyRates.Count; i++)
+                    {
+                        decimal forexBuyingRate = dTOCurrencyRates[i].ForexBuyingRate;
+                        EnumCurrencyTypes.CurrencyTypes currencyType = dTOCurrencyRates[i].CurrencyCode;
+                        Console.WriteLine($"\n[{i}] {currencyType}: {forexBuyingRate}");
+                    }
+                    Console.WriteLine("What type of currency would you like to trade?");
+                    Console.Write(">>> ");
+                    int exchange = int.Parse(Console.ReadLine());
+                    decimal exchangeRate = dTOCurrencyRates[exchange].ForexBuyingRate;
+                    EnumCurrencyTypes.CurrencyTypes exchangeType = dTOCurrencyRates[exchange].CurrencyCode;
 
+                    DTOAccountInfo dTOAccounts = new DTOAccountInfo()
+                    {
+                        CustomerId = customer.CustomerId,
+                        CurrencyType = (int)exchangeType
+                    };
 
+                    List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccounts);
+
+                    if (accountInfos.Count != 0)
+                    {
+                        Console.WriteLine("\nFrom which account would you like to withdraw the money?\n");
+                        bAccount.PrintAccountList(accountInfos);
+
+                        Console.Write("Account Index: ");
+                        int withdrawAccIndex = int.Parse(Console.ReadLine());
+
+                        if (withdrawAccIndex >= 0 && withdrawAccIndex < accountInfos.Count)
+                        {
+                            long withdrawAccNo = accountInfos[withdrawAccIndex].AccountNo;
+                            decimal withdrawAccBalance = accountInfos[withdrawAccIndex].Balance;
+                            string? sourceAccName = accountInfos[withdrawAccIndex].AccountName;
+
+                            if (withdrawAccBalance != 0)
+                            {
+                                DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                                {
+                                    CustomerId = customer.CustomerId,
+                                    CurrencyType = (int)baseCurrency
+                                };
+
+                                List<DTOAccountInfo> accountInfo = eAccount.ReadListAccountInfo(dTOAccount);
+
+                                if (accountInfo.Count != 0)
+                                {
+                                    Console.WriteLine("\nFrom which account would you like to deposit the money?\n");
+                                    bAccount.PrintAccountList(accountInfo);
+
+                                    Console.Write("Account Index: ");
+                                    int depositAccIndex = int.Parse(Console.ReadLine());
+
+                                    if (depositAccIndex >= 0 && depositAccIndex < accountInfo.Count)
+                                    {
+                                        long depositAccNo = accountInfo[depositAccIndex].AccountNo;
+                                        decimal depositAccBalance = accountInfo[depositAccIndex].Balance;
+                                        string? targetAccName = accountInfo[depositAccIndex].AccountName;
+
+                                        Console.WriteLine("\nAmount: \n");
+                                        decimal amount = int.Parse(Console.ReadLine());
+
+                                        DTOExchange dTOExchange = new DTOExchange()
+                                        {
+                                            ExchangeRate = exchangeRate,
+                                            CurrencyType = exchangeType,
+                                            SourceAccountNo = withdrawAccNo,
+                                            SourceAccountBalance = withdrawAccBalance,
+                                            TargetAccountNo = depositAccNo,
+                                            TargetAccountBalance = depositAccBalance,
+                                            Amount = amount,
+                                            SourceAccountName = sourceAccName,
+                                            TargetAccountName = targetAccName
+                                        };
+
+                                        transactionLogic.ExchangeSelling(dTOExchange);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("\nNo.");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("\nTarget account not found.");
+                                }
+
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nInsufficient balance.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nNo currency rates available.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nSource account not found.");
+                    }
+                }
             }
             catch (Exception ex)
             {
