@@ -18,6 +18,10 @@ namespace FabrieBank.BLL.Logic
             dataAccessLayer = new DataAccessLayer();
         }
 
+        /// <summary>
+        /// Creating account process
+        /// </summary>
+        /// <param name="accountInfo"></param>
         public void CreateAccount(DTOAccountInfo accountInfo)
         {
             _ = eAccount.InsertAccountInfo(accountInfo);
@@ -35,6 +39,10 @@ namespace FabrieBank.BLL.Logic
             }
         }
 
+        /// <summary>
+        /// Account listing process
+        /// </summary>
+        /// <param name="customer"></param>
         public void AccountList(DTOCustomer customer)
         {
             EAccountInfo eAccount1 = new EAccountInfo();
