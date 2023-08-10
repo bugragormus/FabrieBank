@@ -15,13 +15,5 @@ namespace FabrieBank.DAL.Entity
         {
             dataAccessLayer.LogError(ex, methodName);
         }
-
-        public void LogAndHandleError(Exception ex)
-        {
-            MethodBase method = MethodBase.GetCurrentMethod();
-            dataAccessLayer.LogError(ex, method.ToString());
-
-            Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-        }
     }
 }

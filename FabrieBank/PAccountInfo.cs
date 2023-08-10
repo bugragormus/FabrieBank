@@ -1,6 +1,8 @@
 ﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.BLL.Logic;
 using FabrieBank.DAL.Entity;
+using System.Reflection;
+using FabrieBank.DAL;
 
 namespace FabrieBank
 {
@@ -58,8 +60,11 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                EErrorLogger errorLogger = new EErrorLogger();
-                errorLogger.LogAndHandleError(ex);
+                MethodBase method = MethodBase.GetCurrentMethod();
+                DataAccessLayer dataAccessLayer = new DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Reflection;
+using System.Text.RegularExpressions;
+using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
@@ -28,8 +30,11 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                EErrorLogger errorLogger = new EErrorLogger();
-                errorLogger.LogAndHandleError(ex);
+                MethodBase method = MethodBase.GetCurrentMethod();
+                DataAccessLayer dataAccessLayer = new DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
 
@@ -62,8 +67,11 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                EErrorLogger errorLogger = new EErrorLogger();
-                errorLogger.LogAndHandleError(ex);
+                MethodBase method = MethodBase.GetCurrentMethod();
+                DataAccessLayer dataAccessLayer = new DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
 
@@ -115,8 +123,11 @@ namespace FabrieBank
             }
             catch (Exception ex)
             {
-                EErrorLogger errorLogger = new EErrorLogger();
-                errorLogger.LogAndHandleError(ex);
+                MethodBase method = MethodBase.GetCurrentMethod();
+                DataAccessLayer dataAccessLayer = new DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
 

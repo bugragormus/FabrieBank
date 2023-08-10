@@ -2,6 +2,7 @@
 using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Entity;
+using System.Reflection;
 
 namespace FabrieBank.BLL.Logic
 {
@@ -116,8 +117,11 @@ namespace FabrieBank.BLL.Logic
             }
             catch (Exception ex)
             {
-                EErrorLogger errorLogger = new EErrorLogger();
-                errorLogger.LogAndHandleError(ex);
+                MethodBase method = MethodBase.GetCurrentMethod();
+                DataAccessLayer dataAccessLayer = new DataAccessLayer();
+                dataAccessLayer.LogError(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
 
