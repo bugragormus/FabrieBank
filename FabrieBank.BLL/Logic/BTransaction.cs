@@ -395,7 +395,9 @@ namespace FabrieBank.BLL.Logic
         {
             try
             {
-                decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyFee);
+                decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyBuyingProfitMargin);
+                decimal kmvRate = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.KMV);
+                decimal kmv = (kmvRate * dTOExchange.Amount) * dTOExchange.ExchangeRate;
                 decimal money = dTOExchange.Amount * dTOExchange.ExchangeRate - transactionFee;
                 decimal sourceNewBalance = dTOExchange.SourceAccountBalance - money;
                 decimal targetNewBalance = dTOExchange.TargetAccountBalance + dTOExchange.Amount;
@@ -432,7 +434,8 @@ namespace FabrieBank.BLL.Logic
                         TargetOldBalance = dTOExchange.TargetAccountBalance,
                         TargetNewBalance = targetNewBalance,
                         Timestamp = DateTime.Now,
-                        TransactionFee = transactionFee
+                        TransactionFee = transactionFee,
+                        KMV = kmv
                     };
 
                     dataAccessLayer.LogTransaction(transactionLog);
@@ -479,7 +482,7 @@ namespace FabrieBank.BLL.Logic
         {
             try
             {
-                decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyFee);
+                decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencySellingProfitMargin);
                 decimal money = dTOExchange.Amount * dTOExchange.ExchangeRate - transactionFee;
                 decimal sourceNewBalance = dTOExchange.SourceAccountBalance - dTOExchange.Amount;
                 decimal targetNewBalance = dTOExchange.TargetAccountBalance + money;

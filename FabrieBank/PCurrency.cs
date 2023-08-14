@@ -11,10 +11,12 @@ namespace FabrieBank
     public class PCurrency
     {
         private readonly SCurrency currency;
+        private DataAccessLayer dataAccessLayer;
 
         public PCurrency()
         {
             currency = new SCurrency();
+            dataAccessLayer = new DataAccessLayer();
         }
 
         /// <summary>
@@ -24,8 +26,10 @@ namespace FabrieBank
         {
             try
             {
+                decimal selling = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencySellingProfitMargin);
+                decimal buying = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyBuyingProfitMargin);
                 var baseCurrency = EnumCurrencyTypes.CurrencyTypes.TRY;
-                var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency).Result;
+                var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency, selling, buying).Result;
                 DisplayCurrencyRatesTable(baseCurrency, currencyRates);
             }
             catch (Exception ex)

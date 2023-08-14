@@ -17,6 +17,7 @@ namespace FabrieBank
         private EnumCurrencyTypes.CurrencyTypes baseCurrency;
         private EAccountInfo eAccount;
         private PCurrency pCurrency;
+        private DataAccessLayer dataAccessLayer;
 
         public PTransaction(int customerId)
         {
@@ -27,6 +28,7 @@ namespace FabrieBank
             baseCurrency = EnumCurrencyTypes.CurrencyTypes.TRY;
             eAccount = new EAccountInfo();
             pCurrency = new PCurrency();
+            dataAccessLayer = new DataAccessLayer();
         }
 
         /// <summary>
@@ -195,17 +197,19 @@ namespace FabrieBank
         {
             try
             {
-                var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency).Result;
+                decimal selling = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencySellingProfitMargin);
+                decimal buying = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyBuyingProfitMargin);
+                var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency, selling, buying).Result;
                 List<DTOCurrencyRate> dTOCurrencyRates = pCurrency.GetCurrencyRates(currencyRates);
 
                 if (dTOCurrencyRates.Count > 0)
                 {
-                    Console.WriteLine("\nForex Selling Rate for;  ");
+                    Console.WriteLine("\nForex Buying Rate for;  ");
                     for (int i = 0; i < dTOCurrencyRates.Count; i++)
                     {
                         decimal forexSellingRate = dTOCurrencyRates[i].ForexSellingRate;
                         EnumCurrencyTypes.CurrencyTypes currencyType = dTOCurrencyRates[i].CurrencyCode;
-                        Console.WriteLine($"\n[{i}] {currencyType}: {forexSellingRate}");
+                        Console.WriteLine($"\n[{i}] {currencyType}: {forexSellingRate.ToString("0.00")}");
                     }
                     Console.WriteLine("What type of currency would you like to trade?");
                     Console.Write(">>> ");
@@ -322,17 +326,19 @@ namespace FabrieBank
         {
             try
             {
-                var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency).Result;
+                decimal selling = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencySellingProfitMargin);
+                decimal buying = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyBuyingProfitMargin);
+                var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency, selling, buying).Result;
                 List<DTOCurrencyRate> dTOCurrencyRates = pCurrency.GetCurrencyRates(currencyRates);
 
                 if (dTOCurrencyRates.Count > 0)
                 {
-                    Console.WriteLine("\nForex Buying Rate for;  ");
+                    Console.WriteLine("\nForex Selling Rate for;  ");
                     for (int i = 0; i < dTOCurrencyRates.Count; i++)
                     {
                         decimal forexBuyingRate = dTOCurrencyRates[i].ForexBuyingRate;
                         EnumCurrencyTypes.CurrencyTypes currencyType = dTOCurrencyRates[i].CurrencyCode;
-                        Console.WriteLine($"\n[{i}] {currencyType}: {forexBuyingRate}");
+                        Console.WriteLine($"\n[{i}] {currencyType}: {forexBuyingRate.ToString("0.00")}");
                     }
                     Console.WriteLine("What type of currency would you like to trade?");
                     Console.Write(">>> ");

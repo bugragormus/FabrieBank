@@ -16,5 +16,6 @@ namespace FabrieBank.DAL.Common.DTOs
         public decimal TargetOldBalance { get; set; }
         public decimal TargetNewBalance { get; set; }
         public decimal TransactionFee { get; set; }
+        public decimal KMV { get; set; }
     }
 }

@@ -4,6 +4,8 @@
     {
         Havale = 1,
         EFT = 2,
-        CurrencyFee = 3,
+        CurrencyBuyingProfitMargin = 3,
+        CurrencySellingProfitMargin = 4,
+        KMV = 5,
     }
 }

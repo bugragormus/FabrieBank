@@ -88,7 +88,7 @@ namespace FabrieBank.DAL
 
                     string sqlQuery = $"CALL {procedureName}(@p_source_account_number, @p_target_account_number, @p_transaction_type, " +
                         $"@p_transaction_status, @p_transfer_amount, @p_currency_rate, @p_transaction_fee, @p_source_old_balance, " +
-                        $"@p_source_new_balance, @p_target_old_balance, @p_target_new_balance, @p_timestamp)";
+                        $"@p_source_new_balance, @p_target_old_balance, @p_target_new_balance, @p_timestamp, @p_kmv)";
 
 
 
@@ -106,6 +106,7 @@ namespace FabrieBank.DAL
                         command.Parameters.AddWithValue("@p_target_old_balance", transactionLog.TargetOldBalance);
                         command.Parameters.AddWithValue("@p_target_new_balance", transactionLog.TargetNewBalance);
                         command.Parameters.AddWithValue("@p_timestamp", DateTime.Now);
+                        command.Parameters.AddWithValue("@p_kmv", transactionLog.KMV);
 
                         command.ExecuteNonQuery();
                     }
