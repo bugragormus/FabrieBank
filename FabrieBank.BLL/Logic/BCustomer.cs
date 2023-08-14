@@ -7,10 +7,12 @@ namespace FabrieBank.BLL.Logic
     public class BCustomer
     {
         private ECustomer eCustomer;
+        private EAccountInfo eAccountInfo;
 
         public BCustomer()
         {
             eCustomer = new ECustomer();
+            eAccountInfo = new EAccountInfo();
         }
 
         /// <summary>
@@ -108,6 +110,26 @@ namespace FabrieBank.BLL.Logic
                 eCustomer.UpdateCustomer(dTOCustomer);
                 Console.WriteLine($"\nYour temporary password has been successfully created. Your password: {temporaryPassword}");
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// Customer deactivation process
+        /// </summary>
+        /// <param name="customer"></param>
+        public void Deactivation(DTOCustomer customer)
+        {
+            DTOAccountInfo dTOAccountInfo = new DTOAccountInfo() { CustomerId = customer.CustomerId };
+            List<DTOAccountInfo> existingAccounts = eAccountInfo.ReadListAccountInfo(dTOAccountInfo);
+            if (existingAccounts.Count != 0)
+            {
+                Console.WriteLine("\nYou have active accounts. Please delete them before deactivation.\n");
+            }
+            else
+            {
+                _ = eCustomer.UpdateCustomer(customer);
+                Console.WriteLine("\nStatus has been updated to Inactive.\n");
+                Environment.Exit(0);
             }
         }
 

@@ -4,7 +4,6 @@ using FabrieBank.BLL.Logic;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
-using FabrieBank.DAL.Entity;
 
 namespace FabrieBank
 {
@@ -186,7 +185,7 @@ namespace FabrieBank
 
                 DTOCustomer customer = bCustomer.LogIn(tckn, hashedPassword);
 
-                if (customer != null)
+                if (customer != null && customer.Status == 1)
                 {
                     Console.Clear();
                     Console.WriteLine("******************************************************");
@@ -197,6 +196,24 @@ namespace FabrieBank
 
                     Program program = new Program();
                     program.MainMenu(customer);
+                }
+                else if (customer != null && customer.Status == 2)
+                {
+                    Console.Clear();
+                    Console.WriteLine("***************************************************");
+                    Console.WriteLine("*              !!! Login Failed !!!               *");
+                    Console.WriteLine("*          !Your Application is Pending!          *");
+                    Console.WriteLine("*   Please Contact With Customer Representative   *");
+                    Console.WriteLine("***************************************************\n");
+                }
+                else if (customer != null && customer.Status == 3)
+                {
+                    Console.Clear();
+                    Console.WriteLine("***************************************************");
+                    Console.WriteLine("*               !!! Login Failed !!!              *");
+                    Console.WriteLine("*        !Your Customer Status is Inactive!       *");
+                    Console.WriteLine("*          Please Apply For a New Customer        *");
+                    Console.WriteLine("***************************************************\n");
                 }
                 else
                 {
@@ -443,6 +460,41 @@ namespace FabrieBank
             customer.Tckn = tckn;
 
             bCustomer.ForgotPassword(customer, email);
+        }
+
+        /// <summary>
+        /// Deactivation application for customer.
+        /// </summary>
+        /// <param name="customer"></param>
+        public void Deactivation(DTOCustomer customer)
+        {
+            Console.WriteLine("Are You Sure You Want Deactivate Yourself? (1- Yes, 2-No)");
+            Console.WriteLine(">>> ");
+            int answer;
+            while (!int.TryParse(Console.ReadLine(), out answer) || answer < 1 || answer > 2)
+            {
+                Console.WriteLine("Invalid selection! (1-2).");
+            }
+            if (answer == 1)
+            {
+                DTOCustomer dTOCustomer = new DTOCustomer()
+                {
+                    CustomerId = customerId,
+                    Name = customer.Name,
+                    Lastname = customer.Lastname,
+                    Tckn = customer.Tckn,
+                    Password = customer.Password,
+                    CellNo = customer.CellNo,
+                    Email = customer.Email,
+                    Status = (int)EnumCustomerStatus.Inactive
+                };
+
+                bCustomer.Deactivation(dTOCustomer);
+            }
+            else
+            {
+                Console.WriteLine("\nExited from Deactivation.\n");
+            }
         }
 
         /// <summary>

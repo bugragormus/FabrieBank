@@ -9,7 +9,7 @@ namespace FabrieBank
         /// <summary>
         /// Main method
         /// </summary>
-        private static void Main()
+        public static void Main()
         {
             string? ch;
 
@@ -76,7 +76,7 @@ namespace FabrieBank
                 Console.WriteLine("=============================================================================================");
                 Console.WriteLine("                                         MAIN MENU                                           ");
                 Console.WriteLine("=============================================================================================");
-                Console.WriteLine("1.User Operations    2.Bank Accounts     3.Money Transfers      4. Currencies        5.Exit  ");
+                Console.WriteLine("1.User Operations    2.Bank Accounts     3.Money Transfers      4. Currencies       5.Log Out");
                 Console.WriteLine("=============================================================================================");
                 Console.Write(">>> ");
                 ch = Console.ReadLine();
@@ -106,7 +106,7 @@ namespace FabrieBank
 
                     case "5":
 
-                        Environment.Exit(0);
+                        Main();
                         break;
 
                     default:
@@ -270,9 +270,10 @@ namespace FabrieBank
                 Console.WriteLine("1. View Personal Information");
                 Console.WriteLine("2. Update Personal Information");
                 Console.WriteLine("3. Change Password");
-                Console.WriteLine("4. Back to Main Menu");
+                Console.WriteLine("4. Deactivation");
+                Console.WriteLine("5. Back to Main Menu");
                 Console.WriteLine("==============================");
-                Console.Write("Make your pick (1-4): ");
+                Console.Write("Make your pick (1-5): ");
                 choice = Console.ReadLine();
 
                 switch (choice)
@@ -290,13 +291,17 @@ namespace FabrieBank
                         pCustomer.ChangePassword(customer);
                         break;
                     case "4":
+                        PCustomer pCustomer3 = new PCustomer(customer.CustomerId);
+                        pCustomer3.Deactivation(customer);
+                        break;
+                    case "5":
                         Console.WriteLine("\nExited from User Operations.\n");
                         break;
                     default:
                         Console.WriteLine("\nInvalid selection. Try again.\n");
                         break;
                 }
-            } while (choice != "4");
+            } while (choice != "5");
         }
 
         /// <summary>
