@@ -9,5 +9,6 @@
         public string? Password { get; set; }
         public long CellNo { get; set; }
         public string? Email { get; set; }
+        public int Status { get; set; }
     }
 }

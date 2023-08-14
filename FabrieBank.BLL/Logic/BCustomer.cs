@@ -101,7 +101,8 @@ namespace FabrieBank.BLL.Logic
                     Lastname = customer.Lastname,
                     Password = hashedPassword,
                     CellNo = customer.CellNo,
-                    Email = customer.Email
+                    Email = customer.Email,
+                    Status = customer.Status
                 };
 
                 eCustomer.UpdateCustomer(dTOCustomer);

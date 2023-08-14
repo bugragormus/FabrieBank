@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using FabrieBank.BLL.Logic;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
+using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank
@@ -116,7 +117,8 @@ namespace FabrieBank
                     Tckn = customerTckn,
                     Password = hashedPassword,
                     CellNo = customerCellNo,
-                    Email = customerEmail
+                    Email = customerEmail,
+                    Status = (int)EnumCustomerStatus.Pending
                 };
 
                 bCustomer.CreateCustomer(customer);
@@ -268,7 +270,8 @@ namespace FabrieBank
                     Lastname = dTOCustomer.Lastname,
                     Password = dTOCustomer.Password,
                     CellNo = cellNo,
-                    Email = email
+                    Email = email,
+                    Status = dTOCustomer.Status
                 };
 
                 bool updated = bCustomer.UpdatePersonelInfo(customer);
@@ -365,7 +368,8 @@ namespace FabrieBank
                     Lastname = dTOCustomer.Lastname,
                     Password = newHashedPassword,
                     CellNo = dTOCustomer.CellNo,
-                    Email = dTOCustomer.Email
+                    Email = dTOCustomer.Email,
+                    Status = dTOCustomer.Status
                 };
 
                 bool updated = bCustomer.ChangePassword(customer);

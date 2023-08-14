@@ -54,6 +54,7 @@ namespace FabrieBank.DAL.Entity
                                 Password = dataTable.Rows[0]["password"].ToString(),
                                 CellNo = (long)dataTable.Rows[0]["cell_no"],
                                 Email = dataTable.Rows[0]["email"].ToString(),
+                                Status = (int)dataTable.Rows[0]["status"],
                             };
 
                             return dTOCustomer;
@@ -94,7 +95,7 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "func_ReadListCustomer";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_name, @p_lastname, @p_cell_no, @p_email)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_name, @p_lastname, @p_cell_no, @p_email, @p_status)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
@@ -102,6 +103,7 @@ namespace FabrieBank.DAL.Entity
                         command.Parameters.AddWithValue("@p_lastname", NpgsqlDbType.Varchar, (object)customer.Lastname ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_cell_no", NpgsqlDbType.Bigint, customer.CellNo);
                         command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_status", NpgsqlDbType.Integer, customer.Status);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
                         DataTable dataTable = new DataTable();
@@ -118,6 +120,7 @@ namespace FabrieBank.DAL.Entity
                                 Password = dataTable.Rows[0]["password"].ToString(),
                                 CellNo = (long)dataTable.Rows[0]["cell_no"],
                                 Email = dataTable.Rows[0]["email"].ToString(),
+                                Status = (int)dataTable.Rows[0]["status"],
                             };
                             accountsList.Add(dTOCustomer);
                         }
@@ -150,7 +153,7 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_InsertCustomer";
 
-                    string sqlQuery = $"CALL {functionName}(@p_name, @p_lastname, @p_tckn, @p_password ,@p_cell_no, @p_email)";
+                    string sqlQuery = $"CALL {functionName}(@p_name, @p_lastname, @p_tckn, @p_password ,@p_cell_no, @p_email, @p_status)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
@@ -160,6 +163,7 @@ namespace FabrieBank.DAL.Entity
                         command.Parameters.AddWithValue("@p_password", NpgsqlDbType.Varchar, (object)customer.Password ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_cell_no", NpgsqlDbType.Bigint, customer.CellNo);
                         command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_status", NpgsqlDbType.Integer, customer.Status);
 
                         if (command.ExecuteNonQuery() > 0)
                         {
@@ -194,7 +198,7 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_UpdateCustomer";
 
-                    string sqlQuery = $"CALL {functionName}(@p_customer_id, @p_name, @p_lastname, @p_password ,@p_cell_no, @p_email)";
+                    string sqlQuery = $"CALL {functionName}(@p_customer_id, @p_name, @p_lastname, @p_password ,@p_cell_no, @p_email, @p_status)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
@@ -204,6 +208,7 @@ namespace FabrieBank.DAL.Entity
                         command.Parameters.AddWithValue("@p_password", NpgsqlDbType.Varchar, (object)customer.Password ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_cell_no", NpgsqlDbType.Bigint, customer.CellNo);
                         command.Parameters.AddWithValue("@p_email", NpgsqlDbType.Varchar, (object)customer.Email ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_status", NpgsqlDbType.Integer, customer.Status);
 
                         if (command.ExecuteNonQuery() > 0)
                         {
