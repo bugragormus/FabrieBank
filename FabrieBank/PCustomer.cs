@@ -4,6 +4,7 @@ using FabrieBank.BLL.Logic;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
+using FabrieBank.DAL.Entity;
 
 namespace FabrieBank
 {
@@ -125,8 +126,8 @@ namespace FabrieBank
             catch (Exception ex)
             {
                 MethodBase method = MethodBase.GetCurrentMethod();
-                DataAccessLayer dataAccessLayer = new DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
 
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
@@ -228,8 +229,8 @@ namespace FabrieBank
             catch (Exception ex)
             {
                 MethodBase method = MethodBase.GetCurrentMethod();
-                DataAccessLayer dataAccessLayer = new DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
 
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
@@ -305,8 +306,8 @@ namespace FabrieBank
             catch (Exception ex)
             {
                 MethodBase method = MethodBase.GetCurrentMethod();
-                DataAccessLayer dataAccessLayer = new DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
 
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
@@ -428,8 +429,8 @@ namespace FabrieBank
             catch (Exception ex)
             {
                 MethodBase method = MethodBase.GetCurrentMethod();
-                DataAccessLayer dataAccessLayer = new DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
 
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }

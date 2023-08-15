@@ -8,13 +8,13 @@ using FabrieBank.DAL.Common.Enums;
 
 namespace FabrieBank.DAL.Entity
 {
-	public class ETransactionLog
-	{
+    public class ETransactionLog
+    {
         private DataAccessLayer dataAccessLayer;
         private NpgsqlConnectionStringBuilder database;
 
         public ETransactionLog()
-		{
+        {
             dataAccessLayer = new DataAccessLayer();
             database = dataAccessLayer.CallDB();
         }
@@ -76,8 +76,8 @@ namespace FabrieBank.DAL.Entity
             catch (Exception ex)
             {
                 MethodBase method = MethodBase.GetCurrentMethod();
-                DataAccessLayer dataAccessLayer = new DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
 
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
@@ -148,8 +148,8 @@ namespace FabrieBank.DAL.Entity
             catch (Exception ex)
             {
                 MethodBase method = MethodBase.GetCurrentMethod();
-                DataAccessLayer dataAccessLayer = new DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
 
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
@@ -200,8 +200,8 @@ namespace FabrieBank.DAL.Entity
             catch (Exception ex)
             {
                 MethodBase method = MethodBase.GetCurrentMethod();
-                DataAccessLayer dataAccessLayer = new DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
 
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
@@ -215,50 +215,50 @@ namespace FabrieBank.DAL.Entity
         /// <returns></returns>
         public bool DeleteTransactionLog(DTOTransactionLog dTOTransactionLog)
         {
-                try
+            try
+            {
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
                 {
-                    using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                    connection.Open();
+
+                    string functionName = "func_DeleteTransactionLog";
+
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_log_id)";
+
+                    using (NpgsqlCommand commandDeleteAccount = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        connection.Open();
+                        commandDeleteAccount.Parameters.AddWithValue("@p_log_id", dTOTransactionLog.LogId);
 
-                        string functionName = "func_DeleteTransactionLog";
+                        NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandDeleteAccount);
+                        DataTable dataTable = new DataTable();
 
-                        string sqlQuery = $"SELECT * FROM {functionName}(@p_log_id)";
+                        npgsqlDataAdapter.Fill(dataTable);
 
-                        using (NpgsqlCommand commandDeleteAccount = new NpgsqlCommand(sqlQuery, connection))
+                        if (dataTable.Rows.Count > 0)
                         {
-                            commandDeleteAccount.Parameters.AddWithValue("@p_log_id", dTOTransactionLog.LogId);
+                            bool success = (bool)dataTable.Rows[0]["func_DeleteTransactionLog"];
 
-                            NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandDeleteAccount);
-                            DataTable dataTable = new DataTable();
-
-                            npgsqlDataAdapter.Fill(dataTable);
-
-                            if (dataTable.Rows.Count > 0)
+                            if (success)
                             {
-                                bool success = (bool)dataTable.Rows[0]["func_DeleteTransactionLog"];
-
-                                if (success)
-                                {
-                                    Console.WriteLine("\nLog has been deleted succesfully");
-                                    return true;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("\nLog could not be deleted. Please try again.");
-                                }
+                                Console.WriteLine("\nLog has been deleted succesfully");
+                                return true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nLog could not be deleted. Please try again.");
                             }
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    MethodBase method = MethodBase.GetCurrentMethod();
-                    DataAccessLayer dataAccessLayer = new DataAccessLayer();
-                    dataAccessLayer.LogError(ex, method.ToString());
+            }
+            catch (Exception ex)
+            {
+                MethodBase method = MethodBase.GetCurrentMethod();
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
 
-                    Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-                }
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
             return false;
         }
     }

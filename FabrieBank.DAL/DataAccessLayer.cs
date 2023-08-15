@@ -37,8 +37,8 @@ namespace FabrieBank.DAL
             catch (Exception ex)
             {
                 MethodBase method = MethodBase.GetCurrentMethod();
-                DataAccessLayer dataAccessLayer = new DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
 
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
                 return new NpgsqlConnectionStringBuilder();
@@ -50,27 +50,27 @@ namespace FabrieBank.DAL
         /// </summary>
         /// <param name="ex"></param>
         /// <param name="methodName"></param>
-        public void LogError(Exception ex, string methodName)
-        {
-            using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
-            {
-                connection.Open();
+        //public void LogError(Exception ex, string methodName)
+        //{
+        //    using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+        //    {
+        //        connection.Open();
 
-                string procedureName = "usp_InsertErrorLog";
+        //        string procedureName = "usp_InsertErrorLog";
 
-                string sqlQuery = $"CALL {procedureName}(@errorDateTime, @errorMessage, @stackTrace, @operationName)";
+        //        string sqlQuery = $"CALL {procedureName}(@errorDateTime, @errorMessage, @stackTrace, @operationName)";
 
-                using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
-                {
-                    command.Parameters.AddWithValue("errorDateTime", DateTime.Now);
-                    command.Parameters.AddWithValue("errorMessage", ex.Message);
-                    command.Parameters.AddWithValue("stackTrace", ex.StackTrace);
-                    command.Parameters.AddWithValue("operationName", methodName);
+        //        using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
+        //        {
+        //            command.Parameters.AddWithValue("errorDateTime", DateTime.Now);
+        //            command.Parameters.AddWithValue("errorMessage", ex.Message);
+        //            command.Parameters.AddWithValue("stackTrace", ex.StackTrace);
+        //            command.Parameters.AddWithValue("operationName", methodName);
 
-                    command.ExecuteNonQuery();
-                }
-            }
-        }
+        //            command.ExecuteNonQuery();
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Gets transaction fees from DB
@@ -107,8 +107,8 @@ namespace FabrieBank.DAL
             catch (Exception ex)
             {
                 MethodBase method = MethodBase.GetCurrentMethod();
-                DataAccessLayer dataAccessLayer = new DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
 
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
