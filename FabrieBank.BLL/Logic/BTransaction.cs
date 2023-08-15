@@ -11,14 +11,16 @@ namespace FabrieBank.BLL.Logic
         private DataAccessLayer dataAccessLayer;
         private EAccountInfo eAccount;
         private BAccount account;
-        private ETransactionLog eTransaction;
+        private ETransactionLog eTransactionLog;
+        private ETransactionFee eTransactionFee;
 
         public BTransaction()
         {
             eAccount = new EAccountInfo();
             account = new BAccount();
             dataAccessLayer = new DataAccessLayer();
-            eTransaction = new ETransactionLog();
+            eTransactionLog = new ETransactionLog();
+            eTransactionFee = new ETransactionFee();
         }
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace FabrieBank.BLL.Logic
                     Timestamp = DateTime.Now
                 };
 
-                eTransaction.InsertTransactionLog(transactionLog);
+                eTransactionLog.InsertTransactionLog(transactionLog);
 
                 Console.WriteLine("\nDeposit successful.");
                 Console.WriteLine($"Old balance: {oldBalance}");
@@ -75,7 +77,7 @@ namespace FabrieBank.BLL.Logic
                     Timestamp = DateTime.Now
                 };
 
-                eTransaction.InsertTransactionLog(transactionLog);
+                eTransactionLog.InsertTransactionLog(transactionLog);
 
                 Console.WriteLine("\nDeposit unsuccessful.");
             }
@@ -117,7 +119,7 @@ namespace FabrieBank.BLL.Logic
                         Timestamp = DateTime.Now
                     };
 
-                    eTransaction.InsertTransactionLog(transactionLog);
+                    eTransactionLog.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine("\nWithdraw successful");
                     Console.WriteLine($"Old balance: {oldBalance}");
@@ -136,7 +138,7 @@ namespace FabrieBank.BLL.Logic
                         TargetNewBalance = accountInfo.Balance,
                         Timestamp = DateTime.Now
                     };
-                    eTransaction.InsertTransactionLog(transactionLog);
+                    eTransactionLog.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine("Insufficient balance.");
                 }
@@ -155,7 +157,7 @@ namespace FabrieBank.BLL.Logic
                     Timestamp = DateTime.Now
                 };
 
-                eTransaction.InsertTransactionLog(transactionLog);
+                eTransactionLog.InsertTransactionLog(transactionLog);
 
                 Console.WriteLine("\nWithdraw unsuccessful.");
             }
@@ -223,7 +225,7 @@ namespace FabrieBank.BLL.Logic
                                 TargetNewBalance = targetAccountBalance,
                                 Timestamp = DateTime.Now
                             };
-                            eTransaction.InsertTransactionLog(transactionLog);
+                            eTransactionLog.InsertTransactionLog(transactionLog);
 
                             Console.WriteLine("Transfer Between Accounts transaction could not be done. Please try again.");
                         }
@@ -244,7 +246,7 @@ namespace FabrieBank.BLL.Logic
                             TargetNewBalance = targetAccountBalance,
                             Timestamp = DateTime.Now
                         };
-                        eTransaction.InsertTransactionLog(transactionLog);
+                        eTransactionLog.InsertTransactionLog(transactionLog);
 
                         Console.WriteLine("Source account and target account currency types do not match. The transfer could not be performed.");
                     }
@@ -281,7 +283,7 @@ namespace FabrieBank.BLL.Logic
                 DTOAccountInfo targetAccountInfo = eAccount.ReadAccountInfo(dTOAccount1);
                 if (targetAccountInfo.CustomerId != 0)
                 {
-                    decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.Havale);
+                    decimal transactionFee = eTransactionFee.ReadTransactionFee(EnumTransactionFeeType.Havale);
 
                     int targetCurrencyType = targetAccountInfo.CurrencyType;
 
@@ -336,7 +338,7 @@ namespace FabrieBank.BLL.Logic
                 }
                 else //EFT
                 {
-                    decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.EFT);
+                    decimal transactionFee = eTransactionFee.ReadTransactionFee(EnumTransactionFeeType.EFT);
 
                     DTOAccountInfo dTOAccount = new DTOAccountInfo()
                     {
@@ -397,8 +399,8 @@ namespace FabrieBank.BLL.Logic
         {
             try
             {
-                decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyBuyingProfitMargin);
-                decimal kmvRate = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.KMV);
+                decimal transactionFee = eTransactionFee.ReadTransactionFee(EnumTransactionFeeType.CurrencyBuyingProfitMargin);
+                decimal kmvRate = eTransactionFee.ReadTransactionFee(EnumTransactionFeeType.KMV);
                 decimal kmv = (kmvRate * dTOExchange.Amount) * dTOExchange.ExchangeRate;
                 decimal money = dTOExchange.Amount * dTOExchange.ExchangeRate - transactionFee;
                 decimal sourceNewBalance = dTOExchange.SourceAccountBalance - money;
@@ -439,7 +441,7 @@ namespace FabrieBank.BLL.Logic
                         TransactionFee = transactionFee,
                         KMV = kmv
                     };
-                    eTransaction.InsertTransactionLog(transactionLog);
+                    eTransactionLog.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine($"\n{dTOExchange.CurrencyType} buying successful.");
                 }
@@ -459,7 +461,7 @@ namespace FabrieBank.BLL.Logic
                         TargetNewBalance = dTOExchange.TargetAccountBalance,
                         Timestamp = DateTime.Now
                     };
-                    eTransaction.InsertTransactionLog(transactionLog);
+                    eTransactionLog.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine("Insufficient balance.");
                 }
@@ -483,7 +485,7 @@ namespace FabrieBank.BLL.Logic
         {
             try
             {
-                decimal transactionFee = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencySellingProfitMargin);
+                decimal transactionFee = eTransactionFee.ReadTransactionFee(EnumTransactionFeeType.CurrencySellingProfitMargin);
                 decimal money = dTOExchange.Amount * dTOExchange.ExchangeRate - transactionFee;
                 decimal sourceNewBalance = dTOExchange.SourceAccountBalance - dTOExchange.Amount;
                 decimal targetNewBalance = dTOExchange.TargetAccountBalance + money;
@@ -523,7 +525,7 @@ namespace FabrieBank.BLL.Logic
                         TransactionFee = transactionFee
                     };
 
-                    eTransaction.InsertTransactionLog(transactionLog);
+                    eTransactionLog.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine($"\n{dTOExchange.CurrencyType} selling successful.");
                 }
@@ -543,7 +545,7 @@ namespace FabrieBank.BLL.Logic
                         TargetNewBalance = dTOExchange.TargetAccountBalance,
                         Timestamp = DateTime.Now
                     };
-                    eTransaction.InsertTransactionLog(transactionLog);
+                    eTransactionLog.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine("Insufficient balance.");
                 }

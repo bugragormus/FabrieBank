@@ -18,6 +18,7 @@ namespace FabrieBank
         private EAccountInfo eAccount;
         private PCurrency pCurrency;
         private DataAccessLayer dataAccessLayer;
+        private ETransactionFee eTransaction;
 
         public PTransaction(int customerId)
         {
@@ -29,6 +30,7 @@ namespace FabrieBank
             eAccount = new EAccountInfo();
             pCurrency = new PCurrency();
             dataAccessLayer = new DataAccessLayer();
+            eTransaction = new ETransactionFee();
         }
 
         /// <summary>
@@ -197,8 +199,8 @@ namespace FabrieBank
         {
             try
             {
-                decimal selling = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencySellingProfitMargin);
-                decimal buying = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyBuyingProfitMargin);
+                decimal selling = eTransaction.ReadTransactionFee(EnumTransactionFeeType.CurrencySellingProfitMargin);
+                decimal buying = eTransaction.ReadTransactionFee(EnumTransactionFeeType.CurrencyBuyingProfitMargin);
                 var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency, selling, buying).Result;
                 List<DTOCurrencyRate> dTOCurrencyRates = pCurrency.GetCurrencyRates(currencyRates);
 
@@ -326,8 +328,8 @@ namespace FabrieBank
         {
             try
             {
-                decimal selling = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencySellingProfitMargin);
-                decimal buying = dataAccessLayer.GetTransactionFee(EnumTransactionFeeType.CurrencyBuyingProfitMargin);
+                decimal selling = eTransaction.ReadTransactionFee(EnumTransactionFeeType.CurrencySellingProfitMargin);
+                decimal buying = eTransaction.ReadTransactionFee(EnumTransactionFeeType.CurrencyBuyingProfitMargin);
                 var currencyRates = currency.GetTodaysCurrencyRates(baseCurrency, selling, buying).Result;
                 List<DTOCurrencyRate> dTOCurrencyRates = pCurrency.GetCurrencyRates(currencyRates);
 
