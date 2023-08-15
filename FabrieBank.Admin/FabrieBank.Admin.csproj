@@ -12,4 +12,24 @@
     <ProjectReference Include="..\FabrieBank.DAL\FabrieBank.DAL.csproj" />
     <ProjectReference Include="..\FabrieBank.BLL\FabrieBank.BLL.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="PL\" />
+    <None Remove="BLL\" />
+    <None Remove="DAL\" />
+    <None Remove="DAL\Common\" />
+    <None Remove="DAL\Common\DTO\" />
+    <None Remove="DAL\Common\ENUM\" />
+    <None Remove="DAL\Entity\" />
+    <None Remove="BLL\Logic\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="PL\" />
+    <Folder Include="BLL\" />
+    <Folder Include="DAL\" />
+    <Folder Include="DAL\Common\" />
+    <Folder Include="DAL\Common\DTO\" />
+    <Folder Include="DAL\Common\ENUM\" />
+    <Folder Include="DAL\Entity\" />
+    <Folder Include="BLL\Logic\" />
+  </ItemGroup>
 </Project>

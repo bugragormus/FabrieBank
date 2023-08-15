@@ -1,6 +1,5 @@
 ﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
-using FabrieBank.DAL;
 using FabrieBank.DAL.Entity;
 using System.Reflection;
 

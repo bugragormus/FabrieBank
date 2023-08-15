@@ -113,14 +113,14 @@ namespace FabrieBank.DAL.Entity
                         {
                             DTOCustomer dTOCustomer = new DTOCustomer
                             {
-                                CustomerId = (int)dataTable.Rows[0]["customer_id"],
-                                Name = dataTable.Rows[0]["name"].ToString(),
-                                Lastname = dataTable.Rows[0]["lastname"].ToString(),
-                                Tckn = (long)dataTable.Rows[0]["tckn"],
-                                Password = dataTable.Rows[0]["password"].ToString(),
-                                CellNo = (long)dataTable.Rows[0]["cell_no"],
-                                Email = dataTable.Rows[0]["email"].ToString(),
-                                Status = (int)dataTable.Rows[0]["status"],
+                                CustomerId = (int)item["customer_id"],
+                                Name = item["name"].ToString(),
+                                Lastname = item["lastname"].ToString(),
+                                Tckn = (long)item["tckn"],
+                                Password = item["password"].ToString(),
+                                CellNo = (long)item["cell_no"],
+                                Email = item["email"].ToString(),
+                                Status = (int)item["status"],
                             };
                             accountsList.Add(dTOCustomer);
                         }

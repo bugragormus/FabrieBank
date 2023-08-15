@@ -3,7 +3,6 @@ using FabrieBank.DAL.Entity;
 using FabrieBank.BLL.Logic;
 using FabrieBank.DAL.Common.Enums;
 using FabrieBank.Services;
-using FabrieBank.DAL;
 using System.Reflection;
 
 namespace FabrieBank
@@ -17,7 +16,6 @@ namespace FabrieBank
         private EnumCurrencyTypes.CurrencyTypes baseCurrency;
         private EAccountInfo eAccount;
         private PCurrency pCurrency;
-        private DataAccessLayer dataAccessLayer;
         private ETransactionFee eTransaction;
 
         public PTransaction(int customerId)
@@ -29,7 +27,6 @@ namespace FabrieBank
             baseCurrency = EnumCurrencyTypes.CurrencyTypes.TRY;
             eAccount = new EAccountInfo();
             pCurrency = new PCurrency();
-            dataAccessLayer = new DataAccessLayer();
             eTransaction = new ETransactionFee();
         }
 
