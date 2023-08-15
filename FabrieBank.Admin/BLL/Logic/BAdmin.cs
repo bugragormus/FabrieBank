@@ -1,4 +1,4 @@
-﻿using FabrieBank.Admin.DAL.Common.DTO;
+﻿using FabrieBank.Admin.DAL.DTO;
 using FabrieBank.Admin.DAL.Entity;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;

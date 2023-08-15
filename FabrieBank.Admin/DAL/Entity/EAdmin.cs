@@ -2,7 +2,7 @@
 using Npgsql;
 using System.Data;
 using System.Reflection;
-using FabrieBank.Admin.DAL.Common.DTO;
+using FabrieBank.Admin.DAL.DTO;
 using FabrieBank.DAL;
 using NpgsqlTypes;
 

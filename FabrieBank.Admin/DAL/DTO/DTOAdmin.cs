@@ -1,4 +1,4 @@
-﻿namespace FabrieBank.Admin.DAL.Common.DTO
+﻿namespace FabrieBank.Admin.DAL.DTO
 {
 	public class DTOAdmin
 	{
