@@ -29,6 +29,7 @@ namespace FabrieBank.BLL.Logic
             {
                 DTOCustomer updateCustomer = new DTOCustomer()
                 {
+                    CustomerId = existingCustomer.CustomerId,
                     Name = existingCustomer.Name,
                     Lastname = existingCustomer.Lastname,
                     Password = existingCustomer.Password,
