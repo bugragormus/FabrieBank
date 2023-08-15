@@ -8,14 +8,13 @@ namespace FabrieBank.BLL.Logic
 {
     public class BAccount
     {
-
-        private DataAccessLayer dataAccessLayer;
+        private ETransactionLog eTransaction;
         private EAccountInfo eAccount;
 
         public BAccount()
         {
+            eTransaction = new ETransactionLog();
             eAccount = new EAccountInfo();
-            dataAccessLayer = new DataAccessLayer();
         }
 
         /// <summary>
@@ -170,7 +169,7 @@ namespace FabrieBank.BLL.Logic
                         TargetNewBalance = accountInfo.Balance,
                         Timestamp = DateTime.Now
                     };
-                    dataAccessLayer.LogTransaction(transactionLog);
+                    eTransaction.InsertTransactionLog(transactionLog);
                     Console.WriteLine("\nInsufficient balance. The transfer could not be performed.");
                     return false;
                 }
@@ -217,7 +216,7 @@ namespace FabrieBank.BLL.Logic
                         Timestamp = DateTime.Now
                     };
 
-                    dataAccessLayer.LogTransaction(transactionLog);
+                    eTransaction.InsertTransactionLog(transactionLog);
 
                     return true;
                 }
@@ -245,7 +244,7 @@ namespace FabrieBank.BLL.Logic
                         AccountName = accountInfo.AccountName
                     };
 
-                    dataAccessLayer.LogTransaction(transactionLog);
+                    eTransaction.InsertTransactionLog(transactionLog);
                     eAccount.UpdateAccountInfo(updateSource);
 
                     Console.WriteLine("\nThe target account was not found.");
@@ -266,7 +265,7 @@ namespace FabrieBank.BLL.Logic
                     SourceNewBalance = accountInfo.Balance,
                     Timestamp = DateTime.Now
                 };
-                dataAccessLayer.LogTransaction(transactionLog);
+                eTransaction.InsertTransactionLog(transactionLog);
                 Console.WriteLine("\nThe source account was not found.");
                 return false;
             }
@@ -311,7 +310,7 @@ namespace FabrieBank.BLL.Logic
                         TargetNewBalance = accountInfo.Balance,
                         Timestamp = DateTime.Now
                     };
-                    dataAccessLayer.LogTransaction(transactionLog);
+                    eTransaction.InsertTransactionLog(transactionLog);
                 }
                 else
                 {
@@ -356,7 +355,7 @@ namespace FabrieBank.BLL.Logic
                             TransactionFee = movement.Fee
                         };
 
-                        dataAccessLayer.LogTransaction(transactionLog);
+                        eTransaction.InsertTransactionLog(transactionLog);
                         Console.WriteLine("Havale Transaction Successfully Performed.");
 
                         return true;
@@ -379,7 +378,7 @@ namespace FabrieBank.BLL.Logic
                             TransactionFee = movement.Fee
                         };
 
-                        dataAccessLayer.LogTransaction(transactionLog);
+                        eTransaction.InsertTransactionLog(transactionLog);
 
                         return true;
                     }

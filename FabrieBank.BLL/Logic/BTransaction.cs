@@ -11,12 +11,14 @@ namespace FabrieBank.BLL.Logic
         private DataAccessLayer dataAccessLayer;
         private EAccountInfo eAccount;
         private BAccount account;
+        private ETransactionLog eTransaction;
 
         public BTransaction()
         {
             eAccount = new EAccountInfo();
             account = new BAccount();
             dataAccessLayer = new DataAccessLayer();
+            eTransaction = new ETransactionLog();
         }
 
         /// <summary>
@@ -53,7 +55,7 @@ namespace FabrieBank.BLL.Logic
                     Timestamp = DateTime.Now
                 };
 
-                dataAccessLayer.LogTransaction(transactionLog);
+                eTransaction.InsertTransactionLog(transactionLog);
 
                 Console.WriteLine("\nDeposit successful.");
                 Console.WriteLine($"Old balance: {oldBalance}");
@@ -73,7 +75,7 @@ namespace FabrieBank.BLL.Logic
                     Timestamp = DateTime.Now
                 };
 
-                dataAccessLayer.LogTransaction(transactionLog);
+                eTransaction.InsertTransactionLog(transactionLog);
 
                 Console.WriteLine("\nDeposit unsuccessful.");
             }
@@ -115,7 +117,7 @@ namespace FabrieBank.BLL.Logic
                         Timestamp = DateTime.Now
                     };
 
-                    dataAccessLayer.LogTransaction(transactionLog);
+                    eTransaction.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine("\nWithdraw successful");
                     Console.WriteLine($"Old balance: {oldBalance}");
@@ -134,7 +136,7 @@ namespace FabrieBank.BLL.Logic
                         TargetNewBalance = accountInfo.Balance,
                         Timestamp = DateTime.Now
                     };
-                    dataAccessLayer.LogTransaction(transactionLog);
+                    eTransaction.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine("Insufficient balance.");
                 }
@@ -153,7 +155,7 @@ namespace FabrieBank.BLL.Logic
                     Timestamp = DateTime.Now
                 };
 
-                dataAccessLayer.LogTransaction(transactionLog);
+                eTransaction.InsertTransactionLog(transactionLog);
 
                 Console.WriteLine("\nWithdraw unsuccessful.");
             }
@@ -221,7 +223,7 @@ namespace FabrieBank.BLL.Logic
                                 TargetNewBalance = targetAccountBalance,
                                 Timestamp = DateTime.Now
                             };
-                            dataAccessLayer.LogTransaction(transactionLog);
+                            eTransaction.InsertTransactionLog(transactionLog);
 
                             Console.WriteLine("Transfer Between Accounts transaction could not be done. Please try again.");
                         }
@@ -242,7 +244,7 @@ namespace FabrieBank.BLL.Logic
                             TargetNewBalance = targetAccountBalance,
                             Timestamp = DateTime.Now
                         };
-                        dataAccessLayer.LogTransaction(transactionLog);
+                        eTransaction.InsertTransactionLog(transactionLog);
 
                         Console.WriteLine("Source account and target account currency types do not match. The transfer could not be performed.");
                     }
@@ -437,8 +439,7 @@ namespace FabrieBank.BLL.Logic
                         TransactionFee = transactionFee,
                         KMV = kmv
                     };
-
-                    dataAccessLayer.LogTransaction(transactionLog);
+                    eTransaction.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine($"\n{dTOExchange.CurrencyType} buying successful.");
                 }
@@ -458,7 +459,7 @@ namespace FabrieBank.BLL.Logic
                         TargetNewBalance = dTOExchange.TargetAccountBalance,
                         Timestamp = DateTime.Now
                     };
-                    dataAccessLayer.LogTransaction(transactionLog);
+                    eTransaction.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine("Insufficient balance.");
                 }
@@ -522,7 +523,7 @@ namespace FabrieBank.BLL.Logic
                         TransactionFee = transactionFee
                     };
 
-                    dataAccessLayer.LogTransaction(transactionLog);
+                    eTransaction.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine($"\n{dTOExchange.CurrencyType} selling successful.");
                 }
@@ -542,7 +543,7 @@ namespace FabrieBank.BLL.Logic
                         TargetNewBalance = dTOExchange.TargetAccountBalance,
                         Timestamp = DateTime.Now
                     };
-                    dataAccessLayer.LogTransaction(transactionLog);
+                    eTransaction.InsertTransactionLog(transactionLog);
 
                     Console.WriteLine("Insufficient balance.");
                 }

@@ -73,56 +73,6 @@ namespace FabrieBank.DAL
         }
 
         /// <summary>
-        /// Calls Insert SP for money transaction logging
-        /// </summary>
-        /// <param name="transactionLog"></param>
-        public void LogTransaction(DTOTransactionLog transactionLog)
-        {
-            try
-            {
-                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
-                {
-                    connection.Open();
-
-                    string procedureName = "usp_InsertTransactionLog";
-
-                    string sqlQuery = $"CALL {procedureName}(@p_source_account_number, @p_target_account_number, @p_transaction_type, " +
-                        $"@p_transaction_status, @p_transfer_amount, @p_currency_rate, @p_transaction_fee, @p_source_old_balance, " +
-                        $"@p_source_new_balance, @p_target_old_balance, @p_target_new_balance, @p_timestamp, @p_kmv)";
-
-
-
-                    using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@p_source_account_number", transactionLog.SourceAccountNumber);
-                        command.Parameters.AddWithValue("@p_target_account_number", transactionLog.TargetAccountNumber);
-                        command.Parameters.AddWithValue("@p_transaction_type", (int)transactionLog.TransactionType);
-                        command.Parameters.AddWithValue("@p_transaction_status", (int)transactionLog.TransactionStatus);
-                        command.Parameters.AddWithValue("@p_transfer_amount", transactionLog.TransferAmount);
-                        command.Parameters.AddWithValue("@p_currency_rate", transactionLog.CurrencyRate);
-                        command.Parameters.AddWithValue("@p_transaction_fee", transactionLog.TransactionFee);
-                        command.Parameters.AddWithValue("@p_source_old_balance", transactionLog.SourceOldBalance);
-                        command.Parameters.AddWithValue("@p_source_new_balance", transactionLog.SourceNewBalance);
-                        command.Parameters.AddWithValue("@p_target_old_balance", transactionLog.TargetOldBalance);
-                        command.Parameters.AddWithValue("@p_target_new_balance", transactionLog.TargetNewBalance);
-                        command.Parameters.AddWithValue("@p_timestamp", DateTime.Now);
-                        command.Parameters.AddWithValue("@p_kmv", transactionLog.KMV);
-
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MethodBase method = MethodBase.GetCurrentMethod();
-                DataAccessLayer dataAccessLayer = new DataAccessLayer();
-                dataAccessLayer.LogError(ex, method.ToString());
-
-                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
-            }
-        }
-
-        /// <summary>
         /// Gets transaction fees from DB
         /// </summary>
         /// <param name="transactionType"></param>
