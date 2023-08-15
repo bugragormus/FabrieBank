@@ -1,5 +1,6 @@
 ﻿using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
+using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank.BLL.Logic
@@ -24,7 +25,28 @@ namespace FabrieBank.BLL.Logic
 
             DTOCustomer existingCustomer = eCustomer.ReadCustomer(customer);
 
-            if (existingCustomer != null)
+            if (existingCustomer != null && existingCustomer.Status == 3)
+            {
+                DTOCustomer updateCustomer = new DTOCustomer()
+                {
+                    Name = existingCustomer.Name,
+                    Lastname = existingCustomer.Lastname,
+                    Password = existingCustomer.Password,
+                    CellNo = existingCustomer.CellNo,
+                    Email = existingCustomer.Email,
+                    Status = (int)EnumCustomerStatus.Pending
+                };
+                eCustomer.UpdateCustomer(updateCustomer);
+
+                Console.WriteLine("\nYour status has been changed to 'Pending' from 'Inactive'.\n");
+                Console.WriteLine("Please stand by for the approval of the customer representative.\n");
+            }
+            else if (existingCustomer != null && existingCustomer.Status == 2)
+            {
+                Console.WriteLine("\nYour application has been send already.\n");
+                Console.WriteLine("Please stand by for the approval of the customer representative.\n");
+            }
+            else if (existingCustomer != null && existingCustomer.Status == 1)
             {
                 Console.WriteLine("\nA customer with the same TCKN already exists.\n");
             }
