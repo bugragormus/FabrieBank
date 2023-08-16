@@ -91,11 +91,13 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "func_ReadListAccountInfo";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_balance, @p_customer_id, @p_currency_type, @p_account_name)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_balance, @p_balance_is_small, @p_balance_is_big, @p_customer_id, @p_currency_type, @p_account_name)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
                         command.Parameters.AddWithValue("@p_balance", NpgsqlDbType.Numeric, dTOAccount.Balance);
+                        command.Parameters.AddWithValue("@p_balance_is_small", NpgsqlDbType.Numeric, dTOAccount.BalanceIsSmall);
+                        command.Parameters.AddWithValue("@p_balance_is_big", NpgsqlDbType.Numeric, dTOAccount.BalanceIsBig);
                         command.Parameters.AddWithValue("@p_customer_id", NpgsqlDbType.Integer, dTOAccount.CustomerId);
                         command.Parameters.AddWithValue("@p_currency_type", NpgsqlDbType.Integer, dTOAccount.CurrencyType);
                         command.Parameters.AddWithValue("@p_account_name", NpgsqlDbType.Varchar, (object)dTOAccount.AccountName ?? DBNull.Value);

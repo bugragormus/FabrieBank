@@ -1,5 +1,6 @@
 ﻿using FabrieBank.Admin.DAL.DTO;
 using FabrieBank.Admin.DAL.Entity;
+using FabrieBank.BLL.Logic;
 using FabrieBank.BLL.Service;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
@@ -10,11 +11,13 @@ namespace FabrieBank.Admin.BLL.Logic
     {
         private EAdmin eAdmin;
         private ECustomer eCustomer;
+        private EAccountInfo eAccount;
 
         public BAdmin()
         {
             eAdmin = new EAdmin();
             eCustomer = new ECustomer();
+            eAccount = new EAccountInfo();
         }
 
         /// <summary>
@@ -49,7 +52,7 @@ namespace FabrieBank.Admin.BLL.Logic
         }
 
         /// <summary>
-        /// Read list customer logic
+        /// ReadList and ReadById customer logic
         /// </summary>
         /// <param name="customer"></param>
         public void ListCustomers(DTOCustomer customer)
@@ -94,6 +97,50 @@ namespace FabrieBank.Admin.BLL.Logic
                 if (dTOCustomers.Count == 0)
                 {
                     Console.WriteLine("No customer was found that met the given parameters.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// ReadList and ReadById account info logic
+        /// </summary>
+        /// <param name="accountInfo"></param>
+        public void ListAccounts(DTOAccountInfo accountInfo)
+        {
+            Console.WriteLine("\n");
+            if (accountInfo.AccountNo != 0)
+            {
+                DTOAccountInfo dTOAccountInfo = eAccount.ReadAccountInfo(accountInfo);
+
+                Console.WriteLine($"Account No       : {dTOAccountInfo.AccountNo}");
+                Console.WriteLine($"Balance          : {dTOAccountInfo.Balance}");
+                Console.WriteLine($"Customer ID      : {dTOAccountInfo.CustomerId}");
+                Console.WriteLine($"Currency Type    : {dTOAccountInfo.CurrencyType}");
+                Console.WriteLine($"Account Name     : {dTOAccountInfo.AccountName}");
+                Console.WriteLine("========================================\n");
+
+                if (dTOAccountInfo == null)
+                {
+                    Console.WriteLine("No account was found that met the given parameters.");
+                }
+            }
+            else
+            {
+                List<DTOAccountInfo> dTOAccountInfos = eAccount.ReadListAccountInfo(accountInfo);
+
+                foreach (DTOAccountInfo dTOAccount in dTOAccountInfos)
+                {
+                    Console.WriteLine($"Account No       : {dTOAccount.AccountNo}");
+                    Console.WriteLine($"Balance          : {dTOAccount.Balance}");
+                    Console.WriteLine($"Customer ID      : {dTOAccount.CustomerId}");
+                    Console.WriteLine($"Currency Type    : {dTOAccount.CurrencyType}");
+                    Console.WriteLine($"Account Name     : {dTOAccount.AccountName}");
+                    Console.WriteLine("========================================\n");
+                }
+
+                if (dTOAccountInfos.Count == 0)
+                {
+                    Console.WriteLine("No account was found that met the given parameters.");
                 }
             }
         }

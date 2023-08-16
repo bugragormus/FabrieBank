@@ -50,49 +50,59 @@ namespace FabrieBank
         {
             string? ch;
 
-            for (; ; )
+            if (admin.Nickname != null)
             {
-                Console.WriteLine("====================================================================================================");
-                Console.WriteLine("                                           MAIN MENU                                                ");
-                Console.WriteLine("====================================================================================================");
-                Console.WriteLine("1.Customer Operations    2.Account Operations     3.Logs      4.Currencies     5.Fees      6.Log Out");
-                Console.WriteLine("====================================================================================================");
-                Console.Write(">>> ");
-                ch = Console.ReadLine();
-                Console.Clear();
 
-                switch (ch)
+                for (; ; )
                 {
-                    case "1":
+                    Console.WriteLine("====================================================================================================");
+                    Console.WriteLine("                                           MAIN MENU                                                ");
+                    Console.WriteLine("====================================================================================================");
+                    Console.WriteLine("1.Customer Operations    2.Account Operations     3.Logs      4.Currencies     5.Fees      6.Log Out");
+                    Console.WriteLine("====================================================================================================");
+                    Console.Write(">>> ");
+                    ch = Console.ReadLine();
+                    Console.Clear();
 
-                        CustomerMenu(admin);
-                        break;
+                    switch (ch)
+                    {
+                        case "1":
 
-                    //case "2":
+                            CustomerMenu(admin);
+                            break;
 
-                    //    AccountMenu(admin);
-                    //    break;
+                        case "2":
 
-                    //case "3":
+                            PAdmin pAdmin = new PAdmin(admin.Nickname);
+                            pAdmin.ListAccounts(admin);
+                            break;
 
-                    //    TransferMenu(admin.Nickname);
-                    //    break;
+                        //case "3":
 
-                    //case "4":
+                        //    TransferMenu(admin.Nickname);
+                        //    break;
 
-                    //    CurrencyMenu(admin);
-                    //    break;
+                        //case "4":
 
-                    case "6":
+                        //    CurrencyMenu(admin);
+                        //    break;
 
-                        Main();
-                        break;
+                        case "6":
 
-                    default:
+                            Main();
+                            break;
 
-                        Console.WriteLine("Invalid Choice!");
-                        break;
+                        default:
+
+                            Console.WriteLine("Invalid Choice!");
+                            break;
+                    }
                 }
+            }
+            else
+            {
+                Console.WriteLine("An Error Occured!");
+                Main();
             }
         }
 

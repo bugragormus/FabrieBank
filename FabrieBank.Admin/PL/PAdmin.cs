@@ -5,6 +5,7 @@ using FabrieBank.Admin.DAL.DTO;
 using FabrieBank.Admin.BLL.Logic;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
+using FabrieBank.Admin.DAL.Entity;
 
 namespace FabrieBank.Admin.PL
 {
@@ -204,6 +205,10 @@ namespace FabrieBank.Admin.PL
             }
         }
 
+        /// <summary>
+        /// List customers by conditions
+        /// </summary>
+        /// <param name="admin"></param>
         public void ListCustomers(DTOAdmin admin)
         {
             if (admin.AccessLevel != 1)
@@ -276,6 +281,116 @@ namespace FabrieBank.Admin.PL
                         };
 
                         bAdmin.ListCustomers(customer);
+
+                        break;
+
+                    default:
+
+                        Console.WriteLine("Invalid Choice!");
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("\nPermission Denied! Your Access Level Is Insufficient To Perform This Operation\n");
+            }
+        }
+
+        /// <summary>
+        /// List accounts by conditions
+        /// </summary>
+        /// <param name="admin"></param>
+        public void ListAccounts(DTOAdmin admin)
+        {
+            if (admin.AccessLevel != 1)
+            {
+                Console.WriteLine("\nTo Search By Account No --> 1, To Search By Other Conditions --> 2");
+                Console.Write(">>> ");
+                string? ch = Console.ReadLine();
+
+                switch (ch)
+                {
+                    case "1":
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Account No: ");
+                        long accountNo;
+                        while (!long.TryParse(Console.ReadLine(), out accountNo) || accountNo.ToString().Length != 10)
+                        {
+                            Console.WriteLine("Invalid Account No. Please enter a 11-digit Account No:");
+                        }
+
+                        DTOAccountInfo accountInfo = new DTOAccountInfo()
+                        {
+                            AccountNo = accountNo
+                        };
+
+                        bAdmin.ListAccounts(accountInfo);
+
+                        break;
+
+                    case "2":
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Balance Equals: ");
+                        decimal balanceEquals;
+                        while (!decimal.TryParse(Console.ReadLine(), out balanceEquals))
+                        {
+                            Console.WriteLine("Invalid Balance. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                            Console.Write("Balance Equals: ");
+                        }
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Balance Is Small: ");
+                        decimal balanceIsSmall;
+                        while (!decimal.TryParse(Console.ReadLine(), out balanceIsSmall))
+                        {
+                            Console.WriteLine("Invalid Balance. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                            Console.Write("Balance Is Small: ");
+                        }
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Balance Is Big: ");
+                        decimal balanceIsBig;
+                        while (!decimal.TryParse(Console.ReadLine(), out balanceIsBig))
+                        {
+                            Console.WriteLine("Invalid Balance. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                            Console.Write("Balance Is Big: ");
+                        }
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Customer ID: ");
+                        int customerId;
+                        while (!int.TryParse(Console.ReadLine(), out customerId))
+                        {
+                            Console.WriteLine("Invalid ID. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                            Console.Write("Customer ID: \n");
+                        }
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Currency Type: ");
+                        int currencyType;
+                        while (!int.TryParse(Console.ReadLine(), out currencyType))
+                        {
+                            Console.WriteLine("Invalid Currency Type. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                            Console.Write("Currency Type: \n");
+                        }
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Account Name: ");
+                        string accountName = Console.ReadLine();
+
+                        DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
+                        {
+                            Balance = balanceEquals,
+                            BalanceIsSmall = balanceIsSmall,
+                            BalanceIsBig = balanceIsBig,
+                            CustomerId = customerId,
+                            CurrencyType = currencyType,
+                            AccountName = accountName
+                        };
+
+                        bAdmin.ListAccounts(dTOAccountInfo);
 
                         break;
 
