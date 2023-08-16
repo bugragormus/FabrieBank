@@ -12,12 +12,14 @@ namespace FabrieBank.Admin.BLL.Logic
         private EAdmin eAdmin;
         private ECustomer eCustomer;
         private EAccountInfo eAccount;
+        private EErrorLog eError;
 
         public BAdmin()
         {
             eAdmin = new EAdmin();
             eCustomer = new ECustomer();
             eAccount = new EAccountInfo();
+            eError = new EErrorLog();
         }
 
         /// <summary>
@@ -143,6 +145,59 @@ namespace FabrieBank.Admin.BLL.Logic
                     Console.WriteLine("No account was found that met the given parameters.");
                 }
             }
+        }
+
+        /// <summary>
+        /// ReadList and ReadById error log logic
+        /// </summary>
+        /// <param name="errorLog"></param>
+        public void ListErrorLogs(DTOErrorLog errorLog)
+        {
+            Console.WriteLine("\n");
+            if (errorLog.ErrorId != 0)
+            {
+                DTOErrorLog dTOErrorLog = eError.ReadErrorLog(errorLog);
+
+                Console.WriteLine($"Error ID       : {dTOErrorLog.ErrorId}");
+                Console.WriteLine($"Error Date Time: {dTOErrorLog.ErrorDateTime}");
+                Console.WriteLine($"Error Message  : {dTOErrorLog.ErrorMessage}");
+                Console.WriteLine($"Stack Trace    : {dTOErrorLog.StackTrace}");
+                Console.WriteLine($"Operation Name : {dTOErrorLog.OperationName}");
+                Console.WriteLine("========================================\n");
+
+                if (dTOErrorLog == null)
+                {
+                    Console.WriteLine("No log was found that met the given parameters.");
+                }
+            }
+            else
+            {
+                List<DTOErrorLog> dTOErrorLogs = eError.ReadListErrorLog(errorLog);
+
+                foreach (DTOErrorLog dTOError in dTOErrorLogs)
+                {
+                    Console.WriteLine($"Error ID       : {dTOError.ErrorId}");
+                    Console.WriteLine($"Error Date Time: {dTOError.ErrorDateTime}");
+                    Console.WriteLine($"Error Message  : {dTOError.ErrorMessage}");
+                    Console.WriteLine($"Stack Trace    : {dTOError.StackTrace}");
+                    Console.WriteLine($"Operation Name : {dTOError.OperationName}");
+                    Console.WriteLine("========================================\n");
+                }
+
+                if (dTOErrorLogs.Count == 0)
+                {
+                    Console.WriteLine("No log was found that met the given parameters.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// ReadList and ReadById transaction log logic
+        /// </summary>
+        /// <param name="transactionLog"></param>
+        public void ListTransactionLogs(DTOTransactionLog transactionLog)
+        {
+
         }
     }
 }

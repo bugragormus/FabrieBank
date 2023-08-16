@@ -198,16 +198,38 @@ namespace FabrieBank.BLL.Logic
 
                     if (currencyMovement.SourceCurrencyType == currencyMovement.TargetCurrencyType)
                     {
-
-                        DTOAccountInfo accountInfo = new DTOAccountInfo()
+                        if (sourceAccountNo != targetAccountNo)
                         {
-                            AccountNo = sourceAccountNo
-                        };
+                            DTOAccountInfo accountInfo = new DTOAccountInfo()
+                            {
+                                AccountNo = sourceAccountNo
+                            };
 
-                        bool successfulTransfer = account.TransferBetweenAccounts(currencyMovement, accountInfo);
-                        if (successfulTransfer)
-                        {
-                            Console.WriteLine("Transfer Between Accounts transaction has been done successfuly.");
+                            bool successfulTransfer = account.TransferBetweenAccounts(currencyMovement, accountInfo);
+                            if (successfulTransfer)
+                            {
+                                Console.WriteLine("Transfer Between Accounts transaction has been done successfuly.");
+                            }
+                            else
+                            {
+                                // Log the failed transfer
+                                DTOTransactionLog transactionLog = new DTOTransactionLog
+                                {
+                                    SourceAccountNumber = sourceAccountNo,
+                                    TargetAccountNumber = targetAccountNo,
+                                    TransactionType = EnumTransactionType.BOATransfer,
+                                    TransactionStatus = EnumTransactionStatus.Failed,
+                                    TransferAmount = transfer.Amount,
+                                    SourceOldBalance = sourceAccountBalance,
+                                    SourceNewBalance = sourceAccountBalance,
+                                    TargetOldBalance = targetAccountBalance,
+                                    TargetNewBalance = targetAccountBalance,
+                                    Timestamp = DateTime.Now
+                                };
+                                eTransactionLog.InsertTransactionLog(transactionLog);
+
+                                Console.WriteLine("Transfer Between Accounts transaction could not be done. Please try again.");
+                            }
                         }
                         else
                         {
@@ -227,7 +249,7 @@ namespace FabrieBank.BLL.Logic
                             };
                             eTransactionLog.InsertTransactionLog(transactionLog);
 
-                            Console.WriteLine("Transfer Between Accounts transaction could not be done. Please try again.");
+                            Console.WriteLine("Source account and target account can not be same. The transfer could not be performed.");
                         }
                     }
                     else

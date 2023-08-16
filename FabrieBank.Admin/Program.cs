@@ -77,10 +77,10 @@ namespace FabrieBank
                             pAdmin.ListAccounts(admin);
                             break;
 
-                        //case "3":
+                        case "3":
 
-                        //    TransferMenu(admin.Nickname);
-                        //    break;
+                            LogMenu(admin);
+                            break;
 
                         //case "4":
 
@@ -140,6 +140,54 @@ namespace FabrieBank
                             break;
                         case "3":
                             Console.WriteLine("\nExited from User Operations.\n");
+                            break;
+                        default:
+                            Console.WriteLine("\nInvalid selection. Try again.\n");
+                            break;
+                    }
+                } while (choice != "3");
+            }
+            else
+            {
+                Console.WriteLine("An Error Occured!");
+                Main();
+            }
+        }
+
+        /// <summary>
+        /// Menu for log operations
+        /// </summary>
+        /// <param name="admin"></param>
+        public void LogMenu(DTOAdmin admin)
+        {
+            string choice;
+
+            if (admin.Nickname != null)
+            {
+                do
+                {
+                    Console.WriteLine("==============================");
+                    Console.WriteLine("LOG OPERATIONS");
+                    Console.WriteLine("==============================");
+                    Console.WriteLine("1. List Error Logs");
+                    Console.WriteLine("2. List Transaction Logs");
+                    Console.WriteLine("3. Back to Main Menu");
+                    Console.WriteLine("==============================");
+                    Console.Write("Make your pick (1-3): ");
+                    choice = Console.ReadLine();
+
+                    switch (choice)
+                    {
+                        case "1":
+                            PAdmin pAdmin = new PAdmin(admin.Nickname);
+                            pAdmin.ListErrorLogs(admin);
+                            break;
+                        case "2":
+                            PAdmin pAdmin1 = new PAdmin(admin.Nickname);
+                            pAdmin1.ListTransactionLogs(admin);
+                            break;
+                        case "3":
+                            Console.WriteLine("\nExited from Log Operations.\n");
                             break;
                         default:
                             Console.WriteLine("\nInvalid selection. Try again.\n");

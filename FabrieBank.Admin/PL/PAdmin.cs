@@ -5,7 +5,7 @@ using FabrieBank.Admin.DAL.DTO;
 using FabrieBank.Admin.BLL.Logic;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
-using FabrieBank.Admin.DAL.Entity;
+using System.Globalization;
 
 namespace FabrieBank.Admin.PL
 {
@@ -111,97 +111,108 @@ namespace FabrieBank.Admin.PL
         /// </summary>
         public void CustomerStatusUpdate()
         {
-            DTOCustomer customers = new DTOCustomer()
+            try
             {
-                Status = (int)EnumCustomerStatus.Pending
-            };
-
-            ECustomer eCustomer = new ECustomer();
-            List<DTOCustomer> dTOCustomers = eCustomer.ReadListCustomer(customers);
-
-            Console.Clear();
-            Console.WriteLine("\nPending Customers:\n");
-            for (int i = 0; i < dTOCustomers.Count; i++)
-            {
-                Console.WriteLine($"[{i}] Customer ID: {dTOCustomers[i].CustomerId}");
-                Console.WriteLine($"    Name       : {dTOCustomers[i].Name}");
-                Console.WriteLine($"    Lastname   : {dTOCustomers[i].Lastname}");
-                Console.WriteLine($"    TCKN       : {dTOCustomers[i].Tckn}");
-                Console.WriteLine($"    Cell No    : {dTOCustomers[i].CellNo}");
-                Console.WriteLine($"    Email      : {dTOCustomers[i].Email}");
-                Console.WriteLine($"    Status     : {dTOCustomers[i].Status}");
-                Console.WriteLine("==========================================\n");
-            }
-            Console.WriteLine("\nWhich customer would you like to update status?");
-            Console.Write("Customer Index: ");
-            int selectedCustomerIndex = int.Parse(Console.ReadLine());
-
-            if (selectedCustomerIndex >= 0 && selectedCustomerIndex < dTOCustomers.Count)
-            {
-                Console.WriteLine($"\nCurrent status of selected customer is 'Pending'.");
-                Console.WriteLine("\nDo you want to accept or decline? (Accept = 1, Decline = 2)");
-                Console.Write(">>> ");
-                string? ch = Console.ReadLine();
-
-                switch (ch)
+                DTOCustomer customers = new DTOCustomer()
                 {
-                    case "1":
+                    Status = (int)EnumCustomerStatus.Pending
+                };
 
-                        DTOCustomer acceptedCustomer = new DTOCustomer()
-                        {
-                            CustomerId = dTOCustomers[selectedCustomerIndex].CustomerId,
-                            Name = dTOCustomers[selectedCustomerIndex].Name,
-                            Lastname = dTOCustomers[selectedCustomerIndex].Lastname,
-                            Password = dTOCustomers[selectedCustomerIndex].Password,
-                            CellNo = dTOCustomers[selectedCustomerIndex].CellNo,
-                            Email = dTOCustomers[selectedCustomerIndex].Email,
-                            Status = (int)EnumCustomerStatus.Active
-                        };
+                ECustomer eCustomer = new ECustomer();
+                List<DTOCustomer> dTOCustomers = eCustomer.ReadListCustomer(customers);
 
-                        bool updated = bAdmin.CustomerStatusUpdate(acceptedCustomer);
-
-                        if (updated)
-                        {
-                            Console.WriteLine("\nCustomer accepted.\n");
-                        }
-                        else
-                        {
-                            Console.WriteLine("\nAn error occurred while updating Customer Status.\n");
-                        }
-
-                        break;
-
-                    case "2":
-
-                        DTOCustomer declinedCustomer = new DTOCustomer()
-                        {
-                            CustomerId = dTOCustomers[selectedCustomerIndex].CustomerId,
-                            Name = dTOCustomers[selectedCustomerIndex].Name,
-                            Lastname = dTOCustomers[selectedCustomerIndex].Lastname,
-                            Password = dTOCustomers[selectedCustomerIndex].Password,
-                            CellNo = dTOCustomers[selectedCustomerIndex].CellNo,
-                            Email = dTOCustomers[selectedCustomerIndex].Email,
-                            Status = (int)EnumCustomerStatus.Inactive
-                        };
-
-                        bool updated1 = bAdmin.CustomerStatusUpdate(declinedCustomer);
-
-                        if (updated1)
-                        {
-                            Console.WriteLine("\nCustomer declined.\n");
-                        }
-                        else
-                        {
-                            Console.WriteLine("\nAn error occurred while updating Customer Status.\n");
-                        }
-
-                        break;
-
-                    default:
-
-                        Console.WriteLine("Invalid Choice!");
-                        break;
+                Console.Clear();
+                Console.WriteLine("\nPending Customers:\n");
+                for (int i = 0; i < dTOCustomers.Count; i++)
+                {
+                    Console.WriteLine($"[{i}] Customer ID: {dTOCustomers[i].CustomerId}");
+                    Console.WriteLine($"    Name       : {dTOCustomers[i].Name}");
+                    Console.WriteLine($"    Lastname   : {dTOCustomers[i].Lastname}");
+                    Console.WriteLine($"    TCKN       : {dTOCustomers[i].Tckn}");
+                    Console.WriteLine($"    Cell No    : {dTOCustomers[i].CellNo}");
+                    Console.WriteLine($"    Email      : {dTOCustomers[i].Email}");
+                    Console.WriteLine($"    Status     : {dTOCustomers[i].Status}");
+                    Console.WriteLine("==========================================\n");
                 }
+                Console.WriteLine("\nWhich customer would you like to update status?");
+                Console.Write("Customer Index: ");
+                int selectedCustomerIndex = int.Parse(Console.ReadLine());
+
+                if (selectedCustomerIndex >= 0 && selectedCustomerIndex < dTOCustomers.Count)
+                {
+                    Console.WriteLine($"\nCurrent status of selected customer is 'Pending'.");
+                    Console.WriteLine("\nDo you want to accept or decline? (Accept = 1, Decline = 2)");
+                    Console.Write(">>> ");
+                    string? ch = Console.ReadLine();
+
+                    switch (ch)
+                    {
+                        case "1":
+
+                            DTOCustomer acceptedCustomer = new DTOCustomer()
+                            {
+                                CustomerId = dTOCustomers[selectedCustomerIndex].CustomerId,
+                                Name = dTOCustomers[selectedCustomerIndex].Name,
+                                Lastname = dTOCustomers[selectedCustomerIndex].Lastname,
+                                Password = dTOCustomers[selectedCustomerIndex].Password,
+                                CellNo = dTOCustomers[selectedCustomerIndex].CellNo,
+                                Email = dTOCustomers[selectedCustomerIndex].Email,
+                                Status = (int)EnumCustomerStatus.Active
+                            };
+
+                            bool updated = bAdmin.CustomerStatusUpdate(acceptedCustomer);
+
+                            if (updated)
+                            {
+                                Console.WriteLine("\nCustomer accepted.\n");
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nAn error occurred while updating Customer Status.\n");
+                            }
+
+                            break;
+
+                        case "2":
+
+                            DTOCustomer declinedCustomer = new DTOCustomer()
+                            {
+                                CustomerId = dTOCustomers[selectedCustomerIndex].CustomerId,
+                                Name = dTOCustomers[selectedCustomerIndex].Name,
+                                Lastname = dTOCustomers[selectedCustomerIndex].Lastname,
+                                Password = dTOCustomers[selectedCustomerIndex].Password,
+                                CellNo = dTOCustomers[selectedCustomerIndex].CellNo,
+                                Email = dTOCustomers[selectedCustomerIndex].Email,
+                                Status = (int)EnumCustomerStatus.Inactive
+                            };
+
+                            bool updated1 = bAdmin.CustomerStatusUpdate(declinedCustomer);
+
+                            if (updated1)
+                            {
+                                Console.WriteLine("\nCustomer declined.\n");
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nAn error occurred while updating Customer Status.\n");
+                            }
+
+                            break;
+
+                        default:
+
+                            Console.WriteLine("Invalid Choice!");
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MethodBase method = MethodBase.GetCurrentMethod();
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
 
@@ -211,88 +222,99 @@ namespace FabrieBank.Admin.PL
         /// <param name="admin"></param>
         public void ListCustomers(DTOAdmin admin)
         {
-            if (admin.AccessLevel != 1)
+            try
             {
-                Console.WriteLine("\nTo Search By TCKN --> 1, To Search By Other Conditions --> 2");
-                Console.Write(">>> ");
-                string? ch = Console.ReadLine();
-
-                switch (ch)
+                if (admin.AccessLevel != 1)
                 {
-                    case "1":
+                    Console.WriteLine("\nTo Search By TCKN --> 1, To Search By Other Conditions --> 2");
+                    Console.Write(">>> ");
+                    string? ch = Console.ReadLine();
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Customer TCKN: ");
-                        long customerTckn;
-                        while (!long.TryParse(Console.ReadLine(), out customerTckn) || customerTckn.ToString().Length != 11)
-                        {
-                            Console.WriteLine("Invalid TCKN. Please enter a 11-digit TCKN:");
-                        }
+                    switch (ch)
+                    {
+                        case "1":
 
-                        DTOCustomer dTOCustomer = new DTOCustomer()
-                        {
-                            Tckn = customerTckn
-                        };
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Customer TCKN: ");
+                            long customerTckn;
+                            while (!long.TryParse(Console.ReadLine(), out customerTckn) || customerTckn.ToString().Length != 11)
+                            {
+                                Console.WriteLine("Invalid TCKN. Please enter a 11-digit TCKN:");
+                            }
 
-                        bAdmin.ListCustomers(dTOCustomer);
+                            DTOCustomer dTOCustomer = new DTOCustomer()
+                            {
+                                Tckn = customerTckn
+                            };
 
-                        break;
+                            bAdmin.ListCustomers(dTOCustomer);
 
-                    case "2":
+                            break;
 
-                        Console.WriteLine("\nTo list all customers please leave empty all conditions.");
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Customer Name: ");
-                        string? customerName = Console.ReadLine();
+                        case "2":
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Customer Lastname: ");
-                        string? customerLastname = Console.ReadLine();
+                            Console.WriteLine("\nTo list all customers please leave empty all conditions.");
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Customer Name: ");
+                            string? customerName = Console.ReadLine();
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Customer Cell Number: ");
-                        long customerCellNo;
-                        while (!long.TryParse(Console.ReadLine(), out customerCellNo))
-                        {
-                            Console.WriteLine("Invalid Cell No. Please enter a numeric value or if you want to left it empty please give input 0: ");
-                            Console.Write("Customer Cell No: ");
-                        }
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Customer Lastname: ");
+                            string? customerLastname = Console.ReadLine();
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Customer Email: ");
-                        string customerEmail = Console.ReadLine();
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Customer Cell Number: ");
+                            long customerCellNo;
+                            while (!long.TryParse(Console.ReadLine(), out customerCellNo))
+                            {
+                                Console.WriteLine("Invalid Cell No. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Customer Cell No: ");
+                            }
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Customer Status: ");
-                        int customerStatus;
-                        while (!int.TryParse(Console.ReadLine(), out customerStatus))
-                        {
-                            Console.WriteLine("Invalid Status. Please enter a numeric value or if you want to left it empty please give input 0: ");
-                            Console.Write("Customer Status: \n");
-                        }
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Customer Email: ");
+                            string customerEmail = Console.ReadLine();
 
-                        DTOCustomer customer = new DTOCustomer
-                        {
-                            Name = customerName,
-                            Lastname = customerLastname,
-                            CellNo = customerCellNo,
-                            Email = customerEmail,
-                            Status = customerStatus
-                        };
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Customer Status: ");
+                            int customerStatus;
+                            while (!int.TryParse(Console.ReadLine(), out customerStatus))
+                            {
+                                Console.WriteLine("Invalid Status. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Customer Status: \n");
+                            }
 
-                        bAdmin.ListCustomers(customer);
+                            DTOCustomer customer = new DTOCustomer
+                            {
+                                Name = customerName,
+                                Lastname = customerLastname,
+                                CellNo = customerCellNo,
+                                Email = customerEmail,
+                                Status = customerStatus
+                            };
 
-                        break;
+                            bAdmin.ListCustomers(customer);
 
-                    default:
+                            break;
 
-                        Console.WriteLine("Invalid Choice!");
-                        break;
+                        default:
+
+                            Console.WriteLine("Invalid Choice!");
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nPermission Denied! Your Access Level Is Insufficient To Perform This Operation\n");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("\nPermission Denied! Your Access Level Is Insufficient To Perform This Operation\n");
+                MethodBase method = MethodBase.GetCurrentMethod();
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
 
@@ -302,108 +324,258 @@ namespace FabrieBank.Admin.PL
         /// <param name="admin"></param>
         public void ListAccounts(DTOAdmin admin)
         {
-            if (admin.AccessLevel != 1)
+            try
             {
-                Console.WriteLine("\nTo Search By Account No --> 1, To Search By Other Conditions --> 2");
-                Console.Write(">>> ");
-                string? ch = Console.ReadLine();
-
-                switch (ch)
+                if (admin.AccessLevel != 1)
                 {
-                    case "1":
+                    Console.WriteLine("\nTo Search By Account No --> 1, To Search By Other Conditions --> 2");
+                    Console.Write(">>> ");
+                    string? ch = Console.ReadLine();
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Account No: ");
-                        long accountNo;
-                        while (!long.TryParse(Console.ReadLine(), out accountNo) || accountNo.ToString().Length != 10)
-                        {
-                            Console.WriteLine("Invalid Account No. Please enter a 11-digit Account No:");
-                        }
+                    switch (ch)
+                    {
+                        case "1":
 
-                        DTOAccountInfo accountInfo = new DTOAccountInfo()
-                        {
-                            AccountNo = accountNo
-                        };
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Account No: ");
+                            long accountNo;
+                            while (!long.TryParse(Console.ReadLine(), out accountNo) || accountNo.ToString().Length != 10)
+                            {
+                                Console.WriteLine("Invalid Account No. Please enter a 11-digit Account No:");
+                            }
 
-                        bAdmin.ListAccounts(accountInfo);
+                            DTOAccountInfo accountInfo = new DTOAccountInfo()
+                            {
+                                AccountNo = accountNo
+                            };
 
-                        break;
+                            bAdmin.ListAccounts(accountInfo);
 
-                    case "2":
+                            break;
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Balance Equals: ");
-                        decimal balanceEquals;
-                        while (!decimal.TryParse(Console.ReadLine(), out balanceEquals))
-                        {
-                            Console.WriteLine("Invalid Balance. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                        case "2":
+
+                            Console.WriteLine("\n==============================================");
                             Console.Write("Balance Equals: ");
-                        }
+                            decimal balanceEquals;
+                            while (!decimal.TryParse(Console.ReadLine(), out balanceEquals))
+                            {
+                                Console.WriteLine("Invalid Balance. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Balance Equals: ");
+                            }
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Balance Is Small: ");
-                        decimal balanceIsSmall;
-                        while (!decimal.TryParse(Console.ReadLine(), out balanceIsSmall))
-                        {
-                            Console.WriteLine("Invalid Balance. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                            Console.WriteLine("\n==============================================");
                             Console.Write("Balance Is Small: ");
-                        }
+                            decimal balanceIsSmall;
+                            while (!decimal.TryParse(Console.ReadLine(), out balanceIsSmall))
+                            {
+                                Console.WriteLine("Invalid Balance. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Balance Is Small: ");
+                            }
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Balance Is Big: ");
-                        decimal balanceIsBig;
-                        while (!decimal.TryParse(Console.ReadLine(), out balanceIsBig))
-                        {
-                            Console.WriteLine("Invalid Balance. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                            Console.WriteLine("\n==============================================");
                             Console.Write("Balance Is Big: ");
-                        }
+                            decimal balanceIsBig;
+                            while (!decimal.TryParse(Console.ReadLine(), out balanceIsBig))
+                            {
+                                Console.WriteLine("Invalid Balance. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Balance Is Big: ");
+                            }
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Customer ID: ");
-                        int customerId;
-                        while (!int.TryParse(Console.ReadLine(), out customerId))
-                        {
-                            Console.WriteLine("Invalid ID. Please enter a numeric value or if you want to left it empty please give input 0: ");
-                            Console.Write("Customer ID: \n");
-                        }
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Customer ID: ");
+                            int customerId;
+                            while (!int.TryParse(Console.ReadLine(), out customerId))
+                            {
+                                Console.WriteLine("Invalid ID. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Customer ID: \n");
+                            }
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Currency Type: ");
-                        int currencyType;
-                        while (!int.TryParse(Console.ReadLine(), out currencyType))
-                        {
-                            Console.WriteLine("Invalid Currency Type. Please enter a numeric value or if you want to left it empty please give input 0: ");
-                            Console.Write("Currency Type: \n");
-                        }
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Currency Type: ");
+                            int currencyType;
+                            while (!int.TryParse(Console.ReadLine(), out currencyType))
+                            {
+                                Console.WriteLine("Invalid Currency Type. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Currency Type: \n");
+                            }
 
-                        Console.WriteLine("\n==============================================");
-                        Console.Write("Account Name: ");
-                        string accountName = Console.ReadLine();
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Account Name: ");
+                            string accountName = Console.ReadLine();
 
-                        DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
-                        {
-                            Balance = balanceEquals,
-                            BalanceIsSmall = balanceIsSmall,
-                            BalanceIsBig = balanceIsBig,
-                            CustomerId = customerId,
-                            CurrencyType = currencyType,
-                            AccountName = accountName
-                        };
+                            DTOAccountInfo dTOAccountInfo = new DTOAccountInfo
+                            {
+                                Balance = balanceEquals,
+                                BalanceIsSmall = balanceIsSmall,
+                                BalanceIsBig = balanceIsBig,
+                                CustomerId = customerId,
+                                CurrencyType = currencyType,
+                                AccountName = accountName
+                            };
 
-                        bAdmin.ListAccounts(dTOAccountInfo);
+                            bAdmin.ListAccounts(dTOAccountInfo);
 
-                        break;
+                            break;
 
-                    default:
+                        default:
 
-                        Console.WriteLine("Invalid Choice!");
-                        break;
+                            Console.WriteLine("Invalid Choice!");
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nPermission Denied! Your Access Level Is Insufficient To Perform This Operation\n");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("\nPermission Denied! Your Access Level Is Insufficient To Perform This Operation\n");
+                MethodBase method = MethodBase.GetCurrentMethod();
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
+        }
+
+        /// <summary>
+        /// List error logs by conditions
+        /// </summary>
+        /// <param name="admin"></param>
+        public void ListErrorLogs(DTOAdmin admin)
+        {
+            try
+            {
+                if (admin.AccessLevel != 1)
+                {
+                    Console.WriteLine("\nTo Search By Error ID --> 1, To Search By Other Conditions --> 2");
+                    Console.Write(">>> ");
+                    string? ch = Console.ReadLine();
+
+                    switch (ch)
+                    {
+                        case "1":
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Error ID: ");
+                            int errorId;
+                            while (!int.TryParse(Console.ReadLine(), out errorId) || errorId <= 0)
+                            {
+                                Console.WriteLine("Invalid Error ID. Please enter a number greater than 0:");
+                            }
+
+                            DTOErrorLog errorLog = new DTOErrorLog()
+                            {
+                                ErrorId = errorId
+                            };
+
+                            bAdmin.ListErrorLogs(errorLog);
+
+                            break;
+
+                        case "2":
+
+                            Console.WriteLine("\n==============================================");
+                            DateTime startDate;
+                            while (true)
+                            {
+                                Console.Write("Start Date (yyyyMMdd): ");
+                                string input = Console.ReadLine();
+                                if (input == "0")
+                                {
+                                    startDate = DateTime.MinValue;
+                                    break;
+                                }
+
+                                if (DateTime.TryParseExact(input, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
+                                {
+                                    break;
+                                }
+
+                                Console.WriteLine("Invalid Start Date format. Please enter a valid date (yyyyMMdd) or 0 to leave it empty: ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            DateTime endDate;
+                            while (true)
+                            {
+                                Console.Write("End Date (yyyyMMdd): ");
+                                string input = Console.ReadLine();
+                                if (input == "0")
+                                {
+                                    endDate = DateTime.MaxValue;
+                                    break;
+                                }
+
+                                if (DateTime.TryParseExact(input, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate))
+                                {
+                                    if (endDate >= startDate || startDate == DateTime.MinValue)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Invalid End Date. End Date must be greater than or equal to Start Date.");
+                                    }
+                                }
+
+                                Console.WriteLine("Invalid End Date format. Please enter a valid date (yyyyMMdd) or 0 to leave it empty: ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Error Message: ");
+                            string errorMessage = Console.ReadLine();
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Stack Trace: ");
+                            string stackTrace = Console.ReadLine();
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Operation Name: ");
+                            string operationName = Console.ReadLine();
+
+                            DTOErrorLog dTOErrorLog = new DTOErrorLog
+                            {
+                                ErrorDateTime = startDate,
+                                StartDate = startDate,
+                                EndDate = endDate,
+                                ErrorMessage = errorMessage,
+                                StackTrace = stackTrace,
+                                OperationName = operationName
+                            };
+
+                            bAdmin.ListErrorLogs(dTOErrorLog);
+
+                            break;
+
+                        default:
+
+                            Console.WriteLine("Invalid Choice!");
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nPermission Denied! Your Access Level Is Insufficient To Perform This Operation\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                MethodBase method = MethodBase.GetCurrentMethod();
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
+        }
+
+        /// <summary>
+        /// List transaction logs by conditions
+        /// </summary>
+        public void ListTransactionLogs(DTOAdmin admin)
+        {
+
         }
     }
 }

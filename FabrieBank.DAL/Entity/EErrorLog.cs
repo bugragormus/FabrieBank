@@ -4,13 +4,14 @@ using System.Data;
 using System.Reflection;
 using Npgsql;
 using NpgsqlTypes;
+using System.Security.Principal;
 
 namespace FabrieBank.DAL.Entity
 {
     public class EErrorLog
     {
         private DataAccessLayer dataAccessLayer;
-        private NpgsqlConnectionStringBuilder database;        
+        private NpgsqlConnectionStringBuilder database;
 
         public EErrorLog()
         {
@@ -89,14 +90,19 @@ namespace FabrieBank.DAL.Entity
                 {
                     connection.Open();
 
+                    DateTime startDate = dTOErrorLog.StartDate.Date;
+                    DateTime endDate = dTOErrorLog.EndDate.Date;
                     string functionName = "func_ReadListErrorLog";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_start_date, @p_end_date)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_start_date, @p_end_date, @p_error_message, @p_stack_trace, @p_operation_name)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_start_date", NpgsqlDbType.Timestamp, dTOErrorLog.StartDate);
-                        command.Parameters.AddWithValue("@p_end_date", NpgsqlDbType.Timestamp, dTOErrorLog.EndDate);
+                        command.Parameters.AddWithValue("@p_start_date", NpgsqlDbType.Date, dTOErrorLog.StartDate == DateTime.MaxValue ? (object)DBNull.Value : (object)startDate);
+                        command.Parameters.AddWithValue("@p_end_date", NpgsqlDbType.Date, dTOErrorLog.EndDate == DateTime.MaxValue ? (object)DBNull.Value : (object)endDate);
+                        command.Parameters.AddWithValue("@p_error_message", NpgsqlDbType.Text, (object)dTOErrorLog.ErrorMessage ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_stack_trace", NpgsqlDbType.Text, (object)dTOErrorLog.StackTrace ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@p_operation_name", NpgsqlDbType.Text, (object)dTOErrorLog.OperationName ?? DBNull.Value);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
                         DataTable dataTable = new DataTable();
@@ -106,11 +112,11 @@ namespace FabrieBank.DAL.Entity
                         {
                             DTOErrorLog errorLog = new DTOErrorLog
                             {
-                                ErrorId = (int)dataTable.Rows[0]["id"],
-                                ErrorDateTime = (DateTime)dataTable.Rows[0]["errordatetime"],
-                                ErrorMessage = dataTable.Rows[0]["errormessage"].ToString(),
-                                StackTrace = dataTable.Rows[0]["stacktrace"].ToString(),
-                                OperationName = dataTable.Rows[0]["operationname"].ToString(),
+                                ErrorId = (int)item["id"],
+                                ErrorDateTime = (DateTime)item["errordatetime"],
+                                ErrorMessage = item["errormessage"].ToString(),
+                                StackTrace = item["stacktrace"].ToString(),
+                                OperationName = item["operationname"].ToString(),
                             };
                             errorLogs.Add(errorLog);
                         }
