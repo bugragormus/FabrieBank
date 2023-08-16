@@ -90,16 +90,14 @@ namespace FabrieBank.DAL.Entity
                 {
                     connection.Open();
 
-                    DateTime startDate = dTOErrorLog.StartDate.Date;
-                    DateTime endDate = dTOErrorLog.EndDate.Date;
                     string functionName = "func_ReadListErrorLog";
 
                     string sqlQuery = $"SELECT * FROM {functionName}(@p_start_date, @p_end_date, @p_error_message, @p_stack_trace, @p_operation_name)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@p_start_date", NpgsqlDbType.Date, dTOErrorLog.StartDate == DateTime.MaxValue ? (object)DBNull.Value : (object)startDate);
-                        command.Parameters.AddWithValue("@p_end_date", NpgsqlDbType.Date, dTOErrorLog.EndDate == DateTime.MaxValue ? (object)DBNull.Value : (object)endDate);
+                        command.Parameters.AddWithValue("@p_start_date", NpgsqlDbType.Date, dTOErrorLog.StartDate == DateTime.MaxValue ? (object)DBNull.Value : (object)dTOErrorLog.StartDate.Date);
+                        command.Parameters.AddWithValue("@p_end_date", NpgsqlDbType.Date, dTOErrorLog.EndDate == DateTime.MaxValue ? (object)DBNull.Value : (object)dTOErrorLog.EndDate.Date);
                         command.Parameters.AddWithValue("@p_error_message", NpgsqlDbType.Text, (object)dTOErrorLog.ErrorMessage ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_stack_trace", NpgsqlDbType.Text, (object)dTOErrorLog.StackTrace ?? DBNull.Value);
                         command.Parameters.AddWithValue("@p_operation_name", NpgsqlDbType.Text, (object)dTOErrorLog.OperationName ?? DBNull.Value);

@@ -162,7 +162,9 @@ namespace FabrieBank.BLL.Logic
                         SourceNewBalance = oldBalance,
                         TargetOldBalance = accountInfo.Balance,
                         TargetNewBalance = accountInfo.Balance,
-                        Timestamp = DateTime.Now
+                        Timestamp = DateTime.Now,
+                        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.SourceCurrencyType,
+                        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.TargetCurrencyType
                     };
                     eTransaction.InsertTransactionLog(transactionLog);
                     Console.WriteLine("\nInsufficient balance. The transfer could not be performed.");
@@ -208,7 +210,9 @@ namespace FabrieBank.BLL.Logic
                         SourceNewBalance = newBalance,
                         TargetOldBalance = dTOAccount.Balance,
                         TargetNewBalance = dTOAccount.Balance + movement.Amount,
-                        Timestamp = DateTime.Now
+                        Timestamp = DateTime.Now,
+                        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.SourceCurrencyType,
+                        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.TargetCurrencyType
                     };
 
                     eTransaction.InsertTransactionLog(transactionLog);
@@ -229,7 +233,9 @@ namespace FabrieBank.BLL.Logic
                         SourceNewBalance = oldBalance,
                         TargetOldBalance = dTOAccount.Balance,
                         TargetNewBalance = dTOAccount.Balance,
-                        Timestamp = DateTime.Now
+                        Timestamp = DateTime.Now,
+                        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.SourceCurrencyType,
+                        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.TargetCurrencyType
                     };
 
                     DTOAccountInfo updateSource = new DTOAccountInfo()
@@ -258,7 +264,9 @@ namespace FabrieBank.BLL.Logic
                     TransferAmount = movement.Amount,
                     SourceOldBalance = accountInfo.Balance,
                     SourceNewBalance = accountInfo.Balance,
-                    Timestamp = DateTime.Now
+                    Timestamp = DateTime.Now,
+                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.SourceCurrencyType,
+                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.TargetCurrencyType
                 };
                 eTransaction.InsertTransactionLog(transactionLog);
                 Console.WriteLine("\nThe source account was not found.");
@@ -303,7 +311,9 @@ namespace FabrieBank.BLL.Logic
                         SourceNewBalance = oldBalance,
                         TargetOldBalance = accountInfo.Balance,
                         TargetNewBalance = accountInfo.Balance,
-                        Timestamp = DateTime.Now
+                        Timestamp = DateTime.Now,
+                        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.SourceCurrencyType,
+                        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.TargetCurrencyType
                     };
                     eTransaction.InsertTransactionLog(transactionLog);
                 }
@@ -347,7 +357,9 @@ namespace FabrieBank.BLL.Logic
                             TargetOldBalance = accountInfo.Balance,
                             TargetNewBalance = accountInfo.Balance + movement.Amount,
                             Timestamp = DateTime.Now,
-                            TransactionFee = movement.Fee
+                            TransactionFee = movement.Fee,
+                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.SourceCurrencyType,
+                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.TargetCurrencyType
                         };
 
                         eTransaction.InsertTransactionLog(transactionLog);
@@ -370,7 +382,9 @@ namespace FabrieBank.BLL.Logic
                             SourceOldBalance = oldBalance,
                             SourceNewBalance = newBalance,
                             Timestamp = DateTime.Now,
-                            TransactionFee = movement.Fee
+                            TransactionFee = movement.Fee,
+                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.SourceCurrencyType,
+                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)movement.TargetCurrencyType
                         };
 
                         eTransaction.InsertTransactionLog(transactionLog);

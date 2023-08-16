@@ -24,5 +24,7 @@ namespace FabrieBank.DAL.Common.DTOs
         public decimal KMV { get; set; }
         public decimal KMVSmall { get; set; }
         public decimal KMVLarge { get; set; }
+        public EnumCurrencyTypes.CurrencyTypes SourceCurrencyType { get; set; }
+        public EnumCurrencyTypes.CurrencyTypes TargetCurrencyType { get; set; }
     }
 }

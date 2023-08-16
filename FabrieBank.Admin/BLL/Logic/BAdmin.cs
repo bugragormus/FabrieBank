@@ -13,6 +13,7 @@ namespace FabrieBank.Admin.BLL.Logic
         private ECustomer eCustomer;
         private EAccountInfo eAccount;
         private EErrorLog eError;
+        private ETransactionLog eTransaction;
 
         public BAdmin()
         {
@@ -20,6 +21,7 @@ namespace FabrieBank.Admin.BLL.Logic
             eCustomer = new ECustomer();
             eAccount = new EAccountInfo();
             eError = new EErrorLog();
+            eTransaction = new ETransactionLog();
         }
 
         /// <summary>
@@ -197,7 +199,64 @@ namespace FabrieBank.Admin.BLL.Logic
         /// <param name="transactionLog"></param>
         public void ListTransactionLogs(DTOTransactionLog transactionLog)
         {
+            Console.WriteLine("\n");
+            if (transactionLog.LogId != 0)
+            {
+                DTOTransactionLog dTOTransactionLog = eTransaction.ReadTransactionLog(transactionLog);
 
+                Console.WriteLine($"Log ID               : {dTOTransactionLog.LogId}");
+                Console.WriteLine($"Source Account Number: {dTOTransactionLog.SourceAccountNumber}");
+                Console.WriteLine($"Target Account Number: {dTOTransactionLog.TargetAccountNumber}");
+                Console.WriteLine($"Source Old Balance   : {dTOTransactionLog.SourceOldBalance}");
+                Console.WriteLine($"Target Old Balance   : {dTOTransactionLog.TargetOldBalance}");
+                Console.WriteLine($"Source New Balance   : {dTOTransactionLog.SourceNewBalance}");
+                Console.WriteLine($"Target New Balance   : {dTOTransactionLog.TargetNewBalance}");
+                Console.WriteLine($"Transfer Amount      : {dTOTransactionLog.TransferAmount}");
+                Console.WriteLine($"Transaction Type     : {dTOTransactionLog.TransactionType}");
+                Console.WriteLine($"Transaction Status   : {dTOTransactionLog.TransactionStatus}");
+                Console.WriteLine($"Source Currency Type : {dTOTransactionLog.SourceCurrencyType}");
+                Console.WriteLine($"Target Currency Type : {dTOTransactionLog.TargetCurrencyType}");
+                Console.WriteLine($"Currency Rate        : {dTOTransactionLog.CurrencyRate}");
+                Console.WriteLine($"KMV                  : {dTOTransactionLog.KMV}");
+                Console.WriteLine($"Transaction Fee      : {dTOTransactionLog.TransactionFee}");
+                Console.WriteLine($"Timestamp            : {dTOTransactionLog.Timestamp}");
+                Console.WriteLine("========================================\n");
+
+                if (dTOTransactionLog == null)
+                {
+                    Console.WriteLine("No log was found that met the given parameters.");
+                }
+            }
+            else
+            {
+                List<DTOTransactionLog> dTOTransactionLogs = eTransaction.ReadListTransactionLog(transactionLog);
+
+                foreach (DTOTransactionLog dTOTransaction in dTOTransactionLogs)
+                {
+                    Console.WriteLine($"Log ID               : {dTOTransaction.LogId}");
+                    Console.WriteLine($"Source Account Number: {dTOTransaction.SourceAccountNumber}");
+                    Console.WriteLine($"Target Account Number: {dTOTransaction.TargetAccountNumber}");
+                    Console.WriteLine($"Source Old Balance   : {dTOTransaction.SourceOldBalance}");
+                    Console.WriteLine($"Source New Balance   : {dTOTransaction.SourceNewBalance}");
+                    Console.WriteLine($"Target Old Balance   : {dTOTransaction.TargetOldBalance}");
+                    Console.WriteLine($"Target New Balance   : {dTOTransaction.TargetNewBalance}");
+                    Console.WriteLine($"Transaction Type     : {dTOTransaction.TransactionType}");
+                    Console.WriteLine($"Transaction Status   : {dTOTransaction.TransactionStatus}");
+                    Console.WriteLine($"Transfer Amount      : {dTOTransaction.TransferAmount}");
+                    Console.WriteLine($"Source Currency Type : {dTOTransaction.SourceCurrencyType}");
+                    Console.WriteLine($"Target Currency Type : {dTOTransaction.TargetCurrencyType}");
+                    Console.WriteLine($"Currency Rate        : {dTOTransaction.CurrencyRate}");
+                    Console.WriteLine($"KMV                  : {dTOTransaction.KMV}");
+                    Console.WriteLine($"Transaction Fee      : {dTOTransaction.TransactionFee}");
+                    Console.WriteLine($"Timestamp            : {dTOTransaction.Timestamp}");
+                    Console.WriteLine("========================================\n");
+                }
+
+                if (dTOTransactionLogs.Count == 0)
+                {
+                    Console.WriteLine("No log was found that met the given parameters.");
+                }
+            }
         }
     }
 }

@@ -68,6 +68,8 @@ namespace FabrieBank.DAL.Entity
                                 TargetNewBalance = (decimal)dataTable.Rows[0]["targetnewbalance"],
                                 Timestamp = (DateTime)dataTable.Rows[0]["mytimestamp"],
                                 KMV = (decimal)dataTable.Rows[0]["kmv"],
+                                SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)dataTable.Rows[0]["sourcecurrencytype"],
+                                TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)dataTable.Rows[0]["targetcurrencytype"]
                             };
                         }
                     }
@@ -101,21 +103,23 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "func_ReadListTransactionLog";
 
-                    string sqlQuery = $"SELECT * FROM {functionName}(@p_source_account_number, @p_target_account_number, @p_transaction_type, @p_transaction_status, @p_transfer_amount_small, @p_transfer_amount_large, @p_currency_rate, @p_start_date, @p_end_date, @p_kmv_small, @p_kmv_large)";
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_source_account_number, @p_target_account_number, @p_transaction_type, @p_transaction_status, @p_transfer_amount_small, @p_transfer_amount_large, @p_currency_rate, @p_start_date, @p_end_date, @p_kmv_small, @p_kmv_large, @p_target_currency_type, @p_source_currency_type)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
                         command.Parameters.AddWithValue("@p_source_account_number", NpgsqlDbType.Bigint, dTOTransactionLog.SourceAccountNumber);
                         command.Parameters.AddWithValue("@p_target_account_number", NpgsqlDbType.Bigint, dTOTransactionLog.TargetAccountNumber);
-                        command.Parameters.AddWithValue("@p_transaction_type", NpgsqlDbType.Integer, dTOTransactionLog.TransactionType);
-                        command.Parameters.AddWithValue("@p_transaction_status", NpgsqlDbType.Integer, dTOTransactionLog.TransactionStatus);
+                        command.Parameters.AddWithValue("@p_transaction_type", NpgsqlDbType.Integer, (int)dTOTransactionLog.TransactionType);
+                        command.Parameters.AddWithValue("@p_transaction_status", NpgsqlDbType.Integer, (int)dTOTransactionLog.TransactionStatus);
                         command.Parameters.AddWithValue("@p_transfer_amount_small", NpgsqlDbType.Numeric, dTOTransactionLog.TransferAmountSmall);
                         command.Parameters.AddWithValue("@p_transfer_amount_large", NpgsqlDbType.Numeric, dTOTransactionLog.TransferAmountLarge);
                         command.Parameters.AddWithValue("@p_currency_rate", NpgsqlDbType.Numeric, dTOTransactionLog.CurrencyRate);
-                        command.Parameters.AddWithValue("@p_start_date", NpgsqlDbType.Timestamp, dTOTransactionLog.StartDate);
-                        command.Parameters.AddWithValue("@p_end_date", NpgsqlDbType.Timestamp, dTOTransactionLog.EndDate);
+                        command.Parameters.AddWithValue("@p_start_date", NpgsqlDbType.Date, dTOTransactionLog.StartDate == DateTime.MaxValue ? (object)DBNull.Value : (object)dTOTransactionLog.StartDate.Date);
+                        command.Parameters.AddWithValue("@p_end_date", NpgsqlDbType.Date, dTOTransactionLog.EndDate == DateTime.MaxValue ? (object)DBNull.Value : (object)dTOTransactionLog.EndDate.Date);
                         command.Parameters.AddWithValue("@p_kmv_small", NpgsqlDbType.Numeric, dTOTransactionLog.KMVSmall);
                         command.Parameters.AddWithValue("@p_kmv_large", NpgsqlDbType.Numeric, dTOTransactionLog.KMVLarge);
+                        command.Parameters.AddWithValue("@p_target_currency_type", NpgsqlDbType.Integer, (int)dTOTransactionLog.TargetCurrencyType);
+                        command.Parameters.AddWithValue("@p_source_currency_type", NpgsqlDbType.Integer, (int)dTOTransactionLog.SourceCurrencyType);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
                         DataTable dataTable = new DataTable();
@@ -139,6 +143,8 @@ namespace FabrieBank.DAL.Entity
                                 TargetNewBalance = (decimal)item["targetnewbalance"],
                                 Timestamp = (DateTime)item["mytimestamp"],
                                 KMV = (decimal)item["kmv"],
+                                SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)dataTable.Rows[0]["sourcecurrencytype"],
+                                TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)dataTable.Rows[0]["targetcurrencytype"]
                             };
                             transactionLogs.Add(transactionLog);
                         }
@@ -173,7 +179,7 @@ namespace FabrieBank.DAL.Entity
 
                     string sqlQuery = $"CALL {procedureName}(@p_source_account_number, @p_target_account_number, @p_transaction_type, " +
                         $"@p_transaction_status, @p_transfer_amount, @p_currency_rate, @p_transaction_fee, @p_source_old_balance, " +
-                        $"@p_source_new_balance, @p_target_old_balance, @p_target_new_balance, @p_timestamp, @p_kmv)";
+                        $"@p_source_new_balance, @p_target_old_balance, @p_target_new_balance, @p_timestamp, @p_kmv, @p_target_currency_type, @p_source_currency_type)";
 
 
 
@@ -192,6 +198,8 @@ namespace FabrieBank.DAL.Entity
                         command.Parameters.AddWithValue("@p_target_new_balance", transactionLog.TargetNewBalance);
                         command.Parameters.AddWithValue("@p_timestamp", DateTime.Now);
                         command.Parameters.AddWithValue("@p_kmv", transactionLog.KMV);
+                        command.Parameters.AddWithValue("@p_target_currency_type", (int)transactionLog.TargetCurrencyType);
+                        command.Parameters.AddWithValue("@p_source_currency_type", (int)transactionLog.SourceCurrencyType);
 
                         command.ExecuteNonQuery();
                     }

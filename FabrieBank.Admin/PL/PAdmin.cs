@@ -6,6 +6,7 @@ using FabrieBank.Admin.BLL.Logic;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
 using System.Globalization;
+using System.Net.NetworkInformation;
 
 namespace FabrieBank.Admin.PL
 {
@@ -575,7 +576,203 @@ namespace FabrieBank.Admin.PL
         /// </summary>
         public void ListTransactionLogs(DTOAdmin admin)
         {
+            try
+            {
+                if (admin.AccessLevel != 1)
+                {
+                    Console.WriteLine("\nTo Search By Transaction ID --> 1, To Search By Other Conditions --> 2");
+                    Console.Write(">>> ");
+                    string? ch = Console.ReadLine();
 
+                    switch (ch)
+                    {
+                        case "1":
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Transaction ID: ");
+                            int transactionId;
+                            while (!int.TryParse(Console.ReadLine(), out transactionId) || transactionId <= 0)
+                            {
+                                Console.WriteLine("Invalid Transaction ID. Please enter a number greater than 0:");
+                            }
+
+                            DTOTransactionLog transactionLog = new DTOTransactionLog()
+                            {
+                                LogId = transactionId
+                            };
+
+                            bAdmin.ListTransactionLogs(transactionLog);
+
+                            break;
+
+                        case "2":
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Source Account Number: ");
+                            long sourceAccountNumber;
+                            while (!long.TryParse(Console.ReadLine(), out sourceAccountNumber))
+                            {
+                                Console.WriteLine("Invalid Source Account Number. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Source Account Number: ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Target Account Number: ");
+                            long targetAccountNumber;
+                            while (!long.TryParse(Console.ReadLine(), out targetAccountNumber))
+                            {
+                                Console.WriteLine("Invalid Target Account Number. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Target Account Number: ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Transaction Type: ");
+                            int transactionType;
+                            while (!int.TryParse(Console.ReadLine(), out transactionType))
+                            {
+                                Console.WriteLine("Invalid Transaction Type. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Transaction Type: ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Transaction Status: ");
+                            int transactionStatus;
+                            while (!int.TryParse(Console.ReadLine(), out transactionStatus))
+                            {
+                                Console.WriteLine("Invalid Transaction Status. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Transaction Status: ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Transfer Amount Is Small: ");
+                            decimal transferAmountIsSmall;
+                            while (!decimal.TryParse(Console.ReadLine(), out transferAmountIsSmall))
+                            {
+                                Console.WriteLine("Invalid Transfer Amount . Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Transfer Amount Is Small: ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Transfer Amount Is Big: ");
+                            decimal transferAmountIsBig;
+                            while (!decimal.TryParse(Console.ReadLine(), out transferAmountIsBig))
+                            {
+                                Console.WriteLine("Invalid Transfer Amount. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Transfer Amount Is Big ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("Currency Rate: ");
+                            decimal currencyRate;
+                            while (!decimal.TryParse(Console.ReadLine(), out currencyRate))
+                            {
+                                Console.WriteLine("Invalid Currency Rate. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("Currency Rate: ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            DateTime startDate;
+                            while (true)
+                            {
+                                Console.Write("Start Date (yyyyMMdd): ");
+                                string input = Console.ReadLine();
+                                if (input == "0")
+                                {
+                                    startDate = DateTime.MinValue;
+                                    break;
+                                }
+
+                                if (DateTime.TryParseExact(input, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
+                                {
+                                    break;
+                                }
+
+                                Console.WriteLine("Invalid Start Date format. Please enter a valid date (yyyyMMdd) or 0 to leave it empty: ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            DateTime endDate;
+                            while (true)
+                            {
+                                Console.Write("End Date (yyyyMMdd): ");
+                                string input = Console.ReadLine();
+                                if (input == "0")
+                                {
+                                    endDate = DateTime.MaxValue;
+                                    break;
+                                }
+
+                                if (DateTime.TryParseExact(input, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate))
+                                {
+                                    if (endDate >= startDate || startDate == DateTime.MinValue)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Invalid End Date. End Date must be greater than or equal to Start Date.");
+                                    }
+                                }
+
+                                Console.WriteLine("Invalid End Date format. Please enter a valid date (yyyyMMdd) or 0 to leave it empty: ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("KMV Is Small: ");
+                            decimal kmvIsSmall;
+                            while (!decimal.TryParse(Console.ReadLine(), out kmvIsSmall))
+                            {
+                                Console.WriteLine("Invalid KMV. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("KMV Is Small: ");
+                            }
+
+                            Console.WriteLine("\n==============================================");
+                            Console.Write("KMV Is Big: ");
+                            decimal kmvIsBig;
+                            while (!decimal.TryParse(Console.ReadLine(), out kmvIsBig))
+                            {
+                                Console.WriteLine("Invalid KMV. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                                Console.Write("KMV Is Big: ");
+                            }
+
+                            DTOTransactionLog dTOTransactionLog = new DTOTransactionLog
+                            {
+                                SourceAccountNumber = sourceAccountNumber,
+                                TargetAccountNumber = targetAccountNumber,
+                                TransactionType = (EnumTransactionType)transactionType,
+                                TransactionStatus = (EnumTransactionStatus)transactionStatus,
+                                TransferAmountSmall = transferAmountIsSmall,
+                                TransferAmountLarge = transferAmountIsBig,
+                                CurrencyRate = currencyRate,
+                                StartDate = startDate,
+                                EndDate = endDate,
+                                KMVSmall = kmvIsSmall,
+                                KMVLarge = kmvIsBig
+                            };
+
+                            bAdmin.ListTransactionLogs(dTOTransactionLog);
+
+                            break;
+
+                        default:
+
+                            Console.WriteLine("Invalid Choice!");
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nPermission Denied! Your Access Level Is Insufficient To Perform This Operation\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                MethodBase method = MethodBase.GetCurrentMethod();
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
         }
     }
 }
