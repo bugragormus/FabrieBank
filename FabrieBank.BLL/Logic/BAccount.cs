@@ -58,14 +58,10 @@ namespace FabrieBank.BLL.Logic
                 Console.WriteLine($"Account Name: {accountInfo.AccountName}");
                 Console.WriteLine("==============================\n");
             }
-
-            EAccountInfo accInfoDB = new EAccountInfo();
-            accInfoDB.ReadListAccountInfo(dTOAccount);
             if (accountInfos.Count == 0)
             {
                 Console.WriteLine("yok");
             }
-
         }
 
         /// <summary>

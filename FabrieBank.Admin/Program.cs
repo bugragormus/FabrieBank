@@ -83,7 +83,7 @@ namespace FabrieBank
                     //    CurrencyMenu(admin);
                     //    break;
 
-                    case "5":
+                    case "6":
 
                         Main();
                         break;
@@ -104,36 +104,44 @@ namespace FabrieBank
         {
             string choice;
 
-            do
+            if (admin.Nickname != null)
             {
-                Console.WriteLine("==============================");
-                Console.WriteLine("USER OPERATIONS");
-                Console.WriteLine("==============================");
-                Console.WriteLine("1. Customer Status Update");
-                Console.WriteLine("2. List Customers");
-                Console.WriteLine("3. Back to Main Menu");
-                Console.WriteLine("==============================");
-                Console.Write("Make your pick (1-3): ");
-                choice = Console.ReadLine();
-
-                switch (choice)
+                do
                 {
-                    case "1":
-                        PAdmin pAdmin = new PAdmin(admin.Nickname);
-                        pAdmin.CustomerStatusUpdate();
-                        break;
-                    //case "2":
-                    //    PCustomer pCustomer1 = new PCustomer(admin.AccessLevel);
-                    //    pCustomer1.UpdatePersonelInfo(admin);
-                    //    break;
-                    case "3":
-                        Console.WriteLine("\nExited from User Operations.\n");
-                        break;
-                    default:
-                        Console.WriteLine("\nInvalid selection. Try again.\n");
-                        break;
-                }
-            } while (choice != "3");
+                    Console.WriteLine("==============================");
+                    Console.WriteLine("USER OPERATIONS");
+                    Console.WriteLine("==============================");
+                    Console.WriteLine("1. Customer Status Update");
+                    Console.WriteLine("2. List Customers");
+                    Console.WriteLine("3. Back to Main Menu");
+                    Console.WriteLine("==============================");
+                    Console.Write("Make your pick (1-3): ");
+                    choice = Console.ReadLine();
+
+                    switch (choice)
+                    {
+                        case "1":
+                            PAdmin pAdmin = new PAdmin(admin.Nickname);
+                            pAdmin.CustomerStatusUpdate();
+                            break;
+                        case "2":
+                            PAdmin pAdmin1 = new PAdmin(admin.Nickname);
+                            pAdmin1.ListCustomers(admin);
+                            break;
+                        case "3":
+                            Console.WriteLine("\nExited from User Operations.\n");
+                            break;
+                        default:
+                            Console.WriteLine("\nInvalid selection. Try again.\n");
+                            break;
+                    }
+                } while (choice != "3");
+            }
+            else
+            {
+                Console.WriteLine("An Error Occured!");
+                Main();
+            }
         }
     }
 }

@@ -203,6 +203,93 @@ namespace FabrieBank.Admin.PL
                 }
             }
         }
+
+        public void ListCustomers(DTOAdmin admin)
+        {
+            if (admin.AccessLevel != 1)
+            {
+                Console.WriteLine("\nTo Search By TCKN --> 1, To Search By Other Conditions --> 2");
+                Console.Write(">>> ");
+                string? ch = Console.ReadLine();
+
+                switch (ch)
+                {
+                    case "1":
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Customer TCKN: ");
+                        long customerTckn;
+                        while (!long.TryParse(Console.ReadLine(), out customerTckn) || customerTckn.ToString().Length != 11)
+                        {
+                            Console.WriteLine("Invalid TCKN. Please enter a 11-digit TCKN:");
+                        }
+
+                        DTOCustomer dTOCustomer = new DTOCustomer()
+                        {
+                            Tckn = customerTckn
+                        };
+
+                        bAdmin.ListCustomers(dTOCustomer);
+
+                        break;
+
+                    case "2":
+
+                        Console.WriteLine("\nTo list all customers please leave empty all conditions.");
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Customer Name: ");
+                        string? customerName = Console.ReadLine();
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Customer Lastname: ");
+                        string? customerLastname = Console.ReadLine();
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Customer Cell Number: ");
+                        long customerCellNo;
+                        while (!long.TryParse(Console.ReadLine(), out customerCellNo))
+                        {
+                            Console.WriteLine("Invalid Cell No. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                            Console.Write("Customer Cell No: ");
+                        }
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Customer Email: ");
+                        string customerEmail = Console.ReadLine();
+
+                        Console.WriteLine("\n==============================================");
+                        Console.Write("Customer Status: ");
+                        int customerStatus;
+                        while (!int.TryParse(Console.ReadLine(), out customerStatus))
+                        {
+                            Console.WriteLine("Invalid Status. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                            Console.Write("Customer Status: \n");
+                        }
+
+                        DTOCustomer customer = new DTOCustomer
+                        {
+                            Name = customerName,
+                            Lastname = customerLastname,
+                            CellNo = customerCellNo,
+                            Email = customerEmail,
+                            Status = customerStatus
+                        };
+
+                        bAdmin.ListCustomers(customer);
+
+                        break;
+
+                    default:
+
+                        Console.WriteLine("Invalid Choice!");
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("\nPermission Denied! Your Access Level Is Insufficient To Perform This Operation\n");
+            }
+        }
     }
 }
 
