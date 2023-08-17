@@ -34,13 +34,12 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "func_readtransactionfee";
 
-                    string sql = $"SELECT * FROM {functionName}(@transactionType)";
+                    string sql = $"SELECT * FROM {functionName}(@p_transactionType)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                     {
-                        // Convert the EnumTransactionFeeType to its integer representation
                         int transactionTypeValue = (int)transactionType;
-                        command.Parameters.AddWithValue("@transactionType", transactionTypeValue);
+                        command.Parameters.AddWithValue("@p_transactionType", transactionTypeValue);
 
                         object result = command.ExecuteScalar();
 
@@ -60,6 +59,57 @@ namespace FabrieBank.DAL.Entity
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
             return 0.00m;
+        }
+
+        /// <summary>
+        /// Read List SP caller for TransactionFee
+        /// </summary>
+        /// <param name="dTOTransactionFee"></param>
+        /// <returns></returns>
+        public List<DTOTransactionFee> ReadListTransactionFee(DTOTransactionFee dTOTransactionFee)
+        {
+            List<DTOTransactionFee> transactionFees = new List<DTOTransactionFee>();
+
+            try
+            {
+                using (NpgsqlConnection connection = new NpgsqlConnection(database.ConnectionString))
+                {
+                    connection.Open();
+
+                    string functionName = "func_ReadListTransactionFee";
+
+                    string sqlQuery = $"SELECT * FROM {functionName}(@p_fee_amount_is_small, @p_fee_amount_is_big)";
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@p_fee_amount_is_small", NpgsqlDbType.Numeric, dTOTransactionFee.AmountIsSmall);
+                        command.Parameters.AddWithValue("@p_fee_amount_is_big", NpgsqlDbType.Numeric, dTOTransactionFee.AmountIsBig);
+
+                        NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(command);
+                        DataTable dataTable = new DataTable();
+
+                        npgsqlDataAdapter.Fill(dataTable);
+                        foreach (DataRow item in dataTable.Rows)
+                        {
+                            DTOTransactionFee transactionFee = new DTOTransactionFee
+                            {
+                                FeeType = (EnumTransactionFeeType)item["transactiontype"],
+                                Amount = (decimal)item["feeamount"]
+                            };
+                            transactionFees.Add(transactionFee);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MethodBase method = MethodBase.GetCurrentMethod();
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
+            return transactionFees;
         }
 
         /// <summary>

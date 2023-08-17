@@ -774,6 +774,104 @@ namespace FabrieBank.Admin.PL
                 Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
             }
         }
+
+        /// <summary>
+        /// List transaction logs by id
+        /// </summary>
+        /// <param name="admin"></param>
+        public void ListFees(DTOAdmin admin)
+        {
+            try
+            {
+                if (admin.AccessLevel != 1)
+                {
+                    Console.WriteLine("\n==============================================");
+                    Console.Write("Transaction Fee Is Small: ");
+                    decimal transactionFeeIsSmall;
+                    while (!decimal.TryParse(Console.ReadLine(), out transactionFeeIsSmall))
+                    {
+                        Console.WriteLine("Invalid Transaction Fee . Please enter a numeric value or if you want to left it empty please give input 0: ");
+                        Console.Write("Transaction Fee Is Small: ");
+                    }
+
+                    Console.WriteLine("\n==============================================");
+                    Console.Write("Transaction Fee Is Big: ");
+                    decimal transactionFeeIsBig;
+                    while (!decimal.TryParse(Console.ReadLine(), out transactionFeeIsBig))
+                    {
+                        Console.WriteLine("Invalid Transaction Fee. Please enter a numeric value or if you want to left it empty please give input 0: ");
+                        Console.Write("Transaction Fee Is Big: ");
+                    }
+
+                    DTOTransactionFee dTOTransactionFee = new DTOTransactionFee()
+                    {
+                        AmountIsSmall = transactionFeeIsSmall,
+                        AmountIsBig = transactionFeeIsBig
+                    };
+
+                    bAdmin.ListFees(dTOTransactionFee);
+                }
+                else
+                {
+                    Console.WriteLine("\nPermission Denied! Your Access Level Is Insufficient To Perform This Operation\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                MethodBase method = MethodBase.GetCurrentMethod();
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
+        }
+
+        /// <summary>
+        /// Add new fee with fee amount input
+        /// </summary>
+        /// <param name="admin"></param>
+        public void AddFee(DTOAdmin admin)
+        {
+            try
+            {
+                if (admin.AccessLevel == 3)
+                {
+                    Console.WriteLine("\n==============================================");
+                    Console.Write("Fee Amount or Percentage: ");
+                    decimal amountInput;
+                    while (!decimal.TryParse(Console.ReadLine(), out amountInput))
+                    {
+                        Console.WriteLine("Invalid Transaction Fee . Please enter a numeric value");
+                        Console.Write("Fee Amount or Percentage: ");
+                    }
+                    DTOTransactionFee dTOTransactionFee = new DTOTransactionFee()
+                    {
+                        Amount = amountInput
+                    };
+                    bool inserted = bAdmin.AddFee(dTOTransactionFee);
+                    if (inserted)
+                    {
+                        Console.WriteLine("\nNew fee has been added successfuly.\n");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nSomething went wrong while adding new fee.\n");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nPermission Denied! Your Access Level Is Insufficient To Perform This Operation\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                MethodBase method = MethodBase.GetCurrentMethod();
+                EErrorLog errorLog = new EErrorLog();
+                errorLog.InsertErrorLog(ex, method.ToString());
+
+                Console.WriteLine($"An error occurred while performing {method} operation. Please try again later.");
+            }
+        }
     }
 }
 

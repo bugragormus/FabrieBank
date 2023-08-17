@@ -55,11 +55,11 @@ namespace FabrieBank
 
                 for (; ; )
                 {
-                    Console.WriteLine("====================================================================================================");
-                    Console.WriteLine("                                           MAIN MENU                                                ");
-                    Console.WriteLine("====================================================================================================");
-                    Console.WriteLine("1.Customer Operations    2.Account Operations     3.Logs      4.Currencies     5.Fees      6.Log Out");
-                    Console.WriteLine("====================================================================================================");
+                    Console.WriteLine("===================================================================================");
+                    Console.WriteLine("                                    MAIN MENU                                      ");
+                    Console.WriteLine("===================================================================================");
+                    Console.WriteLine("1.Customer Operations    2.Account Operations     3.Logs      4.Fees      5.Log Out");
+                    Console.WriteLine("===================================================================================");
                     Console.Write(">>> ");
                     ch = Console.ReadLine();
                     Console.Clear();
@@ -82,12 +82,12 @@ namespace FabrieBank
                             LogMenu(admin);
                             break;
 
-                        //case "4":
+                        case "4":
 
-                        //    CurrencyMenu(admin);
-                        //    break;
+                            FeeMenu(admin);
+                            break;
 
-                        case "6":
+                        case "5":
 
                             Main();
                             break;
@@ -194,6 +194,64 @@ namespace FabrieBank
                             break;
                     }
                 } while (choice != "3");
+            }
+            else
+            {
+                Console.WriteLine("An Error Occured!");
+                Main();
+            }
+        }
+
+        /// <summary>
+        /// Menu for fee operations
+        /// </summary>
+        /// <param name="admin"></param>
+        public void FeeMenu(DTOAdmin admin)
+        {
+            string choice;
+
+            if (admin.Nickname != null)
+            {
+                do
+                {
+                    Console.WriteLine("==============================");
+                    Console.WriteLine("FEE OPERATIONS");
+                    Console.WriteLine("==============================");
+                    Console.WriteLine("1. List Fee Table");
+                    Console.WriteLine("2. Add New Fee To Table");
+                    Console.WriteLine("3. Remove Fee From Table");
+                    Console.WriteLine("4. Update Fees");
+                    Console.WriteLine("5. Back to Main Menu");
+                    Console.WriteLine("==============================");
+                    Console.Write("Make your pick (1-5): ");
+                    choice = Console.ReadLine();
+
+                    switch (choice)
+                    {
+                        case "1":
+                            PAdmin pAdmin = new PAdmin(admin.Nickname);
+                            pAdmin.ListFees(admin);
+                            break;
+                        case "2":
+                            PAdmin pAdmin1 = new PAdmin(admin.Nickname);
+                            pAdmin1.AddFee(admin);
+                            break;
+                        //case "3":
+                        //    PAdmin pAdmin2 = new PAdmin(admin.Nickname);
+                        //    pAdmin2.RemoveFee(admin);
+                        //    break;
+                        //case "4":
+                        //    PAdmin pAdmin3 = new PAdmin(admin.Nickname);
+                        //    pAdmin3.UpdateFee(admin);
+                        //    break;
+                        case "5":
+                            Console.WriteLine("\nExited from Fee Operations.\n");
+                            break;
+                        default:
+                            Console.WriteLine("\nInvalid selection. Try again.\n");
+                            break;
+                    }
+                } while (choice != "5");
             }
             else
             {

@@ -14,6 +14,7 @@ namespace FabrieBank.Admin.BLL.Logic
         private EAccountInfo eAccount;
         private EErrorLog eError;
         private ETransactionLog eTransaction;
+        private ETransactionFee eTransactionFee;
 
         public BAdmin()
         {
@@ -22,6 +23,7 @@ namespace FabrieBank.Admin.BLL.Logic
             eAccount = new EAccountInfo();
             eError = new EErrorLog();
             eTransaction = new ETransactionLog();
+            eTransactionFee = new ETransactionFee();
         }
 
         /// <summary>
@@ -257,6 +259,39 @@ namespace FabrieBank.Admin.BLL.Logic
                     Console.WriteLine("No log was found that met the given parameters.");
                 }
             }
+        }
+
+        /// <summary>
+        /// ReadList transaction fee logic
+        /// </summary>
+        /// <param name="dTOTransactionFee"></param>
+        public void ListFees(DTOTransactionFee dTOTransactionFee)
+        {
+            Console.WriteLine("\n");
+            List<DTOTransactionFee> dTOTransactionFees = eTransactionFee.ReadListTransactionFee(dTOTransactionFee);
+
+            foreach (DTOTransactionFee transactionFee in dTOTransactionFees)
+            {
+                Console.WriteLine($"Fee Type  : {transactionFee.FeeType}");
+                Console.WriteLine($"Fee Amount: {transactionFee.Amount}");
+                Console.WriteLine("========================================\n");
+            }
+
+            if (dTOTransactionFees.Count == 0)
+            {
+                Console.WriteLine("No record was found that met the given parameters.");
+            }
+        }
+
+        /// <summary>
+        /// Add new fee logic
+        /// </summary>
+        /// <param name="dTOTransactionFee"></param>
+        /// <returns></returns>
+        public bool AddFee(DTOTransactionFee dTOTransactionFee)
+        {
+            eTransactionFee.InsertTransactionFee(dTOTransactionFee);
+            return true;
         }
     }
 }

@@ -6,5 +6,7 @@ namespace FabrieBank.DAL.Common.DTOs
     {
         public EnumTransactionFeeType FeeType { get; set; }
         public decimal Amount { get; set; }
+        public decimal AmountIsSmall { get; set; }
+        public decimal AmountIsBig { get; set; }
     }
 }
