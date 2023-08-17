@@ -7,5 +7,7 @@
         CurrencyBuyingProfitMargin = 3,
         CurrencySellingProfitMargin = 4,
         KMV = 5,
+        Deposit = 6,
+        Withdraw = 7,
     }
 }

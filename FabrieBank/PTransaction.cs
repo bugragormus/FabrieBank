@@ -49,7 +49,7 @@ namespace FabrieBank
                     string amountInput = Console.ReadLine();
                     decimal amount;
 
-                    if (decimal.TryParse(amountInput, out amount))
+                    if (decimal.TryParse(amountInput, out amount) || amount >= 10)
                     {
                         DTOAccountInfo accountInfo = new DTOAccountInfo()
                         {
@@ -60,7 +60,7 @@ namespace FabrieBank
                     }
                     else
                     {
-                        Console.WriteLine("Incorrect input! Please enter a valid amount.");
+                        Console.WriteLine("Incorrect input! Please enter a valid amount. Amount must be grater then 10");
                     }
                 }
                 else
@@ -98,7 +98,7 @@ namespace FabrieBank
                     string amountInput = Console.ReadLine();
                     decimal amount;
 
-                    if (decimal.TryParse(amountInput, out amount))
+                    if (decimal.TryParse(amountInput, out amount) || amount >= 10)
                     {
                         DTOAccountInfo accountInfo = new DTOAccountInfo()
                         {
@@ -110,7 +110,7 @@ namespace FabrieBank
                     }
                     else
                     {
-                        Console.WriteLine("Incorrect input! Please enter a valid amount.");
+                        Console.WriteLine("Incorrect input! Please enter a valid amount. Amount must be grater then 10");
                     }
                 }
                 else

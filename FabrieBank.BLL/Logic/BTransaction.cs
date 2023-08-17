@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using FabrieBank.BLL.Service;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
@@ -30,60 +31,505 @@ namespace FabrieBank.BLL.Logic
         /// <param name="balance"></param>
         public void Deposit(DTOAccountInfo accountInfo, decimal balance)
         {
+            decimal transactionFee = eTransactionFee.ReadTransactionFee(EnumTransactionFeeType.Deposit);
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
             if (accountInfo != null)
             {
-                decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
-                decimal newBalance = oldBalance + balance;
-
-                DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                if (accountInfo.CurrencyType == 1)
                 {
-                    AccountNo = accountInfo.AccountNo,
-                    Balance = newBalance,
-                    AccountName = accountInfo.AccountName
-                };
+                    if (balance <= 10000M)
+                    {
+                        decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                        decimal newBalance = oldBalance + balance;
 
-                eAccount.UpdateAccountInfo(dTOAccount);
+                        DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                        {
+                            AccountNo = accountInfo.AccountNo,
+                            Balance = newBalance,
+                            AccountName = accountInfo.AccountName
+                        };
 
-                // Log the successful deposit
-                DTOTransactionLog transactionLog = new DTOTransactionLog
+                        eAccount.UpdateAccountInfo(dTOAccount);
+
+                        // Log the successful deposit
+                        DTOTransactionLog transactionLog = new DTOTransactionLog
+                        {
+                            TargetAccountNumber = accountInfo.AccountNo,
+                            TransactionType = EnumTransactionType.Deposit,
+                            TransactionStatus = EnumTransactionStatus.Success,
+                            TransferAmount = newBalance - oldBalance,
+                            TargetOldBalance = oldBalance,
+                            TargetNewBalance = newBalance,
+                            Timestamp = DateTime.Now,
+                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                        };
+
+                        eTransactionLog.InsertTransactionLog(transactionLog);
+
+                        Console.WriteLine("\nDeposit successful.");
+                        Console.WriteLine($"Old balance: {oldBalance}");
+                        Console.WriteLine($"New balance: {newBalance}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"You entered a request over the daily deposit limit (10000). If you continue with the transaction, a transaction fee of {transactionFee} will be charged.");
+                        Console.WriteLine("\nDo you want to continue? 1-) Yes, 2-) No");
+                        Console.Write(">>> ");
+                        string? ch = Console.ReadLine();
+
+                        switch (ch)
+                        {
+                            case "1":
+
+                                decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                                decimal newBalance = oldBalance + balance - transactionFee;
+
+                                DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                                {
+                                    AccountNo = accountInfo.AccountNo,
+                                    Balance = newBalance,
+                                    AccountName = accountInfo.AccountName
+                                };
+
+                                eAccount.UpdateAccountInfo(dTOAccount);
+
+                                // Log the successful deposit
+                                DTOTransactionLog transactionLog = new DTOTransactionLog
+                                {
+                                    TargetAccountNumber = accountInfo.AccountNo,
+                                    TransactionType = EnumTransactionType.Deposit,
+                                    TransactionStatus = EnumTransactionStatus.Success,
+                                    TransferAmount = newBalance - oldBalance,
+                                    TargetOldBalance = oldBalance,
+                                    TargetNewBalance = newBalance,
+                                    Timestamp = DateTime.Now,
+                                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    TransactionFee = transactionFee
+                                };
+
+                                eTransactionLog.InsertTransactionLog(transactionLog);
+
+                                Console.WriteLine("\nDeposit successful.");
+                                Console.WriteLine($"Old balance: {oldBalance}");
+                                Console.WriteLine($"New balance: {newBalance}");
+
+                                break;
+
+                            case "2":
+
+                                // Log the failed deposit
+                                DTOTransactionLog transactionLogTRY = new DTOTransactionLog
+                                {
+                                    TargetAccountNumber = accountInfo.AccountNo,
+                                    TransactionType = EnumTransactionType.Deposit,
+                                    TransactionStatus = EnumTransactionStatus.Failed,
+                                    TransferAmount = balance,
+                                    TargetOldBalance = accountInfo.Balance,
+                                    TargetNewBalance = accountInfo.Balance,
+                                    Timestamp = DateTime.Now,
+                                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                };
+
+                                eTransactionLog.InsertTransactionLog(transactionLogTRY);
+
+                                Console.WriteLine("\nDeposit unsuccessful.");
+
+                                break;
+
+                            default:
+
+                                Console.WriteLine("Invalid Choice!");
+                                break;
+                        }
+                    }
+                }
+                else if (accountInfo.CurrencyType == 2 || accountInfo.CurrencyType == 4)
                 {
-                    TargetAccountNumber = accountInfo.AccountNo,
-                    TransactionType = EnumTransactionType.Deposit,
-                    TransactionStatus = EnumTransactionStatus.Success,
-                    TransferAmount = newBalance - oldBalance,
-                    TargetOldBalance = oldBalance,
-                    TargetNewBalance = newBalance,
-                    Timestamp = DateTime.Now,
-                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
-                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
-                };
+                    if (balance <= 5000M)
+                    {
+                        decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                        decimal newBalance = oldBalance + balance;
 
-                eTransactionLog.InsertTransactionLog(transactionLog);
+                        DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                        {
+                            AccountNo = accountInfo.AccountNo,
+                            Balance = newBalance,
+                            AccountName = accountInfo.AccountName
+                        };
 
-                Console.WriteLine("\nDeposit successful.");
-                Console.WriteLine($"Old balance: {oldBalance}");
-                Console.WriteLine($"New balance: {newBalance}");
+                        eAccount.UpdateAccountInfo(dTOAccount);
+
+                        // Log the successful deposit
+                        DTOTransactionLog transactionLog = new DTOTransactionLog
+                        {
+                            TargetAccountNumber = accountInfo.AccountNo,
+                            TransactionType = EnumTransactionType.Deposit,
+                            TransactionStatus = EnumTransactionStatus.Success,
+                            TransferAmount = newBalance - oldBalance,
+                            TargetOldBalance = oldBalance,
+                            TargetNewBalance = newBalance,
+                            Timestamp = DateTime.Now,
+                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                        };
+
+                        eTransactionLog.InsertTransactionLog(transactionLog);
+
+                        Console.WriteLine("\nDeposit successful.");
+                        Console.WriteLine($"Old balance: {oldBalance}");
+                        Console.WriteLine($"New balance: {newBalance}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"\nYou entered a request over the daily deposit limit (5000). If you continue with the transaction, a transaction fee of {transactionFee} will be charged.");
+                        Console.WriteLine("\nDo you want to continue? 1-) Yes, 2-) No");
+                        Console.Write(">>> ");
+                        string? ch = Console.ReadLine();
+
+                        switch (ch)
+                        {
+                            case "1":
+
+                                decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                                decimal newBalance = oldBalance + balance - transactionFee;
+
+                                DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                                {
+                                    AccountNo = accountInfo.AccountNo,
+                                    Balance = newBalance,
+                                    AccountName = accountInfo.AccountName
+                                };
+
+                                eAccount.UpdateAccountInfo(dTOAccount);
+
+                                // Log the successful deposit
+                                DTOTransactionLog transactionLog = new DTOTransactionLog
+                                {
+                                    TargetAccountNumber = accountInfo.AccountNo,
+                                    TransactionType = EnumTransactionType.Deposit,
+                                    TransactionStatus = EnumTransactionStatus.Success,
+                                    TransferAmount = newBalance - oldBalance,
+                                    TargetOldBalance = oldBalance,
+                                    TargetNewBalance = newBalance,
+                                    Timestamp = DateTime.Now,
+                                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    TransactionFee = transactionFee
+                                };
+
+                                eTransactionLog.InsertTransactionLog(transactionLog);
+
+                                Console.WriteLine("\nDeposit successful.");
+                                Console.WriteLine($"Old balance: {oldBalance}");
+                                Console.WriteLine($"New balance: {newBalance}");
+
+                                break;
+
+                            case "2":
+
+                                // Log the failed deposit
+                                DTOTransactionLog transactionLogTRY = new DTOTransactionLog
+                                {
+                                    TargetAccountNumber = accountInfo.AccountNo,
+                                    TransactionType = EnumTransactionType.Deposit,
+                                    TransactionStatus = EnumTransactionStatus.Failed,
+                                    TransferAmount = balance,
+                                    TargetOldBalance = accountInfo.Balance,
+                                    TargetNewBalance = accountInfo.Balance,
+                                    Timestamp = DateTime.Now,
+                                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                };
+
+                                eTransactionLog.InsertTransactionLog(transactionLogTRY);
+
+                                Console.WriteLine("\nDeposit unsuccessful.");
+
+                                break;
+
+                            default:
+
+                                Console.WriteLine("Invalid Choice!");
+                                break;
+                        }
+                    }
+                }
+                else if (accountInfo.CurrencyType == 3)
+                {
+                    if (balance <= 25000M)
+                    {
+                        decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                        decimal newBalance = oldBalance + balance;
+
+                        DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                        {
+                            AccountNo = accountInfo.AccountNo,
+                            Balance = newBalance,
+                            AccountName = accountInfo.AccountName
+                        };
+
+                        eAccount.UpdateAccountInfo(dTOAccount);
+
+                        // Log the successful deposit
+                        DTOTransactionLog transactionLog = new DTOTransactionLog
+                        {
+                            TargetAccountNumber = accountInfo.AccountNo,
+                            TransactionType = EnumTransactionType.Deposit,
+                            TransactionStatus = EnumTransactionStatus.Success,
+                            TransferAmount = newBalance - oldBalance,
+                            TargetOldBalance = oldBalance,
+                            TargetNewBalance = newBalance,
+                            Timestamp = DateTime.Now,
+                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                        };
+
+                        eTransactionLog.InsertTransactionLog(transactionLog);
+
+                        Console.WriteLine("\nDeposit successful.");
+                        Console.WriteLine($"Old balance: {oldBalance}");
+                        Console.WriteLine($"New balance: {newBalance}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"\nYou entered a request over the daily deposit limit (25000). If you continue with the transaction, a transaction fee of {transactionFee} will be charged.");
+                        Console.WriteLine("\nDo you want to continue? 1-) Yes, 2-) No");
+                        Console.Write(">>> ");
+                        string? ch = Console.ReadLine();
+
+                        switch (ch)
+                        {
+                            case "1":
+
+                                decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                                decimal newBalance = oldBalance + balance - transactionFee;
+
+                                DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                                {
+                                    AccountNo = accountInfo.AccountNo,
+                                    Balance = newBalance,
+                                    AccountName = accountInfo.AccountName
+                                };
+
+                                eAccount.UpdateAccountInfo(dTOAccount);
+
+                                // Log the successful deposit
+                                DTOTransactionLog transactionLog = new DTOTransactionLog
+                                {
+                                    TargetAccountNumber = accountInfo.AccountNo,
+                                    TransactionType = EnumTransactionType.Deposit,
+                                    TransactionStatus = EnumTransactionStatus.Success,
+                                    TransferAmount = newBalance - oldBalance,
+                                    TargetOldBalance = oldBalance,
+                                    TargetNewBalance = newBalance,
+                                    Timestamp = DateTime.Now,
+                                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    TransactionFee = transactionFee
+                                };
+
+                                eTransactionLog.InsertTransactionLog(transactionLog);
+
+                                Console.WriteLine("\nDeposit successful.");
+                                Console.WriteLine($"Old balance: {oldBalance}");
+                                Console.WriteLine($"New balance: {newBalance}");
+
+                                break;
+
+                            case "2":
+
+                                // Log the failed deposit
+                                DTOTransactionLog transactionLogTRY = new DTOTransactionLog
+                                {
+                                    TargetAccountNumber = accountInfo.AccountNo,
+                                    TransactionType = EnumTransactionType.Deposit,
+                                    TransactionStatus = EnumTransactionStatus.Failed,
+                                    TransferAmount = balance,
+                                    TargetOldBalance = accountInfo.Balance,
+                                    TargetNewBalance = accountInfo.Balance,
+                                    Timestamp = DateTime.Now,
+                                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                };
+
+                                eTransactionLog.InsertTransactionLog(transactionLogTRY);
+
+                                Console.WriteLine("\nDeposit unsuccessful.");
+
+                                break;
+
+                            default:
+
+                                Console.WriteLine("Invalid Choice!");
+                                break;
+                        }
+                    }
+                }
+                else if (accountInfo.CurrencyType == 5)
+                {
+                    if (balance <= 50000M)
+                    {
+                        decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                        decimal newBalance = oldBalance + balance;
+
+                        DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                        {
+                            AccountNo = accountInfo.AccountNo,
+                            Balance = newBalance,
+                            AccountName = accountInfo.AccountName
+                        };
+
+                        eAccount.UpdateAccountInfo(dTOAccount);
+
+                        // Log the successful deposit
+                        DTOTransactionLog transactionLog = new DTOTransactionLog
+                        {
+                            TargetAccountNumber = accountInfo.AccountNo,
+                            TransactionType = EnumTransactionType.Deposit,
+                            TransactionStatus = EnumTransactionStatus.Success,
+                            TransferAmount = newBalance - oldBalance,
+                            TargetOldBalance = oldBalance,
+                            TargetNewBalance = newBalance,
+                            Timestamp = DateTime.Now,
+                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                        };
+
+                        eTransactionLog.InsertTransactionLog(transactionLog);
+
+                        Console.WriteLine("\nDeposit successful.");
+                        Console.WriteLine($"Old balance: {oldBalance}");
+                        Console.WriteLine($"New balance: {newBalance}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"\nYou entered a request over the daily deposit limit (50000). If you continue with the transaction, a transaction fee of {transactionFee} will be charged.");
+                        Console.WriteLine("\nDo you want to continue? 1-) Yes, 2-) No");
+                        Console.Write(">>> ");
+                        string? ch = Console.ReadLine();
+
+                        switch (ch)
+                        {
+                            case "1":
+
+                                decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                                decimal newBalance = oldBalance + balance - transactionFee;
+
+                                DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                                {
+                                    AccountNo = accountInfo.AccountNo,
+                                    Balance = newBalance,
+                                    AccountName = accountInfo.AccountName
+                                };
+
+                                eAccount.UpdateAccountInfo(dTOAccount);
+
+                                // Log the successful deposit
+                                DTOTransactionLog transactionLog = new DTOTransactionLog
+                                {
+                                    TargetAccountNumber = accountInfo.AccountNo,
+                                    TransactionType = EnumTransactionType.Deposit,
+                                    TransactionStatus = EnumTransactionStatus.Success,
+                                    TransferAmount = newBalance - oldBalance,
+                                    TargetOldBalance = oldBalance,
+                                    TargetNewBalance = newBalance,
+                                    Timestamp = DateTime.Now,
+                                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    TransactionFee = transactionFee
+                                };
+
+                                eTransactionLog.InsertTransactionLog(transactionLog);
+
+                                Console.WriteLine("\nDeposit successful.");
+                                Console.WriteLine($"Old balance: {oldBalance}");
+                                Console.WriteLine($"New balance: {newBalance}");
+
+                                break;
+
+                            case "2":
+
+                                // Log the failed deposit
+                                DTOTransactionLog transactionLogTRY = new DTOTransactionLog
+                                {
+                                    TargetAccountNumber = accountInfo.AccountNo,
+                                    TransactionType = EnumTransactionType.Deposit,
+                                    TransactionStatus = EnumTransactionStatus.Failed,
+                                    TransferAmount = balance,
+                                    TargetOldBalance = accountInfo.Balance,
+                                    TargetNewBalance = accountInfo.Balance,
+                                    Timestamp = DateTime.Now,
+                                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                };
+
+                                eTransactionLog.InsertTransactionLog(transactionLogTRY);
+
+                                Console.WriteLine("\nDeposit unsuccessful.");
+
+                                break;
+
+                            default:
+
+                                Console.WriteLine("Invalid Choice!");
+                                break;
+                        }
+                    }
+                }
             }
             else
             {
-                // Log the failed deposit
-                DTOTransactionLog transactionLog = new DTOTransactionLog
+                Console.WriteLine($"\nThe account number you entered does not belong to our bank. If you continue the transaction, a transaction fee of {transactionFee} will be charged.");
+                Console.WriteLine("\nDo you want to continue? 1-) Yes, 2-) No");
+                Console.Write(">>> ");
+                string? ch = Console.ReadLine();
+
+                switch (ch)
                 {
-                    TargetAccountNumber = accountInfo.AccountNo,
-                    TransactionType = EnumTransactionType.Deposit,
-                    TransactionStatus = EnumTransactionStatus.Failed,
-                    TransferAmount = balance,
-                    TargetOldBalance = accountInfo.Balance,
-                    TargetNewBalance = accountInfo.Balance,
-                    Timestamp = DateTime.Now,
-                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
-                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
-                };
+                    case "1":
+                        // Log the successful deposit
+                        DTOTransactionLog transactionLogs = new DTOTransactionLog
+                        {
+                            TargetAccountNumber = accountInfo.AccountNo,
+                            TransactionType = EnumTransactionType.Deposit,
+                            TransactionStatus = EnumTransactionStatus.Success,
+                            TransferAmount = balance,
+                            Timestamp = DateTime.Now,
+                            TransactionFee = transactionFee
+                        };
 
-                eTransactionLog.InsertTransactionLog(transactionLog);
+                        eTransactionLog.InsertTransactionLog(transactionLogs);
 
-                Console.WriteLine("\nDeposit unsuccessful.");
+                        Console.WriteLine("\nDeposit successful.");
+
+                        break;
+
+                    case "2":
+
+                        // Log the failed deposit
+                        DTOTransactionLog transactionLogTRY = new DTOTransactionLog
+                        {
+                            TargetAccountNumber = accountInfo.AccountNo,
+                            TransactionType = EnumTransactionType.Deposit,
+                            TransactionStatus = EnumTransactionStatus.Failed,
+                            TransferAmount = balance,
+                            Timestamp = DateTime.Now,
+                        };
+
+                        eTransactionLog.InsertTransactionLog(transactionLogTRY);
+
+                        Console.WriteLine("\nDeposit unsuccessful.");
+
+                        break;
+
+                    default:
+
+                        Console.WriteLine("Invalid Choice!");
+                        break;
+                }
             }
         }
 
@@ -94,82 +540,605 @@ namespace FabrieBank.BLL.Logic
         /// <param name="balance"></param>
         public void Withdraw(DTOAccountInfo accountInfo, decimal balance)
         {
+            decimal transactionFee = eTransactionFee.ReadTransactionFee(EnumTransactionFeeType.Withdraw);
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
             if (accountInfo != null)
             {
                 if (accountInfo.Balance >= balance)
                 {
-                    decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
-                    decimal newBalance = oldBalance - balance;
-
-                    DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                    if (accountInfo.CurrencyType == 1)
                     {
-                        AccountNo = accountInfo.AccountNo,
-                        Balance = newBalance,
-                        AccountName = accountInfo.AccountName
-                    };
+                        if (balance <= 5000M)
+                        {
+                            decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                            decimal newBalance = oldBalance - balance;
 
-                    eAccount.UpdateAccountInfo(dTOAccount);
+                            DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                            {
+                                AccountNo = accountInfo.AccountNo,
+                                Balance = newBalance,
+                                AccountName = accountInfo.AccountName
+                            };
 
-                    // Log the successful deposit
-                    DTOTransactionLog transactionLog = new DTOTransactionLog
+                            eAccount.UpdateAccountInfo(dTOAccount);
+
+                            // Log the successful deposit
+                            DTOTransactionLog transactionLog = new DTOTransactionLog
+                            {
+                                TargetAccountNumber = accountInfo.AccountNo,
+                                TransactionType = EnumTransactionType.Withdrawal,
+                                TransactionStatus = EnumTransactionStatus.Success,
+                                TransferAmount = oldBalance - newBalance,
+                                TargetOldBalance = oldBalance,
+                                TargetNewBalance = newBalance,
+                                Timestamp = DateTime.Now,
+                                TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                            };
+
+                            eTransactionLog.InsertTransactionLog(transactionLog);
+
+                            Console.WriteLine("\nWithdraw successful.");
+                            Console.WriteLine($"Old balance: {oldBalance}");
+                            Console.WriteLine($"New balance: {newBalance}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"You entered a request over the daily withdraw limit (5000). If you continue with the transaction, a transaction fee of {transactionFee} will be charged.");
+                            Console.WriteLine("\nDo you want to continue? 1-) Yes, 2-) No");
+                            Console.Write(">>> ");
+                            string? ch = Console.ReadLine();
+
+                            switch (ch)
+                            {
+                                case "1":
+
+                                    if (accountInfo.Balance >= balance + transactionFee)
+                                    {
+                                        decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                                        decimal newBalance = oldBalance - balance - transactionFee;
+
+                                        DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                                        {
+                                            AccountNo = accountInfo.AccountNo,
+                                            Balance = newBalance,
+                                            AccountName = accountInfo.AccountName
+                                        };
+
+                                        eAccount.UpdateAccountInfo(dTOAccount);
+
+                                        // Log the successful deposit
+                                        DTOTransactionLog transactionLog = new DTOTransactionLog
+                                        {
+                                            TargetAccountNumber = accountInfo.AccountNo,
+                                            TransactionType = EnumTransactionType.Withdrawal,
+                                            TransactionStatus = EnumTransactionStatus.Success,
+                                            TransferAmount = oldBalance - newBalance,
+                                            TargetOldBalance = oldBalance,
+                                            TargetNewBalance = newBalance,
+                                            Timestamp = DateTime.Now,
+                                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            TransactionFee = transactionFee
+                                        };
+
+                                        eTransactionLog.InsertTransactionLog(transactionLog);
+
+                                        Console.WriteLine("\nWithdraw successful.");
+                                        Console.WriteLine($"Old balance: {oldBalance}");
+                                        Console.WriteLine($"New balance: {newBalance}");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("\nInsufficient balance!");
+                                        // Log the failed deposit
+                                        DTOTransactionLog transactionLogTRYfailed = new DTOTransactionLog
+                                        {
+                                            TargetAccountNumber = accountInfo.AccountNo,
+                                            TransactionType = EnumTransactionType.Withdrawal,
+                                            TransactionStatus = EnumTransactionStatus.Failed,
+                                            TransferAmount = balance,
+                                            TargetOldBalance = accountInfo.Balance,
+                                            TargetNewBalance = accountInfo.Balance,
+                                            Timestamp = DateTime.Now,
+                                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                        };
+
+                                        eTransactionLog.InsertTransactionLog(transactionLogTRYfailed);
+
+                                        Console.WriteLine("\nWithdraw unsuccessful.");
+                                    }
+                                    break;
+
+                                case "2":
+
+                                    // Log the failed deposit
+                                    DTOTransactionLog transactionLogTRY = new DTOTransactionLog
+                                    {
+                                        TargetAccountNumber = accountInfo.AccountNo,
+                                        TransactionType = EnumTransactionType.Withdrawal,
+                                        TransactionStatus = EnumTransactionStatus.Failed,
+                                        TransferAmount = balance,
+                                        TargetOldBalance = accountInfo.Balance,
+                                        TargetNewBalance = accountInfo.Balance,
+                                        Timestamp = DateTime.Now,
+                                        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                    };
+
+                                    eTransactionLog.InsertTransactionLog(transactionLogTRY);
+
+                                    Console.WriteLine("\nWithdraw unsuccessful.");
+
+                                    break;
+
+                                default:
+
+                                    Console.WriteLine("Invalid Choice!");
+                                    break;
+                            }
+                        }
+                    }
+                    else if (accountInfo.CurrencyType == 2 || accountInfo.CurrencyType == 4)
                     {
-                        TargetAccountNumber = accountInfo.AccountNo,
-                        TransactionType = EnumTransactionType.Withdrawal,
-                        TransactionStatus = EnumTransactionStatus.Success,
-                        TransferAmount = oldBalance - newBalance,
-                        TargetOldBalance = oldBalance,
-                        TargetNewBalance = newBalance,
-                        Timestamp = DateTime.Now,
-                        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
-                        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
-                    };
+                        if (balance <= 2500M)
+                        {
+                            decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                            decimal newBalance = oldBalance - balance;
 
-                    eTransactionLog.InsertTransactionLog(transactionLog);
+                            DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                            {
+                                AccountNo = accountInfo.AccountNo,
+                                Balance = newBalance,
+                                AccountName = accountInfo.AccountName
+                            };
 
-                    Console.WriteLine("\nWithdraw successful");
-                    Console.WriteLine($"Old balance: {oldBalance}");
-                    Console.WriteLine($"New Balance: {newBalance}");
+                            eAccount.UpdateAccountInfo(dTOAccount);
+
+                            // Log the successful deposit
+                            DTOTransactionLog transactionLog = new DTOTransactionLog
+                            {
+                                TargetAccountNumber = accountInfo.AccountNo,
+                                TransactionType = EnumTransactionType.Withdrawal,
+                                TransactionStatus = EnumTransactionStatus.Success,
+                                TransferAmount = oldBalance - newBalance,
+                                TargetOldBalance = oldBalance,
+                                TargetNewBalance = newBalance,
+                                Timestamp = DateTime.Now,
+                                TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                            };
+
+                            eTransactionLog.InsertTransactionLog(transactionLog);
+
+                            Console.WriteLine("\nWithdraw successful.");
+                            Console.WriteLine($"Old balance: {oldBalance}");
+                            Console.WriteLine($"New balance: {newBalance}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\nYou entered a request over the daily withdraw limit (2500). If you continue with the transaction, a transaction fee of {transactionFee} will be charged.");
+                            Console.WriteLine("\nDo you want to continue? 1-) Yes, 2-) No");
+                            Console.Write(">>> ");
+                            string? ch = Console.ReadLine();
+
+                            switch (ch)
+                            {
+                                case "1":
+
+                                    if (accountInfo.Balance >= balance + transactionFee)
+                                    {
+                                        decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                                        decimal newBalance = oldBalance - balance - transactionFee;
+
+                                        DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                                        {
+                                            AccountNo = accountInfo.AccountNo,
+                                            Balance = newBalance,
+                                            AccountName = accountInfo.AccountName
+                                        };
+
+                                        eAccount.UpdateAccountInfo(dTOAccount);
+
+                                        // Log the successful deposit
+                                        DTOTransactionLog transactionLog = new DTOTransactionLog
+                                        {
+                                            TargetAccountNumber = accountInfo.AccountNo,
+                                            TransactionType = EnumTransactionType.Withdrawal,
+                                            TransactionStatus = EnumTransactionStatus.Success,
+                                            TransferAmount = oldBalance - newBalance,
+                                            TargetOldBalance = oldBalance,
+                                            TargetNewBalance = newBalance,
+                                            Timestamp = DateTime.Now,
+                                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            TransactionFee = transactionFee
+                                        };
+
+                                        eTransactionLog.InsertTransactionLog(transactionLog);
+
+                                        Console.WriteLine("\nWithdraw successful.");
+                                        Console.WriteLine($"Old balance: {oldBalance}");
+                                        Console.WriteLine($"New balance: {newBalance}");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("\nInsufficient balance!");
+                                        // Log the failed deposit
+                                        DTOTransactionLog transactionLogTRYfailed = new DTOTransactionLog
+                                        {
+                                            TargetAccountNumber = accountInfo.AccountNo,
+                                            TransactionType = EnumTransactionType.Withdrawal,
+                                            TransactionStatus = EnumTransactionStatus.Failed,
+                                            TransferAmount = balance,
+                                            TargetOldBalance = accountInfo.Balance,
+                                            TargetNewBalance = accountInfo.Balance,
+                                            Timestamp = DateTime.Now,
+                                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                        };
+
+                                        eTransactionLog.InsertTransactionLog(transactionLogTRYfailed);
+
+                                        Console.WriteLine("\nWithdraw unsuccessful.");
+                                    }
+                                    break;
+
+                                case "2":
+
+                                    // Log the failed deposit
+                                    DTOTransactionLog transactionLogTRY = new DTOTransactionLog
+                                    {
+                                        TargetAccountNumber = accountInfo.AccountNo,
+                                        TransactionType = EnumTransactionType.Withdrawal,
+                                        TransactionStatus = EnumTransactionStatus.Failed,
+                                        TransferAmount = balance,
+                                        TargetOldBalance = accountInfo.Balance,
+                                        TargetNewBalance = accountInfo.Balance,
+                                        Timestamp = DateTime.Now,
+                                        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                    };
+
+                                    eTransactionLog.InsertTransactionLog(transactionLogTRY);
+
+                                    Console.WriteLine("\nWithdraw unsuccessful.");
+
+                                    break;
+
+                                default:
+
+                                    Console.WriteLine("Invalid Choice!");
+                                    break;
+                            }
+                        }
+                    }
+                    else if (accountInfo.CurrencyType == 3)
+                    {
+                        if (balance <= 12500M)
+                        {
+                            decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                            decimal newBalance = oldBalance - balance;
+
+                            DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                            {
+                                AccountNo = accountInfo.AccountNo,
+                                Balance = newBalance,
+                                AccountName = accountInfo.AccountName
+                            };
+
+                            eAccount.UpdateAccountInfo(dTOAccount);
+
+                            // Log the successful deposit
+                            DTOTransactionLog transactionLog = new DTOTransactionLog
+                            {
+                                TargetAccountNumber = accountInfo.AccountNo,
+                                TransactionType = EnumTransactionType.Withdrawal,
+                                TransactionStatus = EnumTransactionStatus.Success,
+                                TransferAmount = oldBalance - newBalance,
+                                TargetOldBalance = oldBalance,
+                                TargetNewBalance = newBalance,
+                                Timestamp = DateTime.Now,
+                                TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                            };
+
+                            eTransactionLog.InsertTransactionLog(transactionLog);
+
+                            Console.WriteLine("\nWithdraw successful.");
+                            Console.WriteLine($"Old balance: {oldBalance}");
+                            Console.WriteLine($"New balance: {newBalance}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\nYou entered a request over the daily withdraw limit (12500). If you continue with the transaction, a transaction fee of {transactionFee} will be charged.");
+                            Console.WriteLine("\nDo you want to continue? 1-) Yes, 2-) No");
+                            Console.Write(">>> ");
+                            string? ch = Console.ReadLine();
+
+                            switch (ch)
+                            {
+                                case "1":
+
+                                    if (accountInfo.Balance >= balance + transactionFee)
+                                    {
+                                        decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                                        decimal newBalance = oldBalance - balance - transactionFee;
+
+                                        DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                                        {
+                                            AccountNo = accountInfo.AccountNo,
+                                            Balance = newBalance,
+                                            AccountName = accountInfo.AccountName
+                                        };
+
+                                        eAccount.UpdateAccountInfo(dTOAccount);
+
+                                        // Log the successful deposit
+                                        DTOTransactionLog transactionLog = new DTOTransactionLog
+                                        {
+                                            TargetAccountNumber = accountInfo.AccountNo,
+                                            TransactionType = EnumTransactionType.Withdrawal,
+                                            TransactionStatus = EnumTransactionStatus.Success,
+                                            TransferAmount = oldBalance - newBalance,
+                                            TargetOldBalance = oldBalance,
+                                            TargetNewBalance = newBalance,
+                                            Timestamp = DateTime.Now,
+                                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            TransactionFee = transactionFee
+                                        };
+
+                                        eTransactionLog.InsertTransactionLog(transactionLog);
+
+                                        Console.WriteLine("\nWithdraw successful.");
+                                        Console.WriteLine($"Old balance: {oldBalance}");
+                                        Console.WriteLine($"New balance: {newBalance}");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("\nInsufficient balance!");
+                                        // Log the failed deposit
+                                        DTOTransactionLog transactionLogTRYfailed = new DTOTransactionLog
+                                        {
+                                            TargetAccountNumber = accountInfo.AccountNo,
+                                            TransactionType = EnumTransactionType.Withdrawal,
+                                            TransactionStatus = EnumTransactionStatus.Failed,
+                                            TransferAmount = balance,
+                                            TargetOldBalance = accountInfo.Balance,
+                                            TargetNewBalance = accountInfo.Balance,
+                                            Timestamp = DateTime.Now,
+                                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                        };
+
+                                        eTransactionLog.InsertTransactionLog(transactionLogTRYfailed);
+
+                                        Console.WriteLine("\nWithdraw unsuccessful.");
+                                    }
+                                    break;
+
+                                case "2":
+
+                                    // Log the failed deposit
+                                    DTOTransactionLog transactionLogTRY = new DTOTransactionLog
+                                    {
+                                        TargetAccountNumber = accountInfo.AccountNo,
+                                        TransactionType = EnumTransactionType.Withdrawal,
+                                        TransactionStatus = EnumTransactionStatus.Failed,
+                                        TransferAmount = balance,
+                                        TargetOldBalance = accountInfo.Balance,
+                                        TargetNewBalance = accountInfo.Balance,
+                                        Timestamp = DateTime.Now,
+                                        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                    };
+
+                                    eTransactionLog.InsertTransactionLog(transactionLogTRY);
+
+                                    Console.WriteLine("\nWithdraw unsuccessful.");
+
+                                    break;
+
+                                default:
+
+                                    Console.WriteLine("Invalid Choice!");
+                                    break;
+                            }
+                        }
+                    }
+                    else if (accountInfo.CurrencyType == 5)
+                    {
+                        if (balance <= 25000M)
+                        {
+                            decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                            decimal newBalance = oldBalance - balance;
+
+                            DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                            {
+                                AccountNo = accountInfo.AccountNo,
+                                Balance = newBalance,
+                                AccountName = accountInfo.AccountName
+                            };
+
+                            eAccount.UpdateAccountInfo(dTOAccount);
+
+                            // Log the successful deposit
+                            DTOTransactionLog transactionLog = new DTOTransactionLog
+                            {
+                                TargetAccountNumber = accountInfo.AccountNo,
+                                TransactionType = EnumTransactionType.Withdrawal,
+                                TransactionStatus = EnumTransactionStatus.Success,
+                                TransferAmount = oldBalance - newBalance,
+                                TargetOldBalance = oldBalance,
+                                TargetNewBalance = newBalance,
+                                Timestamp = DateTime.Now,
+                                TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                            };
+
+                            eTransactionLog.InsertTransactionLog(transactionLog);
+
+                            Console.WriteLine("\nWithdraw successful.");
+                            Console.WriteLine($"Old balance: {oldBalance}");
+                            Console.WriteLine($"New balance: {newBalance}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\nYou entered a request over the daily withdraw limit (25000). If you continue with the transaction, a transaction fee of {transactionFee} will be charged.");
+                            Console.WriteLine("\nDo you want to continue? 1-) Yes, 2-) No");
+                            Console.Write(">>> ");
+                            string? ch = Console.ReadLine();
+
+                            switch (ch)
+                            {
+                                case "1":
+
+                                    if (accountInfo.Balance >= balance + transactionFee)
+                                    {
+                                        decimal oldBalance = Convert.ToDecimal(accountInfo.Balance);
+                                        decimal newBalance = oldBalance - balance - transactionFee;
+
+                                        DTOAccountInfo dTOAccount = new DTOAccountInfo()
+                                        {
+                                            AccountNo = accountInfo.AccountNo,
+                                            Balance = newBalance,
+                                            AccountName = accountInfo.AccountName
+                                        };
+
+                                        eAccount.UpdateAccountInfo(dTOAccount);
+
+                                        // Log the successful deposit
+                                        DTOTransactionLog transactionLog = new DTOTransactionLog
+                                        {
+                                            TargetAccountNumber = accountInfo.AccountNo,
+                                            TransactionType = EnumTransactionType.Withdrawal,
+                                            TransactionStatus = EnumTransactionStatus.Success,
+                                            TransferAmount = oldBalance - newBalance,
+                                            TargetOldBalance = oldBalance,
+                                            TargetNewBalance = newBalance,
+                                            Timestamp = DateTime.Now,
+                                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            TransactionFee = transactionFee
+                                        };
+
+                                        eTransactionLog.InsertTransactionLog(transactionLog);
+
+                                        Console.WriteLine("\nWithdraw successful.");
+                                        Console.WriteLine($"Old balance: {oldBalance}");
+                                        Console.WriteLine($"New balance: {newBalance}");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("\nInsufficient balance!");
+                                        // Log the failed deposit
+                                        DTOTransactionLog transactionLogTRYfailed = new DTOTransactionLog
+                                        {
+                                            TargetAccountNumber = accountInfo.AccountNo,
+                                            TransactionType = EnumTransactionType.Withdrawal,
+                                            TransactionStatus = EnumTransactionStatus.Failed,
+                                            TransferAmount = balance,
+                                            TargetOldBalance = accountInfo.Balance,
+                                            TargetNewBalance = accountInfo.Balance,
+                                            Timestamp = DateTime.Now,
+                                            TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                            SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                        };
+
+                                        eTransactionLog.InsertTransactionLog(transactionLogTRYfailed);
+
+                                        Console.WriteLine("\nWithdraw unsuccessful.");
+                                    }
+                                    break;
+
+                                case "2":
+
+                                    // Log the failed deposit
+                                    DTOTransactionLog transactionLogTRY = new DTOTransactionLog
+                                    {
+                                        TargetAccountNumber = accountInfo.AccountNo,
+                                        TransactionType = EnumTransactionType.Withdrawal,
+                                        TransactionStatus = EnumTransactionStatus.Failed,
+                                        TransferAmount = balance,
+                                        TargetOldBalance = accountInfo.Balance,
+                                        TargetNewBalance = accountInfo.Balance,
+                                        Timestamp = DateTime.Now,
+                                        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+                                        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+                                    };
+
+                                    eTransactionLog.InsertTransactionLog(transactionLogTRY);
+
+                                    Console.WriteLine("\nWithdraw unsuccessful.");
+
+                                    break;
+
+                                default:
+
+                                    Console.WriteLine("Invalid Choice!");
+                                    break;
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    // Log the failed deposit
-                    DTOTransactionLog transactionLog = new DTOTransactionLog
-                    {
-                        TargetAccountNumber = accountInfo.AccountNo,
-                        TransactionType = EnumTransactionType.Withdrawal,
-                        TransactionStatus = EnumTransactionStatus.Failed,
-                        TransferAmount = balance,
-                        TargetOldBalance = accountInfo.Balance,
-                        TargetNewBalance = accountInfo.Balance,
-                        Timestamp = DateTime.Now,
-                        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
-                        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
-                    };
-                    eTransactionLog.InsertTransactionLog(transactionLog);
-
-                    Console.WriteLine("Insufficient balance.");
+                    Console.WriteLine("Insufficient balance!");
                 }
             }
             else
             {
-                // Log the failed deposit
-                DTOTransactionLog transactionLog = new DTOTransactionLog
+                Console.WriteLine($"\nThe account number you entered does not belong to our bank. If you continue the transaction, a transaction fee of {transactionFee} will be charged.");
+                Console.WriteLine("\nDo you want to continue? 1-) Yes, 2-) No");
+                Console.Write(">>> ");
+                string? ch = Console.ReadLine();
+
+                switch (ch)
                 {
-                    TargetAccountNumber = accountInfo.AccountNo,
-                    TransactionType = EnumTransactionType.Withdrawal,
-                    TransactionStatus = EnumTransactionStatus.Failed,
-                    TransferAmount = balance,
-                    TargetOldBalance = accountInfo.Balance,
-                    TargetNewBalance = accountInfo.Balance,
-                    Timestamp = DateTime.Now,
-                    SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
-                    TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
-                };
+                    case "1":
 
-                eTransactionLog.InsertTransactionLog(transactionLog);
+                        // Log the successful deposit
+                        DTOTransactionLog transactionLogs = new DTOTransactionLog
+                        {
+                            TargetAccountNumber = accountInfo.AccountNo,
+                            TransactionType = EnumTransactionType.Withdrawal,
+                            TransactionStatus = EnumTransactionStatus.Success,
+                            TransferAmount = balance,
+                            Timestamp = DateTime.Now,
+                            TransactionFee = transactionFee
+                        };
 
-                Console.WriteLine("\nWithdraw unsuccessful.");
+                        eTransactionLog.InsertTransactionLog(transactionLogs);
+
+                        Console.WriteLine("\nWithdraw successful.");
+
+                        break;
+
+                    case "2":
+
+                        // Log the failed deposit
+                        DTOTransactionLog transactionLogTRY = new DTOTransactionLog
+                        {
+                            TargetAccountNumber = accountInfo.AccountNo,
+                            TransactionType = EnumTransactionType.Withdrawal,
+                            TransactionStatus = EnumTransactionStatus.Failed,
+                            TransferAmount = balance,
+                            Timestamp = DateTime.Now,
+                        };
+
+                        eTransactionLog.InsertTransactionLog(transactionLogTRY);
+
+                        Console.WriteLine("\nWithdraw unsuccessful.");
+
+                        break;
+
+                    default:
+
+                        Console.WriteLine("Invalid Choice!");
+                        break;
+                }
             }
         }
 
@@ -385,7 +1354,7 @@ namespace FabrieBank.BLL.Logic
                     };
                     List<DTOAccountInfo> accountInfos = eAccount.ReadListAccountInfo(dTOAccount);
 
-                    if (transfer.SourceAccountIndex >= 0 && transfer.SourceAccountIndex< accountInfos.Count)
+                    if (transfer.SourceAccountIndex >= 0 && transfer.SourceAccountIndex < accountInfos.Count)
                     {
                         long sourceAccountNo = accountInfos[transfer.SourceAccountIndex].AccountNo;
                         int sourceCurrencyType = accountInfos[transfer.SourceAccountIndex].CurrencyType;
@@ -626,3 +1595,24 @@ namespace FabrieBank.BLL.Logic
         }
     }
 }
+
+
+//else
+//{
+//    // Log the failed deposit
+//    DTOTransactionLog transactionLog = new DTOTransactionLog
+//    {
+//        TargetAccountNumber = accountInfo.AccountNo,
+//        TransactionType = EnumTransactionType.Withdrawal,
+//        TransactionStatus = EnumTransactionStatus.Failed,
+//        TransferAmount = balance,
+//        TargetOldBalance = accountInfo.Balance,
+//        TargetNewBalance = accountInfo.Balance,
+//        Timestamp = DateTime.Now,
+//        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
+//        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
+//    };
+//    eTransactionLog.InsertTransactionLog(transactionLog);
+
+//    Console.WriteLine("Insufficient balance.");
+//}
