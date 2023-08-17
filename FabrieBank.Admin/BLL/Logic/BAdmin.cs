@@ -1,6 +1,7 @@
 ﻿using FabrieBank.Admin.DAL.DTO;
 using FabrieBank.Admin.DAL.Entity;
 using FabrieBank.DAL.Common.DTOs;
+using FabrieBank.DAL.Common.Enums;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank.Admin.BLL.Logic
@@ -325,7 +326,7 @@ namespace FabrieBank.Admin.BLL.Logic
             {
                 DTOTransactionLog dTOTransactionLog = new DTOTransactionLog()
                 {
-                    StartDate = (DateTime)monthlyTransactions.FirstDayOfMonth,
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
                     EndDate = monthlyTransactions.ThisDayOfMonth
                 };
 
@@ -355,22 +356,217 @@ namespace FabrieBank.Admin.BLL.Logic
         {
             if (admin.AccessLevel == 3)
             {
-                DTOTransactionLog dTOTransactionLog = new DTOTransactionLog()
+                DTOTransactionLog dTOTransactionLogDepositTRY = new DTOTransactionLog()
                 {
-                    StartDate = (DateTime)monthlyTransactions.FirstDayOfMonth,
-                    EndDate = monthlyTransactions.ThisDayOfMonth
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth,
+                    TransactionType = EnumTransactionType.Deposit,
+                    TransactionStatus = EnumTransactionStatus.Success,
+                    TargetCurrencyType = EnumCurrencyTypes.CurrencyTypes.TRY
                 };
 
-                List<DTOTransactionLog> dTOTransactionLogs = eTransaction.ReadListTransactionLog(dTOTransactionLog);
+                List<DTOTransactionLog> dTOTransactionLogs = eTransaction.ReadListTransactionLog(dTOTransactionLogDepositTRY);
 
-                decimal totalKMV = 0;
+                decimal totalDepositTRY = 0;
 
                 foreach (DTOTransactionLog transaction in dTOTransactionLogs)
                 {
-                    totalKMV += transaction.KMV;
+                    totalDepositTRY += transaction.TransferAmount;
                 }
 
-                Console.WriteLine($"\nTotal KMV for this month: {totalKMV}\n");
+                Console.WriteLine($"\nTotal TRY Deposit for this month: {totalDepositTRY}\n");
+
+                DTOTransactionLog dTOTransactionLogDepositUSD = new DTOTransactionLog()
+                {
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth,
+                    TransactionType = EnumTransactionType.Deposit,
+                    TransactionStatus = EnumTransactionStatus.Success,
+                    TargetCurrencyType = EnumCurrencyTypes.CurrencyTypes.USD
+                };
+
+                List<DTOTransactionLog> dTOTransactionLogsUSD = eTransaction.ReadListTransactionLog(dTOTransactionLogDepositUSD);
+
+                decimal totalDepositUSD = 0;
+
+                foreach (DTOTransactionLog transactionUSD in dTOTransactionLogsUSD)
+                {
+                    totalDepositUSD += transactionUSD.TransferAmount;
+                }
+
+                Console.WriteLine($"\nTotal USD Deposit for this month: {totalDepositUSD}\n");
+
+                DTOTransactionLog dTOTransactionLogDepositEUR = new DTOTransactionLog()
+                {
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth,
+                    TransactionType = EnumTransactionType.Deposit,
+                    TransactionStatus = EnumTransactionStatus.Success,
+                    TargetCurrencyType = EnumCurrencyTypes.CurrencyTypes.EUR
+                };
+
+                List<DTOTransactionLog> dTOTransactionLogsEUR = eTransaction.ReadListTransactionLog(dTOTransactionLogDepositEUR);
+
+                decimal totalDepositEUR = 0;
+
+                foreach (DTOTransactionLog transactionEUR in dTOTransactionLogsEUR)
+                {
+                    totalDepositEUR += transactionEUR.TransferAmount;
+                }
+
+                Console.WriteLine($"\nTotal EUR Deposit for this month: {totalDepositEUR}\n");
+
+                DTOTransactionLog dTOTransactionLogDepositGBP = new DTOTransactionLog()
+                {
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth,
+                    TransactionType = EnumTransactionType.Deposit,
+                    TransactionStatus = EnumTransactionStatus.Success,
+                    TargetCurrencyType = EnumCurrencyTypes.CurrencyTypes.GBP
+                };
+
+                List<DTOTransactionLog> dTOTransactionLogsGBP = eTransaction.ReadListTransactionLog(dTOTransactionLogDepositGBP);
+
+                decimal totalDepositGBP = 0;
+
+                foreach (DTOTransactionLog transactionGBP in dTOTransactionLogsGBP)
+                {
+                    totalDepositGBP += transactionGBP.TransferAmount;
+                }
+
+                Console.WriteLine($"\nTotal GBP Deposit for this month: {totalDepositGBP}\n");
+
+                DTOTransactionLog dTOTransactionLogDepositCHF = new DTOTransactionLog()
+                {
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth,
+                    TransactionType = EnumTransactionType.Deposit,
+                    TransactionStatus = EnumTransactionStatus.Success,
+                    TargetCurrencyType = EnumCurrencyTypes.CurrencyTypes.CHF
+                };
+
+                List<DTOTransactionLog> dTOTransactionLogsCHF = eTransaction.ReadListTransactionLog(dTOTransactionLogDepositCHF);
+
+                decimal totalDepositCHF = 0;
+
+                foreach (DTOTransactionLog transactionCHF in dTOTransactionLogsCHF)
+                {
+                    totalDepositCHF += transactionCHF.TransferAmount;
+                }
+
+                Console.WriteLine($"\nTotal CHF Deposit for this month: {totalDepositCHF}\n");
+
+                decimal totalDeposit = totalDepositTRY + totalDepositUSD + totalDepositEUR + totalDepositGBP + totalDepositCHF;
+
+                Console.WriteLine($"\nTotal Deposit this month: {totalDeposit}\n");
+
+                DTOTransactionLog dTOTransactionLogWithdrawTRY = new DTOTransactionLog()
+                {
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth,
+                    TransactionType = EnumTransactionType.Withdrawal,
+                    TransactionStatus = EnumTransactionStatus.Success,
+                    TargetCurrencyType = EnumCurrencyTypes.CurrencyTypes.TRY
+                };
+
+                List<DTOTransactionLog> dTOTransactionLogsWithdrawTRY = eTransaction.ReadListTransactionLog(dTOTransactionLogWithdrawTRY);
+
+                decimal totalWithdrawTRY = 0;
+
+                foreach (DTOTransactionLog transactionWithdrawTRY in dTOTransactionLogsWithdrawTRY)
+                {
+                    totalWithdrawTRY += transactionWithdrawTRY.TransferAmount;
+                }
+
+                Console.WriteLine($"\nTotal TRY Withdraw for this month: {totalWithdrawTRY}\n");
+
+                DTOTransactionLog dTOTransactionLogWithdrawUSD = new DTOTransactionLog()
+                {
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth,
+                    TransactionType = EnumTransactionType.Withdrawal,
+                    TransactionStatus = EnumTransactionStatus.Success,
+                    SourceCurrencyType = EnumCurrencyTypes.CurrencyTypes.USD
+                };
+
+                List<DTOTransactionLog> dTOTransactionLogsUSDWithdraw = eTransaction.ReadListTransactionLog(dTOTransactionLogWithdrawUSD);
+
+                decimal totalWithdrawUSD = 0;
+
+                foreach (DTOTransactionLog transactionUSDWithdraw in dTOTransactionLogsUSDWithdraw)
+                {
+                    totalWithdrawUSD += transactionUSDWithdraw.TransferAmount;
+                }
+
+                Console.WriteLine($"\nTotal USD Withdraw for this month: {totalWithdrawUSD}\n");
+
+                DTOTransactionLog dTOTransactionLogWithdrawEUR = new DTOTransactionLog()
+                {
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth,
+                    TransactionType = EnumTransactionType.Withdrawal,
+                    TransactionStatus = EnumTransactionStatus.Success,
+                    SourceCurrencyType = EnumCurrencyTypes.CurrencyTypes.EUR
+                };
+
+                List<DTOTransactionLog> dTOTransactionLogsEURWithdraw = eTransaction.ReadListTransactionLog(dTOTransactionLogWithdrawEUR);
+
+                decimal totalWithdrawEUR = 0;
+
+                foreach (DTOTransactionLog transactionEURWithdraw in dTOTransactionLogsEURWithdraw)
+                {
+                    totalWithdrawEUR += transactionEURWithdraw.TransferAmount;
+                }
+
+                Console.WriteLine($"\nTotal EUR Withdraw for this month: {totalWithdrawEUR}\n");
+
+                DTOTransactionLog dTOTransactionLogWithdrawGBP = new DTOTransactionLog()
+                {
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth,
+                    TransactionType = EnumTransactionType.Withdrawal,
+                    TransactionStatus = EnumTransactionStatus.Success,
+                    SourceCurrencyType = EnumCurrencyTypes.CurrencyTypes.GBP
+                };
+
+                List<DTOTransactionLog> dTOTransactionLogsGBPWithdraw = eTransaction.ReadListTransactionLog(dTOTransactionLogWithdrawGBP);
+
+                decimal totalWithdrawGBP = 0;
+
+                foreach (DTOTransactionLog transactionGBPWithdraw in dTOTransactionLogsGBPWithdraw)
+                {
+                    totalWithdrawGBP += transactionGBPWithdraw.TransferAmount;
+                }
+
+                Console.WriteLine($"\nTotal GBP Withdraw for this month: {totalWithdrawGBP}\n");
+
+                DTOTransactionLog dTOTransactionLogWithdrawCHF = new DTOTransactionLog()
+                {
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth,
+                    TransactionType = EnumTransactionType.Withdrawal,
+                    TransactionStatus = EnumTransactionStatus.Success,
+                    SourceCurrencyType = EnumCurrencyTypes.CurrencyTypes.CHF
+                };
+
+                List<DTOTransactionLog> dTOTransactionLogsCHFWithdraw = eTransaction.ReadListTransactionLog(dTOTransactionLogWithdrawCHF);
+
+                decimal totalWithdrawCHF = 0;
+
+                foreach (DTOTransactionLog transactionCHFWithdraw in dTOTransactionLogsCHFWithdraw)
+                {
+                    totalWithdrawCHF += transactionCHFWithdraw.TransferAmount;
+                }
+
+                Console.WriteLine($"\nTotal CHF Withdraw for this month: {totalWithdrawCHF}\n");
+
+                decimal totalWithdraw = totalWithdrawTRY + totalWithdrawUSD + totalWithdrawEUR + totalWithdrawGBP + totalWithdrawCHF;
+
+                Console.WriteLine($"\nTotal Withdraw this month: {totalWithdraw}\n");
+
+                decimal total = totalDeposit - totalWithdraw;
+
+                Console.WriteLine($"\nTotal: {total}\n");
             }
             else
             {
@@ -387,7 +583,22 @@ namespace FabrieBank.Admin.BLL.Logic
         {
             if (admin.AccessLevel == 3)
             {
+                DTOTransactionLog dTOTransactionLog = new DTOTransactionLog()
+                {
+                    StartDate = monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth
+                };
 
+                List<DTOTransactionLog> dTOTransactionLogs = eTransaction.ReadListTransactionLog(dTOTransactionLog);
+
+                decimal totalFee = 0;
+
+                foreach (DTOTransactionLog transaction in dTOTransactionLogs)
+                {
+                    totalFee += transaction.TransactionFee;
+                }
+
+                Console.WriteLine($"\nTotal Fee for this month: {totalFee}\n");
             }
             else
             {
