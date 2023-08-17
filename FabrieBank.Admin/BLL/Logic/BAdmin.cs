@@ -1,7 +1,5 @@
 ﻿using FabrieBank.Admin.DAL.DTO;
 using FabrieBank.Admin.DAL.Entity;
-using FabrieBank.BLL.Logic;
-using FabrieBank.BLL.Service;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
 
@@ -314,6 +312,87 @@ namespace FabrieBank.Admin.BLL.Logic
         {
             eTransactionFee.UpdateTransactionFee(dTOTransactionFee);
             return true;
+        }
+
+        /// <summary>
+        /// Monthly KMV calculator
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="monthlyTransactions"></param>
+        public void MonthlyKMV(DTOAdmin admin ,DTOMonthlyTransactions monthlyTransactions)
+        {
+            if (admin.AccessLevel == 3)
+            {
+                DTOTransactionLog dTOTransactionLog = new DTOTransactionLog()
+                {
+                    StartDate = (DateTime)monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth
+                };
+
+                List<DTOTransactionLog> dTOTransactionLogs = eTransaction.ReadListTransactionLog(dTOTransactionLog);
+
+                decimal totalKMV = 0;
+
+                foreach (DTOTransactionLog transaction in dTOTransactionLogs)
+                {
+                    totalKMV += transaction.KMV;
+                }
+
+                Console.WriteLine($"\nTotal KMV for this month: {totalKMV}\n");
+            }
+            else
+            {
+                Console.WriteLine("Permission denied. Your access level is insufficient for this process.");
+            }
+        }
+
+        /// <summary>
+        /// Monthly transaction volume calculator
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="monthlyTransactions"></param>
+        public void MonthlyTransactionVolume(DTOAdmin admin, DTOMonthlyTransactions monthlyTransactions)
+        {
+            if (admin.AccessLevel == 3)
+            {
+                DTOTransactionLog dTOTransactionLog = new DTOTransactionLog()
+                {
+                    StartDate = (DateTime)monthlyTransactions.FirstDayOfMonth,
+                    EndDate = monthlyTransactions.ThisDayOfMonth
+                };
+
+                List<DTOTransactionLog> dTOTransactionLogs = eTransaction.ReadListTransactionLog(dTOTransactionLog);
+
+                decimal totalKMV = 0;
+
+                foreach (DTOTransactionLog transaction in dTOTransactionLogs)
+                {
+                    totalKMV += transaction.KMV;
+                }
+
+                Console.WriteLine($"\nTotal KMV for this month: {totalKMV}\n");
+            }
+            else
+            {
+                Console.WriteLine("Permission denied. Your access level is insufficient for this process.");
+            }
+        }
+
+        /// <summary>
+        /// Monthly total fee calculator
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="monthlyTransactions"></param>
+        public void MonthlyFeeTotal(DTOAdmin admin, DTOMonthlyTransactions monthlyTransactions)
+        {
+            if (admin.AccessLevel == 3)
+            {
+
+            }
+            else
+            {
+                Console.WriteLine("Permission denied. Your access level is insufficient for this process.");
+            }
         }
     }
 }

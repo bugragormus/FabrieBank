@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using FabrieBank.BLL.Service;
 using FabrieBank.DAL;
 using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Common.Enums;
@@ -9,7 +8,6 @@ namespace FabrieBank.BLL.Logic
 {
     public class BTransaction
     {
-        private DataAccessLayer dataAccessLayer;
         private EAccountInfo eAccount;
         private BAccount account;
         private ETransactionLog eTransactionLog;
@@ -19,7 +17,6 @@ namespace FabrieBank.BLL.Logic
         {
             eAccount = new EAccountInfo();
             account = new BAccount();
-            dataAccessLayer = new DataAccessLayer();
             eTransactionLog = new ETransactionLog();
             eTransactionFee = new ETransactionFee();
         }
