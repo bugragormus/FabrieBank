@@ -236,14 +236,14 @@ namespace FabrieBank
                             PAdmin pAdmin1 = new PAdmin(admin.Nickname);
                             pAdmin1.AddFee(admin);
                             break;
-                        //case "3":
-                        //    PAdmin pAdmin2 = new PAdmin(admin.Nickname);
-                        //    pAdmin2.RemoveFee(admin);
-                        //    break;
-                        //case "4":
-                        //    PAdmin pAdmin3 = new PAdmin(admin.Nickname);
-                        //    pAdmin3.UpdateFee(admin);
-                        //    break;
+                        case "3":
+                            PAdmin pAdmin2 = new PAdmin(admin.Nickname);
+                            pAdmin2.RemoveFee(admin);
+                            break;
+                        case "4":
+                            PAdmin pAdmin3 = new PAdmin(admin.Nickname);
+                            pAdmin3.UpdateFee(admin);
+                            break;
                         case "5":
                             Console.WriteLine("\nExited from Fee Operations.\n");
                             break;

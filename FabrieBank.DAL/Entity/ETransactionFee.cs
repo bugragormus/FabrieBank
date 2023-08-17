@@ -127,10 +127,11 @@ namespace FabrieBank.DAL.Entity
 
                     string functionName = "usp_UpdateTransactionFee";
 
-                    string sqlQuery = $"CALL {functionName}(@p_fee_amount)";
+                    string sqlQuery = $"CALL {functionName}(@p_transaction_type, @p_fee_amount)";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(sqlQuery, connection))
                     {
+                        command.Parameters.AddWithValue("@p_transaction_type", NpgsqlDbType.Integer, (int)dTOTransactionFee.FeeType);
                         command.Parameters.AddWithValue("@p_fee_amount", NpgsqlDbType.Numeric, dTOTransactionFee.Amount);
 
                         if (command.ExecuteNonQuery() > 0)
@@ -210,26 +211,24 @@ namespace FabrieBank.DAL.Entity
 
                     using (NpgsqlCommand commandDeleteHesap = new NpgsqlCommand(sqlQuery, connection))
                     {
-                        commandDeleteHesap.Parameters.AddWithValue("@p_transaction_type", dTOTransactionFee.FeeType);
+                        commandDeleteHesap.Parameters.AddWithValue("@p_transaction_type", (int)dTOTransactionFee.FeeType);
 
                         NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(commandDeleteHesap);
                         DataTable dataTable = new DataTable();
 
                         npgsqlDataAdapter.Fill(dataTable);
 
-                        // Check the result in the DataTable
                         if (dataTable.Rows.Count > 0)
                         {
                             bool success = (bool)dataTable.Rows[0]["func_DeleteTransactionFee"];
 
                             if (success)
                             {
-                                Console.WriteLine("\nThe customer has been successfully deleted.");
                                 return true;
                             }
                             else
                             {
-                                Console.WriteLine("\nThe customer could not be deleted. Please try again.");
+                                Console.WriteLine("\nFee could not be deleted. Please try again.");
                             }
                         }
                     }

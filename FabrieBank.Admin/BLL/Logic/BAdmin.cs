@@ -293,6 +293,28 @@ namespace FabrieBank.Admin.BLL.Logic
             eTransactionFee.InsertTransactionFee(dTOTransactionFee);
             return true;
         }
+
+        /// <summary>
+        /// Remove fee logic
+        /// </summary>
+        /// <param name="dTOTransactionFee"></param>
+        /// <returns></returns>
+        public bool RemoveFee(DTOTransactionFee dTOTransactionFee)
+        {
+            eTransactionFee.DeleteTransactionFee(dTOTransactionFee);
+            return true;
+        }
+
+        /// <summary>
+        /// Update fee logic
+        /// </summary>
+        /// <param name="dTOTransactionFee"></param>
+        /// <returns></returns>
+        public bool UpdateFee(DTOTransactionFee dTOTransactionFee)
+        {
+            eTransactionFee.UpdateTransactionFee(dTOTransactionFee);
+            return true;
+        }
     }
 }
 
