@@ -33,7 +33,7 @@ namespace FabrieBank.BLL.Logic
         {
             decimal transactionFee = eTransactionFee.ReadTransactionFee(EnumTransactionFeeType.Deposit);
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
-            if (accountInfo != null)
+            if (accountInfo.CustomerId != 0)
             {
                 if (accountInfo.CurrencyType == 1)
                 {
@@ -494,7 +494,7 @@ namespace FabrieBank.BLL.Logic
                         DTOTransactionLog transactionLogs = new DTOTransactionLog
                         {
                             TargetAccountNumber = accountInfo.AccountNo,
-                            TransactionType = EnumTransactionType.Deposit,
+                            TransactionType = EnumTransactionType.DepositToAnother,
                             TransactionStatus = EnumTransactionStatus.Success,
                             TransferAmount = balance,
                             Timestamp = DateTime.Now,
@@ -513,7 +513,7 @@ namespace FabrieBank.BLL.Logic
                         DTOTransactionLog transactionLogTRY = new DTOTransactionLog
                         {
                             TargetAccountNumber = accountInfo.AccountNo,
-                            TransactionType = EnumTransactionType.Deposit,
+                            TransactionType = EnumTransactionType.DepositToAnother,
                             TransactionStatus = EnumTransactionStatus.Failed,
                             TransferAmount = balance,
                             Timestamp = DateTime.Now,
@@ -542,7 +542,7 @@ namespace FabrieBank.BLL.Logic
         {
             decimal transactionFee = eTransactionFee.ReadTransactionFee(EnumTransactionFeeType.Withdraw);
             accountInfo = eAccount.ReadAccountInfo(accountInfo);
-            if (accountInfo != null)
+            if (accountInfo.CustomerId != 0)
             {
                 if (accountInfo.Balance >= balance)
                 {
@@ -1103,7 +1103,7 @@ namespace FabrieBank.BLL.Logic
                         DTOTransactionLog transactionLogs = new DTOTransactionLog
                         {
                             TargetAccountNumber = accountInfo.AccountNo,
-                            TransactionType = EnumTransactionType.Withdrawal,
+                            TransactionType = EnumTransactionType.WithdrawToAnother,
                             TransactionStatus = EnumTransactionStatus.Success,
                             TransferAmount = balance,
                             Timestamp = DateTime.Now,
@@ -1122,7 +1122,7 @@ namespace FabrieBank.BLL.Logic
                         DTOTransactionLog transactionLogTRY = new DTOTransactionLog
                         {
                             TargetAccountNumber = accountInfo.AccountNo,
-                            TransactionType = EnumTransactionType.Withdrawal,
+                            TransactionType = EnumTransactionType.WithdrawToAnother,
                             TransactionStatus = EnumTransactionStatus.Failed,
                             TransferAmount = balance,
                             Timestamp = DateTime.Now,
@@ -1595,24 +1595,3 @@ namespace FabrieBank.BLL.Logic
         }
     }
 }
-
-
-//else
-//{
-//    // Log the failed deposit
-//    DTOTransactionLog transactionLog = new DTOTransactionLog
-//    {
-//        TargetAccountNumber = accountInfo.AccountNo,
-//        TransactionType = EnumTransactionType.Withdrawal,
-//        TransactionStatus = EnumTransactionStatus.Failed,
-//        TransferAmount = balance,
-//        TargetOldBalance = accountInfo.Balance,
-//        TargetNewBalance = accountInfo.Balance,
-//        Timestamp = DateTime.Now,
-//        SourceCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType,
-//        TargetCurrencyType = (EnumCurrencyTypes.CurrencyTypes)accountInfo.CurrencyType
-//    };
-//    eTransactionLog.InsertTransactionLog(transactionLog);
-
-//    Console.WriteLine("Insufficient balance.");
-//}

@@ -8,6 +8,8 @@
         Havale = 4,
         EFT = 5,
         CurrenySelling = 6,
-        CurrencyBuying = 7
+        CurrencyBuying = 7,
+        DepositToAnother = 8,
+        WithdrawToAnother = 9
     }
 }
