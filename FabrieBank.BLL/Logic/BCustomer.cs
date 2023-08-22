@@ -167,4 +167,3 @@ namespace FabrieBank.BLL.Logic
         }
     }
 }
-

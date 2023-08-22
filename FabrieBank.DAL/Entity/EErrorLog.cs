@@ -1,10 +1,8 @@
-﻿using System;
-using FabrieBank.DAL.Common.DTOs;
+﻿using FabrieBank.DAL.Common.DTOs;
 using System.Data;
 using System.Reflection;
 using Npgsql;
 using NpgsqlTypes;
-using System.Security.Principal;
 
 namespace FabrieBank.DAL.Entity
 {
@@ -214,4 +212,3 @@ namespace FabrieBank.DAL.Entity
         }
     }
 }
-

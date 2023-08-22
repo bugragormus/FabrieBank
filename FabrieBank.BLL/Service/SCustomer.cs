@@ -1,5 +1,4 @@
-﻿using System;
-using FabrieBank.DAL.Common.DTOs;
+﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.DAL.Entity;
 
 namespace FabrieBank.BLL.Service

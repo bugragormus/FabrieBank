@@ -983,4 +983,3 @@ namespace FabrieBank.Admin.PL
         }
     }
 }
-

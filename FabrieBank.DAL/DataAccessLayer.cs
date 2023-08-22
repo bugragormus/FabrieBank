@@ -1,6 +1,4 @@
-﻿using FabrieBank.DAL.Common.Enums;
-using Npgsql;
-using FabrieBank.DAL.Common.DTOs;
+﻿using Npgsql;
 using FabrieBank.DAL.Entity;
 using System.Text;
 using System.Security.Cryptography;

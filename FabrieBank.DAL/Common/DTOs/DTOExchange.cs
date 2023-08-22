@@ -1,5 +1,4 @@
-﻿using System;
-using FabrieBank.DAL.Common.Enums;
+﻿using FabrieBank.DAL.Common.Enums;
 
 namespace FabrieBank.DAL.Common.DTOs
 {
@@ -16,4 +15,3 @@ namespace FabrieBank.DAL.Common.DTOs
         public string? TargetAccountName { get; set; }
     }
 }
-

@@ -2,7 +2,6 @@
 using FabrieBank.BLL.Logic;
 using FabrieBank.DAL.Entity;
 using System.Reflection;
-using FabrieBank.DAL;
 
 namespace FabrieBank
 {

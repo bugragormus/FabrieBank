@@ -1,5 +1,4 @@
-﻿using System;
-namespace FabrieBank.DAL.Common.DTOs
+﻿namespace FabrieBank.DAL.Common.DTOs
 {
     public class DTOTransfer
     {

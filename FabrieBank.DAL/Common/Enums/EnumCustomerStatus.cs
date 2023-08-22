@@ -1,5 +1,4 @@
-﻿using System;
-namespace FabrieBank.DAL.Common.Enums
+﻿namespace FabrieBank.DAL.Common.Enums
 {
 	public enum EnumCustomerStatus
 	{
@@ -8,4 +7,3 @@ namespace FabrieBank.DAL.Common.Enums
         Inactive = 3,
 	}
 }
-

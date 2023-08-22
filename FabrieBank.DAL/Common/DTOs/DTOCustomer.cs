@@ -1,6 +1,4 @@
-﻿using FabrieBank.DAL.Common.Enums;
-
-namespace FabrieBank.DAL.Common.DTOs
+﻿namespace FabrieBank.DAL.Common.DTOs
 {
     public class DTOCustomer
     {

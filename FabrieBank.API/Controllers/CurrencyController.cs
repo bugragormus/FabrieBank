@@ -1,5 +1,4 @@
-﻿using FabrieBank.BLL.Service;
-using FabrieBank.DAL.Common.DTOs;
+﻿using FabrieBank.DAL.Common.DTOs;
 using FabrieBank.Services;
 using Microsoft.AspNetCore.Mvc;
 

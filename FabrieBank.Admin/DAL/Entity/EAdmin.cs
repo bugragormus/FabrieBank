@@ -72,4 +72,3 @@ namespace FabrieBank.Admin.DAL.Entity
         }
     }
 }
-

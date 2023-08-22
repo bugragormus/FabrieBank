@@ -1,6 +1,4 @@
-﻿
-using System;
-namespace FabrieBank.DAL.Common.DTOs
+﻿namespace FabrieBank.DAL.Common.DTOs
 {
 	public class DTOMonthlyTransactions
 	{
@@ -9,4 +7,3 @@ namespace FabrieBank.DAL.Common.DTOs
         public DateTime ThisDayOfMonth { get; set; }
     }
 }
-
