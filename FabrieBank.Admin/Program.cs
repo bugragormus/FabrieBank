@@ -286,7 +286,7 @@ namespace FabrieBank
                         Console.WriteLine("\nInvalid selection. Try again.\n");
                         break;
                 }
-            } while (choice != "5");
+            } while (choice != "4");
         }
     }
 }
